@@ -16,5 +16,12 @@ The main tasks of doing such an import is very similar independant from platform
 
 I am in a situation where I need such a tool for importing several hundred new users to a closed user group (our group, the housing cooperative Nena1, runs an oxwall instance on a private web server). I am a professinal java programmer who likes to play with new technologies (this can hardly be done in my daily professional life where we have to maintain legacy applications). Instead of doing a quick and dirty hack only for my needs I decided to roll out a flexible tool based on the newest java and spring technologies.
 
+The tool will consist of following main modules:
+
+- Input data collector
+- Input data transformer
+- Target importer
+- User notification
+
 Feel free to join! I am looking forward discussing architectural decisions.
 
