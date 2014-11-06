@@ -1,0 +1,23 @@
+Hello ${user.fullname}
+
+Welcome to our web site ${import.target.web.domain}. 
+
+We just have registered you as a new user.
+
+Name: ${user.name}
+Middlename: ${user.middlename}
+Prename:    ${user.prename}
+Username:   ${user.username}
+
+You can log in with following credentials:
+
+Login:     ${user.login}
+Password:  ${user.password}
+
+Please change your password when you visit us the first time.
+
+If you do not want to be member of our site, respond to this mail.
+
+Greetings from the staff of ${import.target.name}
+
+  

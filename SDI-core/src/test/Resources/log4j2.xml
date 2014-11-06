@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <!-- Note: the file is found since the default runtime JRE in eclipse has the VM argument -Dlog4j.configurationFile=../log4j2.xml. 
+        TODO: solve this with maven (copy resource to classpath) -->
+
+    <Properties>
+        <Property name="log-path">../../logs</Property>
+    </Properties>
+
+    <Appenders>
+        <Console
+            name="STDOUT"
+            target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} (%6r) %-5p [%-7t] %F:%L %x - %m%n" />
+            <Filters>
+                <ThresholdFilter
+                    level="warn"
+                    onMatch="DENY"
+                    onMismatch="ACCEPT" />
+            </Filters>
+        </Console>
+
+        <Console
+            name="STDERR"
+            target="SYSTEM_ERR">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} (%6r) %-5p [%-7t] %F:%L %x - %m%n" />
+            <Filters>
+                <ThresholdFilter
+                    level="WARN"
+                    onMatch="ACCEPT" />
+            </Filters>
+        </Console>
+
+        <RollingFile
+            name="RollingFile"
+            fileName="${log-path}/SocialDataImporter.log"
+            append="true"
+            filePattern="${log-path}/%d{yyyy-MM-dd}_SocialDataImporter.log">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} (%6r) %-5p [%-7t] %F:%L %x - %m%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+        </RollingFile>
+
+    </Appenders>
+
+    <Loggers>
+        <Logger
+            name="org.springframework"
+            level="debug">
+        </Logger>
+
+        <Root level="trace">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="STDERR" />
+            <AppenderRef ref="RollingFile" />
+        </Root>
+    </Loggers>
+
+</Configuration>

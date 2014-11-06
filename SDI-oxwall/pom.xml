@@ -1,0 +1,50 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>social-data-importer-parent</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <groupId>social-data-importer</groupId>
+    <artifactId>oxwall-plugins</artifactId>
+    <packaging>jar</packaging>
+    <name>Plugins For Oxwall Platform</name>
+
+    <build>
+        <!-- TODO: does not work!!! <resources> <resource> <directory>${basedir}/..</directory> <includes> <include>${basedir}/../log4j2.xml</include> 
+            </includes> </resource> </resources> -->
+
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>social-data-importer</groupId>
+            <artifactId>core</artifactId>
+            <version>${module.version.core}</version>
+        </dependency>
+    </dependencies>
+</project>
