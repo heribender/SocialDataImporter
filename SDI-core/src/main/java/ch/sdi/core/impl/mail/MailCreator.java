@@ -14,16 +14,17 @@
 
 package ch.sdi.core.impl.mail;
 
-import org.apache.commons.mail.DefaultAuthenticator;
 import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.ConfigurableEnvironment;
 
-import ch.sdi.core.impl.data.ImportDataItem;
-import ch.sdi.core.intf.ParserMappingProperties;
+import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.intf.MailProperties;
 
 
 /**
@@ -33,7 +34,6 @@ import ch.sdi.core.intf.ParserMappingProperties;
  * @author Heri
  */
 @Configuration
-@PropertySource( "classpath:/" + ParserMappingProperties.RESOURCE_NAME )
 public class MailCreator
 {
 
@@ -41,38 +41,27 @@ public class MailCreator
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( MailCreator.class );
 
-    public Email createMailFor( ImportDataItem aData )
+    @Autowired
+    private ConfigurableEnvironment  env;
+
+    public Email createMailFor( Person<?> aPerson ) throws EmailException
     {
-        // Recipient's email ID needs to be mentioned.
-//        String to = "heri@lamp.vm";
-        String to = "sdi-test@web.de";
-
-        // Sender's email ID needs to be mentioned
-        String from = "sdi-test@web.de";
-
-
         Email email = new SimpleEmail();
-        email.setHostName("smtp.web.de");
-        email.setSmtpPort( 25 );
-        email.setSslSmtpPort( "587" );
-        email.setAuthenticator(new DefaultAuthenticator("sdi-test", "SocialDataImporter"));
-        email.setSSLOnConnect(false);
-        email.setStartTLSRequired(true);
-        try
-        {
-            email.setFrom( from );
-            email.setSubject("TestMail");
-            email.setMsg("This is a test mail ... :-)");
-            email.addTo( to );
-            email.send();
-        }
-        catch ( Exception t )
-        {
-            myLog.error( "Exception caught: ", t );
-        }
+        email.addTo( aPerson.getEMail() );
+        email.setSubject( env.getProperty( MailProperties.SUBJECT ) );
+        email.setMsg( createMailBody( aPerson ) );
 
         return email;
 
 
+    }
+
+    /**
+     * @param aPerson
+     * @return
+     */
+    private String createMailBody( Person<?> aPerson )
+    {
+        return "TODO";
     }
 }

@@ -12,6 +12,7 @@
         <module.version.core>${project.overall-version}</module.version.core>
         <module.version.oxwall-plugins>${project.overall-version}</module.version.oxwall-plugins>
         <logger.version>2.1</logger.version>
+        <spring.version>4.1.1.RELEASE</spring.version>
     </properties>
 
     <groupId>social-data-importer-parent</groupId>
@@ -158,7 +159,14 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>4.1.1.RELEASE</version>
+                <version>${spring.version}</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
                 <type>jar</type>
             </dependency>
         </dependencies>

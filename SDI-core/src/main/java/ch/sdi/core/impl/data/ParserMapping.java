@@ -21,8 +21,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 
-import ch.sdi.core.intf.ParserMappingProperties;
-
 
 /**
  * TODO
@@ -30,8 +28,10 @@ import ch.sdi.core.intf.ParserMappingProperties;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
+// TODO: this example from Java Magazin is not valid. OnMissingBean is not a valid Condition !!!
+// @Conditional(OnMissingBean(ParserMappingProperties.class ))
 @Configuration
-@PropertySource("classpath:/" + ParserMappingProperties.RESOURCE_NAME )
+@PropertySource("classpath:/" + "ParserMapping.properties" )
 // more than one @PropertySources(value = {@PropertySource("classpath:/datasource.properties")})
 public class ParserMapping
 {

@@ -17,6 +17,7 @@
 package ch.sdi.core.intf;
 
 import ch.sdi.core.annotations.SdiProps;
+import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.intf.cfg.SdiProperties;
 
 
@@ -30,8 +31,9 @@ import ch.sdi.core.intf.cfg.SdiProperties;
 public interface ParserMappingProperties extends SdiProperties
 {
 
-    public static final String BEAN_NAME = "ParserMappingProperties";
-    public static final String RESOURCE_NAME = "ParserMapping.properties";
+    public static final String BEAN_NAME = ParserMappingProperties.class.getSimpleName();
+    public static final String RESOURCE_NAME =
+            ConfigHelper.makePropertyResourceName( ParserMappingProperties.class );
 
     public void override();
 }

@@ -25,10 +25,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiProps;
+import ch.sdi.core.intf.cfg.SdiProperties;
 
 
 /**
@@ -44,6 +47,29 @@ public class ConfigHelper
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( ConfigHelper.class );
 
+    /**
+     * Converts the given classname into a properties file name according following rules:
+     *
+     * <ul>
+     *     <li> if class name ends with "Properties" this suffix will be truncated and replaced by
+     *     ".properties"</li>
+     *     <li> any other class name is used as is and suffixed with ".properties"</li>
+     * </ul>
+     *
+     */
+    public static String makePropertyResourceName( Class<? extends SdiProperties> aClass )
+    {
+        String classname = aClass.getSimpleName();
+
+        if ( classname.endsWith( "Properties" ) || classname.endsWith( "properties" ) )
+        {
+            return classname.substring( 0, classname.length() - "Properties".length() ) + ".properties";
+        } // if condition
+
+        return classname + ".properties";
+
+    }
+
     public void overrideByUserProperties()
     {
         List<Class<?>> candidates = findCandidates();
@@ -53,6 +79,7 @@ public class ConfigHelper
             myLog.debug( "examinating property class " + clazz.getName() );
         }
 
+        // TODO: implemen overriding
     }
 
     /**
@@ -118,6 +145,54 @@ public class ConfigHelper
         }
 
         return result;
+    }
+
+    /**
+     * Tries to read the value from the given environment and to convert it to an int.
+     * <p>
+     * If the converstion fails, the default value is returned.
+     * <p>
+     *
+     * @param aEnv
+     * @param aKey
+     * @param aDefault
+     * @return
+     */
+    public static int getIntProperty( Environment aEnv, String aKey, int aDefault )
+    {
+        try
+        {
+            return Integer.valueOf( aEnv.getProperty( aKey ) ).intValue();
+        }
+        catch ( Exception t )
+        {
+            return aDefault;
+        }
+    }
+
+    /**
+     * Tries to read the value from the given environment and to convert it to a boolean.
+     * <p>
+     * If the converstion fails, the default value is returned.
+     * <p>
+     *
+     * @param aEnv
+     * @param aKey
+     * @param aDefault
+     * @return
+     */
+    public static boolean getBooleanProperty( ConfigurableEnvironment aEnv,
+                                              String aKey,
+                                              boolean aDefault )
+    {
+        try
+        {
+            return Boolean.valueOf( aEnv.getProperty( aKey ) ).booleanValue();
+        }
+        catch ( Exception t )
+        {
+            return aDefault;
+        }
     }
 
 
