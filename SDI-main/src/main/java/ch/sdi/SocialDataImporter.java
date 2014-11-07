@@ -9,9 +9,6 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.core.impl.data.ParserMapping;
-import ch.sdi.core.intf.ParserMappingProperties;
-
 /**
  * Main class of the SocialDataImporter application
  *
@@ -26,8 +23,6 @@ public class SocialDataImporter
     private static Logger myLog = LogManager.getLogger( SocialDataImporter.class );
 
     @Autowired
-    private ParserMapping myParseMapping;
-    @Autowired
     private ConfigurableEnvironment  env;
 
     private static AnnotationConfigApplicationContext mySpringContext;
@@ -40,7 +35,7 @@ public class SocialDataImporter
 
         try
         {
-            mySpringContext.getBean(SocialDataImporter.class).init(args);
+            mySpringContext.getBean(SocialDataImporter.class).run(args);
         }
         finally
         {
@@ -48,22 +43,15 @@ public class SocialDataImporter
         }
     }
 
-    public void init( String[] args )
+    public void run( String[] args )
     {
-        myLog.debug( "in init()" );
+        myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
 
         MutablePropertySources propertySources = env.getPropertySources();
         propertySources.addFirst(new SimpleCommandLinePropertySource( args ));
 
-        myLog.debug( "Username-Key before override: " + myParseMapping.getUsernameKey() );
 
-        if ( mySpringContext.containsBean( ParserMappingProperties.BEAN_NAME ) )
-        {
-            ParserMappingProperties userProps = mySpringContext.getBean( ParserMappingProperties.BEAN_NAME, ParserMappingProperties.class );
-            userProps.override();
-        }
-
-        myLog.debug( "Username-Key after override: " + myParseMapping.getUsernameKey() );
+        myLog.debug( "parser.usernamekey: " + env.getProperty( "parser.usernamekey" ) );
 
 
 

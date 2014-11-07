@@ -22,7 +22,12 @@ import ch.sdi.core.intf.cfg.SdiProperties;
 
 
 /**
- * TODO
+ * Configuration interface for the mail.properties.<p>
+ *
+ * The expected property names are defined her.<p>
+ *
+ * Because this interface is annotated with @SdiProps it is subject to the automatic mechanisme for
+ * overloading default properties with user defined properties (see {@link ch.sdi.core.annotations.SdiProps}).
  *
  * @version 1.0 (02.11.2014)
  * @author  Heri
@@ -31,7 +36,6 @@ import ch.sdi.core.intf.cfg.SdiProperties;
 public interface MailProperties extends SdiProperties
 {
 
-    public static final String BEAN_NAME = MailProperties.class.getSimpleName();
     public static final String RESOURCE_NAME =
             ConfigHelper.makePropertyResourceName( MailProperties.class );
 

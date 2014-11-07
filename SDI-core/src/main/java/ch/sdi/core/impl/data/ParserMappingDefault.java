@@ -16,37 +16,31 @@
 
 package ch.sdi.core.impl.data;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+
+import ch.sdi.core.intf.ParserMappingProperties;
 
 
 /**
- * TODO
+ * Configuration class for loading the default ParserMapping.properties file.<p>
+ *
+ * If you implement your own configuration class which implements {@link ParserMappingProperties} and
+ * provide it on the classpath defaults are not loaded. In this case you have to define all needed
+ * properties for this configuration artifact.<p>
+ *
+ * Another way of overloading default properties is providing a same name properties file prefixed with
+ * "user.". In this case the defaults are loaded and then overwritten by the properties found in your
+ * user.xxx.properties file.<p>
  *
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
-// TODO: this example from Java Magazin is not valid. OnMissingBean is not a valid Condition !!!
-// @Conditional(OnMissingBean(ParserMappingProperties.class ))
+@ConditionalOnMissingClass(ParserMappingProperties.class )
 @Configuration
 @PropertySource("classpath:/" + "ParserMapping.properties" )
 // more than one @PropertySources(value = {@PropertySource("classpath:/datasource.properties")})
-public class ParserMapping
+public class ParserMappingDefault implements ParserMappingProperties
 {
-    /** */
-    public static final String PARSER_USERNAMEKEY = "parser.usernamekey";
-
-    @Autowired
-    private Environment env;
-
-    /**
-     * @return usernameKey
-     */
-    public String getUsernameKey()
-    {
-        return env.getProperty( PARSER_USERNAMEKEY );
-    }
-
 }
