@@ -1,7 +1,6 @@
-eclipseWorkspace
-/SDI-core/.settings
 /.settings
 /logs
+/SDI-core/.settings
 /SDI-main/.settings
-target
+/SDI-example-customer/.settings
 

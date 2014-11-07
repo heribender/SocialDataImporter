@@ -15,31 +15,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.impl.data;
+package ch.sdi.core;
 
-import java.util.Map;
-import java.util.Properties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
 
 
 /**
- * A person implementation which takes a java.util.properties as data source.
- * <p>
+ * This class only exists for auto loading of the custom.properties.
  *
- * @version 1.0 (07.11.2014)
+ * @version 1.0 (02.11.2014)
  * @author  Heri
  */
-public class PropertiesPerson extends Person<Properties>
+@Component
+@PropertySource("classpath:/custom.properties")
+public class CustomProperties
 {
-
-    /**
-     * Constructor
-     *
-     * @param aName
-     * @param aSource
-     */
-    public PropertiesPerson( String aName, Properties aSource )
-    {
-        super( aName, (Map<Object, Object>) aSource );
-    }
 
 }

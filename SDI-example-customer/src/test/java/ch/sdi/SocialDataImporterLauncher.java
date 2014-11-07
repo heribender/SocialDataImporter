@@ -15,31 +15,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.impl.data;
-
-import java.util.Map;
-import java.util.Properties;
+package ch.sdi;
 
 
 /**
- * A person implementation which takes a java.util.properties as data source.
- * <p>
+ * TODO
  *
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-public class PropertiesPerson extends Person<Properties>
+public class SocialDataImporterLauncher
 {
 
     /**
      * Constructor
      *
-     * @param aName
-     * @param aSource
      */
-    public PropertiesPerson( String aName, Properties aSource )
+    public SocialDataImporterLauncher()
     {
-        super( aName, (Map<Object, Object>) aSource );
+        super();
+    }
+
+    /**
+     * @param args
+     */
+    public static void main( String[] args )
+    {
+        SocialDataImporter.main( args );
     }
 
 }

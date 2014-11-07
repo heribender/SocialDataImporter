@@ -22,7 +22,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1415302462649</id>
+			<id>1415379282673</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
@@ -31,7 +31,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415302462656</id>
+			<id>1415379282683</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
@@ -40,12 +40,21 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415302462665</id>
+			<id>1415379282683</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-SDI-oxwall</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1415379282693</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-SDI-example-customer</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>
