@@ -19,22 +19,16 @@ package ch.sdi;
 
 
 /**
- * TODO
+ * This launcher just starts the main application.<p>
+ *
+ * You can use this launcher within eclipse in order to run the application with the project's class files
+ * and resources on the classpath.
  *
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
 public class SocialDataImporterLauncher
 {
-
-    /**
-     * Constructor
-     *
-     */
-    public SocialDataImporterLauncher()
-    {
-        super();
-    }
 
     /**
      * @param args

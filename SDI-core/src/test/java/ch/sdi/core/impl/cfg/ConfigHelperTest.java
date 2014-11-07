@@ -40,7 +40,7 @@ public class ConfigHelperTest
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( ConfigHelperTest.class );
-    private ConfigHelper myClassUnderTest;
+//    private ConfigHelper myClassUnderTest;
 
     /**
      * @throws java.lang.Exception
@@ -48,16 +48,7 @@ public class ConfigHelperTest
     @Before
     public void setUp() throws Exception
     {
-        myClassUnderTest = new ConfigHelper();
-    }
-
-    /**
-     * Test method for {@link ch.sdi.core.impl.cfg.ConfigHelper#overrideByUserProperties()}.
-     */
-    @Test
-    public void testOverrideByUserProperties()
-    {
-        myClassUnderTest.overrideByUserProperties();
+//        myClassUnderTest = new ConfigHelper();
     }
 
     /**

@@ -32,4 +32,5 @@ public interface SdiProperties
     public static final String USER_OVERRIDE_PREFIX = "user.";
     public static final String SDI_PROPERTIES_RESOURCE_NAME = "Sdi.properties";
 
+    public static final String KEY_SDI_DRYRUN = "sdi.dry-run";
 }
