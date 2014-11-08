@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClas
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.sdi.core.intf.ParserMappingProperties;
 import ch.sdi.core.intf.cfg.SdiProperties;
 
 
@@ -41,7 +40,7 @@ import ch.sdi.core.intf.cfg.SdiProperties;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(ParserMappingProperties.class )
+@ConditionalOnMissingClass(SdiProperties.class )
 @Configuration
 @PropertySource("classpath:/" + "sdi.properties" )
 public class SdiPropertiesDefault implements SdiProperties

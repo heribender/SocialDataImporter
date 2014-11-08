@@ -24,7 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sdi.core.intf.ParserMappingProperties;
+import ch.sdi.core.intf.InputCollectorMappingProperties;
 import ch.sdi.core.intf.cfg.SdiProperties;
 
 
@@ -57,9 +57,9 @@ public class ConfigHelperTest
     @Test
     public void testMakePropertyResourceName()
     {
-        String actual = ConfigHelper.makePropertyResourceName( ParserMappingProperties.class );
+        String actual = ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
         myLog.debug( "Received: " + actual );
-        Assert.assertEquals( "ParserMapping.properties", actual );
+        Assert.assertEquals( "InputCollectorMapping.properties", actual );
 
         actual = ConfigHelper.makePropertyResourceName( NonStandardNamedPropertiesDerivation.class );
         myLog.debug( "Received: " + actual );

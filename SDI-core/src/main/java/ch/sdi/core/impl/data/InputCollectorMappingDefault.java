@@ -21,13 +21,13 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClas
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.sdi.core.intf.ParserMappingProperties;
+import ch.sdi.core.intf.InputCollectorMappingProperties;
 
 
 /**
- * Configuration class for loading the default ParserMapping.properties file.<p>
+ * Configuration class for loading the default InputCollectorMapping.properties file.<p>
  *
- * If you implement your own configuration class which implements {@link ParserMappingProperties} and
+ * If you implement your own configuration class which implements {@link InputCollectorMappingProperties} and
  * provide it on the classpath defaults are not loaded. In this case you have to define all needed
  * properties for this configuration artifact.<p>
  *
@@ -38,10 +38,10 @@ import ch.sdi.core.intf.ParserMappingProperties;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(ParserMappingProperties.class )
+@ConditionalOnMissingClass(InputCollectorMappingProperties.class )
 @Configuration
-@PropertySource("classpath:/" + "ParserMapping.properties" )
+@PropertySource("classpath:/" + "InputCollectorMapping.properties" )
 // more than one @PropertySources(value = {@PropertySource("classpath:/datasource.properties")})
-public class ParserMappingDefault implements ParserMappingProperties
+public class InputCollectorMappingDefault implements InputCollectorMappingProperties
 {
 }

@@ -23,7 +23,7 @@ import ch.sdi.core.intf.cfg.SdiProperties;
 
 
 /**
- * Configuration interface for the ParserMapping.properties.<p>
+ * Configuration interface for the InputCollectorMapping.properties.<p>
  *
  * The expected property names are defined in {@link ch.sdi.core.impl.data.Person}.<p>
  *
@@ -34,10 +34,10 @@ import ch.sdi.core.intf.cfg.SdiProperties;
  * @author  Heri
  */
 @SdiProps()
-public interface ParserMappingProperties extends SdiProperties
+public interface InputCollectorMappingProperties extends SdiProperties
 {
 
     public static final String RESOURCE_NAME =
-            ConfigHelper.makePropertyResourceName( ParserMappingProperties.class );
+            ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
 
 }

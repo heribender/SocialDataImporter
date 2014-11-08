@@ -10,6 +10,7 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.data.InputTransformer;
 
 /**
  * Main class of the SocialDataImporter application
@@ -25,7 +26,10 @@ public class SocialDataImporter
     private static Logger myLog = LogManager.getLogger( SocialDataImporter.class );
 
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment  myEnv;
+    @Autowired
+    private InputTransformer  myInputTransformer;
+
 
     private static AnnotationConfigApplicationContext mySpringContext;
 
@@ -50,12 +54,13 @@ public class SocialDataImporter
     {
         myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
 
-        MutablePropertySources propertySources = env.getPropertySources();
+        MutablePropertySources propertySources = myEnv.getPropertySources();
         propertySources.addFirst(
                    new SimpleCommandLinePropertySource( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE, args ));
 
 
-        myLog.debug( "parser.usernamekey: " + env.getProperty( "parser.usernamekey" ) );
+        myLog.trace( "inputcollector.usernamekey: " + myEnv.getProperty( "inputcollector.usernamekey" ) );
+
 
 
 

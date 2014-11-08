@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import ch.sdi.core.intf.MailProperties;
-import ch.sdi.core.intf.ParserMappingProperties;
 
 
 /**
@@ -39,7 +38,7 @@ import ch.sdi.core.intf.ParserMappingProperties;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(ParserMappingProperties.class )
+@ConditionalOnMissingClass(MailProperties.class )
 @Configuration
 @PropertySource("classpath:/" + "Mail.properties" )
 public class MailPropertiesDefault implements MailProperties

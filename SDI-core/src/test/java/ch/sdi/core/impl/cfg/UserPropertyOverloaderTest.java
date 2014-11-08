@@ -33,7 +33,7 @@ import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.sdi.core.intf.ParserMappingProperties;
+import ch.sdi.core.intf.InputCollectorMappingProperties;
 
 
 /**
@@ -75,11 +75,11 @@ public class UserPropertyOverloaderTest
     {
         myLog.debug( "Calling productive code" );
         myClassUnderTest.overrideByUserProperties();
-        // Note: user.ParserMapping should have been found on the classpath and the content should have
-        // been entered into the environment
-        Assert.assertNotNull( env.getPropertySources().get( ParserMappingProperties.class.getSimpleName() ) );
+        // Note: user.InputCollectorMapping.properties should have been found on the classpath and the
+        // content should have been entered into the environment
+        Assert.assertNotNull( env.getPropertySources().get( InputCollectorMappingProperties.class.getSimpleName() ) );
         Assert.assertEquals( "universe", env.getProperty( "hello" ) );
-        Assert.assertEquals( "Screennamex", env.getProperty( "parser.usernamekey" ) );
+        Assert.assertEquals( "Screennamex", env.getProperty( "inputcollector.usernamekey" ) );
     }
 
 }

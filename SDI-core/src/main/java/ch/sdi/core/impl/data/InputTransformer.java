@@ -15,45 +15,34 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core;
+
+package ch.sdi.core.impl.data;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-
-import ch.sdi.core.impl.cfg.ConfigHelper;
-import ch.sdi.core.intf.ParserMappingProperties;
-import ch.sdi.core.intf.cfg.SdiProperties;
 
 
 /**
- * Example how to completely replace the default properties which would be loaded by ParserMappingDefault
- * if this class would not be present on the classpath (see annotation @ConditionalOnMissingClass)
- * <p>
+ * TODO
  *
- * @version 1.0 (02.11.2014)
+ * @version 1.0 (08.11.2014)
  * @author  Heri
  */
 @Component
-@PropertySource("classpath:/CustomParserMapping.properties")
-public class CustomParserMappingProperties implements ParserMappingProperties
+public class InputTransformer
 {
-    /** logger for this class */
-    private Logger myLog = LogManager.getLogger( CustomParserMappingProperties.class );
-    /** */
-    public static final String CUSTOM_PROPERTIES_FILE_NAME =
-            SdiProperties.USER_OVERRIDE_PREFIX +
-            ConfigHelper.makePropertyResourceName( ParserMappingProperties.class );
 
-   /**
+    /** logger for this class */
+    private Logger myLog = LogManager.getLogger( InputTransformer.class );
+
+    /**
      * Constructor
      *
      */
-    public CustomParserMappingProperties()
+    public InputTransformer()
     {
         super();
-        myLog.debug( this.getClass().getSimpleName() + " created" );
     }
 
 }
