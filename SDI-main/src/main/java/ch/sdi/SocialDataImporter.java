@@ -1,5 +1,7 @@
 package ch.sdi;
 
+import java.util.Collection;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,9 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.InputTransformer;
+import ch.sdi.core.impl.data.Person;
 
 /**
  * Main class of the SocialDataImporter application
@@ -27,6 +31,8 @@ public class SocialDataImporter
 
     @Autowired
     private ConfigurableEnvironment  myEnv;
+    @Autowired
+    private InputCollectorExecutor myCollectorExecutor;
     @Autowired
     private InputTransformer  myInputTransformer;
 
@@ -52,6 +58,7 @@ public class SocialDataImporter
 
     public void run( String[] args )
     {
+
         myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
 
         MutablePropertySources propertySources = myEnv.getPropertySources();
@@ -60,6 +67,19 @@ public class SocialDataImporter
 
 
         myLog.trace( "inputcollector.usernamekey: " + myEnv.getProperty( "inputcollector.usernamekey" ) );
+
+        try
+        {
+            Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
+
+
+        }
+        catch ( Exception t )
+        {
+            myLog.error( "Exception caught: ", t );
+            System.exit( 1 );
+        }
+
 
 
 

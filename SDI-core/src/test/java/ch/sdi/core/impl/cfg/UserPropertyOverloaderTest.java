@@ -18,8 +18,6 @@
 
 package ch.sdi.core.impl.cfg;
 
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -28,11 +26,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.sdi.core.TestUtils;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
 
 
@@ -60,11 +57,7 @@ public class UserPropertyOverloaderTest
     @Before
     public void setUp() throws Exception
     {
-        myLog.debug( "setting property hello=world into the environment" );
-        Properties props = new Properties();
-        props.setProperty( "hello", "world" );
-        MutablePropertySources mps = env.getPropertySources();
-        mps.addFirst( new PropertiesPropertySource( "default", props ) );
+        TestUtils.addToEnvironment( env, "hello", "world" );
     }
 
     /**

@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -63,13 +64,26 @@ public class ClassUtil
      * @param aAnnotation
      *        the desired annotation type
      * @param aRoot
-     *        the package name where to start the search.
+     *        the package name where to start the search. Must not be empty. And not start
+     *        with 'org.springframework' (cannot parse springs library itself).
      * @return a list of found types
      */
     public static Collection<? extends Class<?>> findCandidatesByAnnotation(
                                                              Class<? extends Annotation> aAnnotation,
                                                              String aRoot )
     {
+        if ( !StringUtils.hasText( aRoot ) )
+        {
+            throw new IllegalArgumentException( "aRoot must not be empty (cannot parse spring library classes)" );
+
+        } // if StringUtils.hasText( aRoot )
+
+        if ( aRoot.startsWith( "org.springframework" ) )
+        {
+            throw new IllegalArgumentException( "cannot parse spring library classes" );
+
+        } // if StringUtils.hasText( aRoot )
+
         List<Class<?>> result = new ArrayList<Class<?>>();
 
         MyClassScanner scanner = new MyClassScanner();

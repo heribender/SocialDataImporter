@@ -19,9 +19,10 @@ package ch.sdi.core.impl.cfg;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+
+import ch.sdi.core.exc.SdiException;
 
 
 /**
@@ -64,6 +65,32 @@ public class ConfigHelper
     /**
      * Tries to read the value from the given environment and to convert it to an int.
      * <p>
+     * If the converstion fails, an excption is thrown.
+     * <p>
+     *
+     * @param aEnv
+     * @param aKey
+     * @param aDefault
+     * @return
+     * @throws SdiException
+     */
+    public static int getIntProperty( Environment aEnv, String aKey ) throws SdiException
+    {
+        try
+        {
+            //TODO: use Springs StringToNumberConverterFactory
+            return Integer.valueOf( aEnv.getProperty( aKey ) ).intValue();
+        }
+        catch ( Exception t )
+        {
+            throw new SdiException( "No integer value found for property "+ aKey,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        }
+    }
+
+    /**
+     * Tries to read the value from the given environment and to convert it to an int.
+     * <p>
      * If the converstion fails, the default value is returned.
      * <p>
      *
@@ -85,6 +112,57 @@ public class ConfigHelper
     }
 
     /**
+     * Tries to read the value from the given environment.
+     * <p>
+     * If the converstion fails, an excption is thrown.
+     * <p>
+     *
+     * @param aEnv
+     * @param aKey
+     * @return
+     * @throws SdiException
+     */
+    public static String getStringProperty( Environment aEnv,
+                                            String aKey ) throws SdiException
+    {
+        try
+        {
+            return aEnv.getRequiredProperty( aKey );
+        }
+        catch ( Exception t )
+        {
+            throw new SdiException( "No value found for property "+ aKey,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        }
+    }
+
+    /**
+     * Tries to read the value from the given environment and to convert it to a boolean.
+     * <p>
+     * If the converstion fails, an excption is thrown.
+     * <p>
+     *
+     * @param aEnv
+     * @param aKey
+     * @return
+     * @throws SdiException
+     */
+    public static boolean getBooleanProperty( Environment aEnv,
+                                              String aKey ) throws SdiException
+    {
+        try
+        {
+            //TODO: use Springs StringToBooleanConverter
+            return Boolean.valueOf( aEnv.getProperty( aKey ) ).booleanValue();
+        }
+        catch ( Exception t )
+        {
+            throw new SdiException( "No boolean value found for property "+ aKey,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        }
+    }
+
+    /**
      * Tries to read the value from the given environment and to convert it to a boolean.
      * <p>
      * If the converstion fails, the default value is returned.
@@ -95,7 +173,7 @@ public class ConfigHelper
      * @param aDefault
      * @return
      */
-    public static boolean getBooleanProperty( ConfigurableEnvironment aEnv,
+    public static boolean getBooleanProperty( Environment aEnv,
                                               String aKey,
                                               boolean aDefault )
     {

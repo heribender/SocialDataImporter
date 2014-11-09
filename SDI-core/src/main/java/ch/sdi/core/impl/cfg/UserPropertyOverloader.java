@@ -31,6 +31,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiProps;
 import ch.sdi.core.intf.cfg.SdiProperties;
@@ -139,13 +140,29 @@ public class UserPropertyOverloader
     {
         List<Class<?>> result = new ArrayList<Class<?>>();
 
-        // we parse all classes which are below the top level package:
+        // we parse all classes which are below our top level package:
         String pack = this.getClass().getPackage().getName();
         myLog.debug( "found package: " + pack );
         pack = pack.replace( '.', '/' );
-        String root = pack.split( "/" )[0];
+        String defaultRoot = pack.split( "/" )[0];
 
-        result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, root ) );
+        result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, defaultRoot ) );
+
+        String newRoot = env.getProperty( SdiProperties.KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT );
+        if ( StringUtils.hasText( newRoot ) )
+        {
+            String[] newRoots = newRoot.split( "," );
+
+            for ( int i = 0; i < newRoots.length; i++ )
+            {
+                if ( newRoots[i].equals( defaultRoot ) )
+                {
+                    continue;
+                }
+
+                result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, newRoots[i] ) );
+            }
+        }
 
         return result;
     }

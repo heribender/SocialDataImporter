@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiProps;
 
@@ -54,7 +55,7 @@ public class ClassUtilTest
     @Test
     public void testFindCandidatesByAnnotation()
     {
-        // we parse all classes which are below the top level package:
+        myLog.debug( "we parse all classes which are below the top level package" );
         String pack = this.getClass().getPackage().getName();
         myLog.debug( "found package: " + pack );
         pack = pack.replace( '.', '/' );
@@ -65,6 +66,27 @@ public class ClassUtilTest
         Assert.assertNotNull( received );
         Assert.assertTrue( received.size() > 0 );
         received.forEach( c -> myLog.debug( "Found class with annotation @SdiProps: " + c.getName() ) );
+
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.util.ClassUtil#findCandidatesByAnnotation(java.lang.Class, java.lang.String)}.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testFindCandidatesByAnnotationEmptyRoot()
+    {
+        myLog.debug( "now from the root package -> should throw" );
+        ClassUtil.findCandidatesByAnnotation( Component.class, "" );
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.util.ClassUtil#findCandidatesByAnnotation(java.lang.Class, java.lang.String)}.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testFindCandidatesByAnnotationSpringFramework()
+    {
+        myLog.debug( "now from the package 'org.springframework' -> should throw" );
+        ClassUtil.findCandidatesByAnnotation( Component.class, "org.springframework" );
     }
 
 }

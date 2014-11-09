@@ -27,6 +27,7 @@ import java.util.Scanner;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import ch.sdi.core.intf.parser.InputParser;
 
@@ -37,6 +38,7 @@ import ch.sdi.core.intf.parser.InputParser;
  * @version 1.0 (01.11.2014)
  * @author  Heri
  */
+@Component
 public class CsvParser implements InputParser
 {
 
