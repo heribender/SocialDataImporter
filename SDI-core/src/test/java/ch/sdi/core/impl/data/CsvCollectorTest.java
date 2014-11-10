@@ -38,7 +38,7 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.converter.ConverterDate;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.intf.data.CollectorResult;
 
 
@@ -103,53 +103,53 @@ public class CsvCollectorTest
         myLog.debug( "delimiter not yet set in environment" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_DELIMITER, ";" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER, ";" );
 
         myLog.debug( "filename not yet set in environment" );
         testException();
 
         myLog.debug( "wrong filename in environment" );
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FILENAME, "blabla" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME, "blabla" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_noHeader.csv" ).getCanonicalPath() );
 
         myLog.debug( "fieldnames not yet set in environment" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FIELD_NAMES,
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
                                     "Screenname,Name,Middlename,Prename,email,birthday,entrydate" );
 
         myLog.debug( "fieldnames now set in environment" );
         testSuccess();
 
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
         myLog.debug( "skip >= rowsize. Ignored because headerRow is false" );
         testSuccess();
 
 
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
         myLog.debug( "skip >= rowsize. HeaderRow=true -> Exception" );
         testException();
 
         // CSV_testdata_withHeader0.csv:
-        TestUtils.replaceInEnvironment( env, SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_withHeader0.csv" ).getCanonicalPath() );
-        TestUtils.removeFromEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FIELD_NAMES );
+        TestUtils.removeFromEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
 
         myLog.debug( "CSV_testdata_withHeader0.csv success" );
         testSuccess();
 
         // CSV_testdata_withHeader2.csv:
-        TestUtils.replaceInEnvironment( env, SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
-        TestUtils.addToEnvironment( env, SdiProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
+        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_withHeader2.csv" ).getCanonicalPath() );
         myLog.debug( "CSV_testdata_withHeader2.csv success" );
         testSuccess();
 
-        TestUtils.replaceInEnvironment( env, SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "5" );
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "5" );
         myLog.debug( "skip >= rowsize. HeaderRow=true -> Exception" );
         testException();
     }

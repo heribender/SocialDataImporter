@@ -38,7 +38,7 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.intf.data.CollectorResult;
 import ch.sdi.core.intf.data.FieldConverter;
 import ch.sdi.core.intf.data.InputCollector;
@@ -89,25 +89,38 @@ public class CsvCollector implements InputCollector
     @Override
     public CollectorResult execute() throws SdiException
     {
-        String delimiter = ConfigHelper.getStringProperty( myEnv, SdiProperties.KEY_COLLECT_CSV_DELIMITER );
-        boolean headerRow = ConfigHelper.getBooleanProperty( myEnv, SdiProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
-        int skip = ConfigHelper.getIntProperty( myEnv, SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
-        String fileName =  ConfigHelper.getStringProperty( myEnv, SdiProperties.KEY_COLLECT_CSV_FILENAME );
+        String delimiter = ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
+        boolean headerRow = ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
+        int skip = ConfigHelper.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
+        String fileName =  ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
 
         if ( myLog.isDebugEnabled() )
         {
             StringBuilder sb = new StringBuilder( "Starting a CSV collection." );
             sb.append( "\n    Configuration properties:" )
-              .append( "\n       " ).append( SdiProperties.KEY_COLLECT_CSV_DELIMITER ).append( " = " ).append( delimiter )
-              .append( "\n       " ).append( SdiProperties.KEY_COLLECT_CSV_HEADER_ROW ).append( " = " ).append( headerRow )
-              .append( "\n       " ).append( SdiProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER ).append( " = " ).append( skip )
-              .append( "\n       " ).append( SdiProperties.KEY_COLLECT_CSV_FILENAME ).append( " = " ).append( fileName );
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_DELIMITER ).append( " = " ).append( delimiter )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW ).append( " = " ).append( headerRow )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER ).append( " = " ).append( skip )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_FILENAME ).append( " = " ).append( fileName );
 
             myLog.debug( sb.toString()  );
 
         } // if myLog.isDebugEnabled()
 
         File file = new File( fileName );
+
+        if ( myLog.isDebugEnabled() )
+        {
+            try
+            {
+                myLog.debug( "Loading CSV file " + file.getCanonicalPath() );
+            }
+            catch ( IOException t1 )
+            {
+                myLog.warn( "Problems with resolving canonical path of filet " + fileName );
+            }
+        } // if myLog.isDebugEnabled()
+
         InputStream is;
         try
         {
@@ -230,7 +243,7 @@ public class CsvCollector implements InputCollector
             return result;
         } // if aHeaderRow
 
-        String fieldNames = ConfigHelper.getStringProperty( myEnv, SdiProperties.KEY_COLLECT_CSV_FIELD_NAMES );
+        String fieldNames = ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
         myLog.debug( "CSV Fieldnames read from configuration: " + fieldNames );
         return Arrays.asList( fieldNames.split( "," ) );
     }

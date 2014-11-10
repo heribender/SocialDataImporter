@@ -15,19 +15,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.impl.mail;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+package ch.sdi.core.impl.cfg;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.sdi.core.intf.MailProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 
 
 /**
- * Configuration class for loading the default mail.properties file.<p>
+ * Configuration class for loading the default sdimain.properties file.<p>
  *
- * If you implement your own configuration class which implements {@link MailProperties} and
+ * If you implement your own configuration class which implements {@link SdiMainProperties} and
  * provide it on the classpath defaults are not loaded. In this case you have to define all needed
  * properties for this configuration artifact.<p>
  *
@@ -35,13 +35,12 @@ import ch.sdi.core.intf.MailProperties;
  * "user.". In this case the defaults are loaded and then overwritten by the properties found in your
  * user.xxx.properties file.<p>
  *
+ *
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(name="ch.sdi.core.intf.cfg.SdiProperties.MailProperties" )
 @Configuration
-@PropertySource("classpath:/" + "Mail.properties" )
-public class MailPropertiesDefault implements MailProperties
+@PropertySource("classpath:/sdimain_test.properties" )
+public class SdiMainPropertiesTest implements SdiMainProperties
 {
-
 }

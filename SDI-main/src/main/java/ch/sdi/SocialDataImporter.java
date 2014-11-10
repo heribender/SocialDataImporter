@@ -1,20 +1,11 @@
 package ch.sdi;
 
-import java.util.Collection;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.core.impl.cfg.ConfigHelper;
-import ch.sdi.core.impl.data.InputCollectorExecutor;
-import ch.sdi.core.impl.data.InputTransformer;
-import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.exc.SdiException;
 
 /**
  * Main class of the SocialDataImporter application
@@ -29,14 +20,6 @@ public class SocialDataImporter
     /** logger for this class */
     private static Logger myLog = LogManager.getLogger( SocialDataImporter.class );
 
-    @Autowired
-    private ConfigurableEnvironment  myEnv;
-    @Autowired
-    private InputCollectorExecutor myCollectorExecutor;
-    @Autowired
-    private InputTransformer  myInputTransformer;
-
-
     private static AnnotationConfigApplicationContext mySpringContext;
 
     public static void main( String[] args )
@@ -48,46 +31,22 @@ public class SocialDataImporter
 
         try
         {
-            mySpringContext.getBean(SocialDataImporter.class).run(args);
+            mySpringContext.getBean(SocialDataImporterRunner.class).run(args);
+        }
+        catch ( SdiException t )
+        {
+            myLog.error( "Exception caught. Terminating with exitcode " + t.getExitCode(), t );
+            System.exit( t.getExitCode() );
+        }
+        catch ( Throwable t )
+        {
+            myLog.error( "Exception caught: ", t );
+            System.exit( 1 );
         }
         finally
         {
             mySpringContext.close();
         }
-    }
-
-    public void run( String[] args )
-    {
-
-        myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
-
-        MutablePropertySources propertySources = myEnv.getPropertySources();
-        propertySources.addFirst(
-                   new SimpleCommandLinePropertySource( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE, args ));
-
-
-        myLog.trace( "inputcollector.usernamekey: " + myEnv.getProperty( "inputcollector.usernamekey" ) );
-
-        try
-        {
-            Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
-
-
-        }
-        catch ( Exception t )
-        {
-            myLog.error( "Exception caught: ", t );
-            System.exit( 1 );
-        }
-
-
-
-
-
-
-
-
-
     }
 
 }

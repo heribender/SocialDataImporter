@@ -19,6 +19,7 @@
 package ch.sdi.core.impl.data.converter;
 
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
@@ -32,6 +33,7 @@ import ch.sdi.core.intf.data.FieldConverter;
  * @author  Heri
  */
 @SdiConverter( "default" )
+@Component
 public class ConverterString implements FieldConverter<String>
 {
     /**

@@ -24,12 +24,12 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 
 
 /**
- * Example how to completely replace the default properties which would be loaded by 
- * InputCollectorMappingDefault if this class would not be present on the classpath (see 
+ * Example how to completely replace the default properties which would be loaded by
+ * InputCollectorMappingDefault if this class would not be present on the classpath (see
  * annotation @ConditionalOnMissingClass)
  * <p>
  *
@@ -44,7 +44,7 @@ public class CustomInputCollectorMappingProperties implements InputCollectorMapp
     private Logger myLog = LogManager.getLogger( CustomInputCollectorMappingProperties.class );
     /** */
     public static final String CUSTOM_PROPERTIES_FILE_NAME =
-            SdiProperties.USER_OVERRIDE_PREFIX +
+            SdiMainProperties.USER_OVERRIDE_PREFIX +
             ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
 
    /**

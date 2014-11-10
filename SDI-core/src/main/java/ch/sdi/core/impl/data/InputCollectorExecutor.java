@@ -26,7 +26,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.intf.data.InputCollector;
 
 
@@ -63,7 +63,7 @@ public class InputCollectorExecutor
     {
         Collection<? extends Person<?>> result = null;
 
-        CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiProperties.KEY_CSV_TYPE ) );
+        CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiMainProperties.KEY_CSV_TYPE ) );
 
         InputCollector collector = myInputCollectorFactory.getCollector( ct );
         collector.execute();

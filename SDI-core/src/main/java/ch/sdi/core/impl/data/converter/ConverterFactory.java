@@ -34,7 +34,7 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.intf.data.FieldConverter;
 
 
@@ -80,7 +80,7 @@ public class ConverterFactory
         myLog.debug( "Looking up converter for field " + aFieldname );
 
         Environment env = myAppCtxt.getEnvironment();
-        String converterName = env.getProperty( SdiProperties.KEY_PREFIX_CONVERTER + aFieldname );
+        String converterName = env.getProperty( SdiMainProperties.KEY_PREFIX_CONVERTER + aFieldname );
 
         if ( !StringUtils.hasText( converterName ) )
         {

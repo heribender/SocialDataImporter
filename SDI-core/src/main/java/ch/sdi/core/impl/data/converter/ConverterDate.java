@@ -26,11 +26,12 @@ import java.util.Date;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.intf.data.FieldConverter;
 
 
@@ -41,6 +42,7 @@ import ch.sdi.core.intf.data.FieldConverter;
  * @author  Heri
  */
 @SdiConverter( ConverterDate.CONVERTER_NAME )
+@Component
 public class ConverterDate implements FieldConverter<Date>
 {
 
@@ -67,12 +69,12 @@ public class ConverterDate implements FieldConverter<Date>
     @Override
     public ConverterDate init( Environment aEnv, String aFieldname ) throws SdiException
     {
-        String pattern = aEnv.getProperty( SdiProperties.KEY_PREFIX_CONVERTER
+        String pattern = aEnv.getProperty( SdiMainProperties.KEY_PREFIX_CONVERTER
                                           + CONVERTER_NAME + "." + aFieldname + PATTERN_SUFFIX );
         if ( !StringUtils.hasText( pattern ) )
         {
             myLog.trace( "No pattern found for field " + aFieldname + ". Looking for a generic pattern" );
-            pattern = aEnv.getProperty( SdiProperties.KEY_PREFIX_CONVERTER
+            pattern = aEnv.getProperty( SdiMainProperties.KEY_PREFIX_CONVERTER
                                        + CONVERTER_NAME + PATTERN_SUFFIX  );
         } // if !StringUtils.hasText( pattern )
 

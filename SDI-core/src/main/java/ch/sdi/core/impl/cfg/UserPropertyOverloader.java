@@ -34,7 +34,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiProps;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.cfg.SdiMainProperties;
 import ch.sdi.core.util.ClassUtil;
 
 
@@ -73,7 +73,7 @@ public class UserPropertyOverloader
         for ( Class<?> clazz : candidates )
         {
             myLog.debug( "candidate for user property overloading: " + clazz.getName() );
-            String fileName = SdiProperties.USER_OVERRIDE_PREFIX +
+            String fileName = SdiMainProperties.USER_OVERRIDE_PREFIX +
                     ConfigHelper.makePropertyResourceName( clazz );
             InputStream is = this.getClass().getResourceAsStream( "/" + fileName );
 
@@ -148,7 +148,7 @@ public class UserPropertyOverloader
 
         result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, defaultRoot ) );
 
-        String newRoot = env.getProperty( SdiProperties.KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT );
+        String newRoot = env.getProperty( SdiMainProperties.KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT );
         if ( StringUtils.hasText( newRoot ) )
         {
             String[] newRoots = newRoot.split( "," );
