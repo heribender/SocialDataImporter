@@ -117,6 +117,28 @@ public class ConverterFactoryTest
      * Test method for {@link ch.sdi.core.impl.data.converter.ConverterFactory#getConverterFor(java.lang.String)}.
      */
     @Test
+    public void testNewInstance() throws Throwable
+    {
+        FieldConverter<?> actual1;
+        FieldConverter<?> actual2;
+
+        myLog.debug( "Fetching converter for dateField (1)" );
+        actual1 = myClassUnderTest.getConverterFor( "dateField" );
+        myLog.debug( "Received converter (1): " + actual1 );
+        Assert.assertNotNull( actual1 );
+
+        myLog.debug( "Fetching converter for dateField (2)" );
+        actual2 = myClassUnderTest.getConverterFor( "dateField" );
+        myLog.debug( "Received converter (2): " + actual2 );
+        Assert.assertNotNull( actual2 );
+
+        Assert.assertTrue( actual1 != actual2 );
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.impl.data.converter.ConverterFactory#getConverterFor(java.lang.String)}.
+     */
+    @Test
     public void testGetConverterForCustomType() throws Throwable
     {
         myLog.debug( "testing 'customConverter'" );

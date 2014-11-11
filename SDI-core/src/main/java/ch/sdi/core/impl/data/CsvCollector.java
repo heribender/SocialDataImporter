@@ -168,7 +168,7 @@ public class CsvCollector implements InputCollector
         for ( int i = toSkip; i < parsed.size(); i++ )
         {
             List<String> row = parsed.get( i );
-            myLog.trace( "row " + i + ": " + row );
+            myLog.trace( "row " + (i-toSkip) + ": " + row );
 
             try
             {
@@ -176,7 +176,7 @@ public class CsvCollector implements InputCollector
             }
             catch ( Exception t )
             {
-                myLog.error( "row " + i + " cannot be converted" );
+                myLog.error( "row " + (i-toSkip) + " cannot be converted" );
                 throw t;
             }
         }

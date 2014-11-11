@@ -25,6 +25,8 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -36,13 +38,28 @@ import ch.sdi.core.intf.data.FieldConverter;
 
 
 /**
- * TODO
+ * Converter for converting parsed strings into a Date object.
+ * <p>
+ * This converter needs a parameter pattern to be configured in the environment:
+ * <pre>
+ *    sdi.converter.toDate.pattern =
+ *    or
+ *    sdi.converter.toDate.birthday.pattern =
+ * </pre>
+ * The latter variant is the pattern for the field birthday, whereas the first variant is injected
+ * if the field does not specify a pattern.
+ * <p>
+ * Note that the converter is annotated with Scope=Prototype to ensure that a new instance of the
+ * converter is created each time a ctxt.getBean(() (or one of its variant) is called. The reason is that
+ * different field in the same parsed input might need different convert patterns.
+ * <p>
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri
  */
 @SdiConverter( ConverterDate.CONVERTER_NAME )
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ConverterDate implements FieldConverter<Date>
 {
 
@@ -78,18 +95,11 @@ public class ConverterDate implements FieldConverter<Date>
                                        + CONVERTER_NAME + PATTERN_SUFFIX  );
         } // if !StringUtils.hasText( pattern )
 
+        pattern = pattern.trim();
+
         myLog.debug( "found pattern for ConverterDate: " + pattern );
-        try
-        {
-            // Clone the result
-            ConverterDate result = (ConverterDate) this.clone();
-            result.setDatePattern( pattern );
-            return result;
-        }
-        catch ( CloneNotSupportedException t )
-        {
-            throw new SdiException( t, SdiException.EXIT_CODE_UNKNOWN_ERROR );
-        }
+        setDatePattern( pattern );
+        return this;
     }
 
     /**

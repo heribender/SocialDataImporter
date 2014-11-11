@@ -56,27 +56,29 @@ public class CsvParserTest
     @Test
     public void testParse() throws Throwable
     {
+        String testFileName = "CSV_testdata_withHeader0.csv";
+
         InputStream is;
         List<List<String>>actual;
         List<String> list;
         String expected;
 
         myLog.debug( "Testing No charset" );
-        is = ClassLoader.getSystemResourceAsStream( "testdata1.csv" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
         myClassUnderTest.setCharset( null );
         actual = myClassUnderTest.parse( is, ";"  );
         myLog.debug( "Received: " + actual );
 
         myLog.debug( "Testing plainvanilla" );
-        is = ClassLoader.getSystemResourceAsStream( "testdata1.csv" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
         myClassUnderTest.setCharset( "UTF-8" );
         actual = myClassUnderTest.parse( is, ";" );
         myLog.debug( "Received: " + actual );
         assertEquals( 3, actual.size() );
-        assertEquals( "[[Screenname, Name, Middlename, Prename, email, birthday], [Bobby, Smith, C., Bob, bob@gmail.com, 7.3.57], [Sandy, Hübscher, , Sandra, sandra@lamp.vm, 7.3.57]]", actual.toString() );
+        assertEquals( "[[Screenname, Name, Middlename, Prename, email, birthday, entrydate], [Bobby, Smith, C., Bob, bob@gmail.com, 7.3.57, 2005-05-23 17:30], [Sandy, Hübscher, , Sandra, sandra@lamp.vm, 09.12.98, 2007-06-13 07:12]]", actual.toString() );
 
         myLog.debug( "Wrong charset" );
-        is = ClassLoader.getSystemResourceAsStream( "testdata1.csv" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
         myClassUnderTest.setCharset( "ISO-8859-1" );
         actual = myClassUnderTest.parse( is, ";" );
         myLog.debug( "Received: " + actual );
@@ -86,7 +88,7 @@ public class CsvParserTest
         assertEquals( expected, wrongString );
 
         myLog.debug( "Wrong delimiter" );
-        is = ClassLoader.getSystemResourceAsStream( "testdata1.csv" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
         myClassUnderTest.setCharset( "UTF-8" );
         actual = myClassUnderTest.parse( is, " " );
         myLog.debug( "Received: " + actual );

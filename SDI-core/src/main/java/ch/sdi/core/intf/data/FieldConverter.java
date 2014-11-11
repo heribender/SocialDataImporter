@@ -29,7 +29,7 @@ import ch.sdi.core.exc.SdiException;
  * @version 1.0 (09.11.2014)
  * @author  Heri
  */
-public interface FieldConverter<T> extends Cloneable
+public interface FieldConverter<T>
 {
     public FieldConverter<T> init( Environment aEnv, String aFieldname ) throws SdiException;
     public T convert( String aValue ) throws SdiException;
