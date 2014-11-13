@@ -22,7 +22,7 @@ import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
@@ -45,7 +45,7 @@ public class InputCollectorExecutor
     private Logger myLog = LogManager.getLogger( InputCollectorExecutor.class );
 
     @Autowired
-    private ConfigurableEnvironment  myEnv;
+    private Environment  myEnv;
     @Autowired
     private InputTransformer  myInputTransformer;
     @Autowired
@@ -62,15 +62,10 @@ public class InputCollectorExecutor
 
     public Collection<? extends Person<?>> execute() throws SdiException
     {
-        Collection<? extends Person<?>> result = null;
-
-        CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiMainProperties.KEY_CSV_TYPE ) );
-
+        CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiMainProperties.KEY_COLLECT_TYPE ) );
         InputCollector collector = myInputCollectorFactory.getCollector( ct );
         CollectorResult collectorResult = collector.execute();
-
-        // TODO: Transform
-
+        Collection<? extends Person<?>> result = myInputTransformer.execute( collectorResult );
         return result;
     }
 }

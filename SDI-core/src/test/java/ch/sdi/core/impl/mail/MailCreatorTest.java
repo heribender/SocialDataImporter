@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
-import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
 
 
@@ -67,21 +67,21 @@ public class MailCreatorTest
         TestUtils.debugPropertySources( env );
 
 //        myImportItemProps = new MockPropertySource( "ImportItem" )
-//                .withProperty( Person.KEY_THING_ALTERNATENAME, "Bobby" )
-//                .withProperty( Person.KEY_PERSON_GIVENNAME, "Robert" )
-//                .withProperty( Person.KEY_PERSON_ADDITIONALNAME, "S." )
-//                .withProperty( Person.KEY_PERSON_FAMILYNAME, "Smith" )
-//                .withProperty( Person.KEY_PERSON_EMAIL, MAIL_WEB_DE );
+//                .withProperty( PersonKey.THING_ALTERNATENAME.getKeyName(), "Bobby" )
+//                .withProperty( PersonKey.PERSON_GIVENNAME.getKeyName(), "Robert" )
+//                .withProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName(), "S." )
+//                .withProperty( PersonKey.PERSON_FAMILYNAME.getKeyName(), "Smith" )
+//                .withProperty( PersonKey.PERSON_EMAIL.getKeyName(), MAIL_WEB_DE );
 //        env.getPropertySources().addLast( myImportItemProps );
 
         myPersonProps = new Properties();
-        myPersonProps.setProperty( Person.KEY_THING_ALTERNATENAME, "Bobby" );
-        myPersonProps.setProperty( Person.KEY_PERSON_GIVENNAME, "Robert" );
-        myPersonProps.setProperty( Person.KEY_PERSON_ADDITIONALNAME, "S." );
-        myPersonProps.setProperty( Person.KEY_PERSON_FAMILYNAME, "Smith" );
-        myPersonProps.setProperty( Person.KEY_PERSON_EMAIL, MAIL_WEB_DE );
-        myPersonProps.setProperty( Person.KEY_PERSON_GENDER, "m" );
-        myPersonProps.put( Person.KEY_PERSON_BIRTHDATE, new SimpleDateFormat( "yyyy-MM-dd" ).parse( "1998-12-09" ) );
+        myPersonProps.setProperty( PersonKey.THING_ALTERNATENAME.getKeyName(), "Bobby" );
+        myPersonProps.setProperty( PersonKey.PERSON_GIVENNAME.getKeyName(), "Robert" );
+        myPersonProps.setProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName(), "S." );
+        myPersonProps.setProperty( PersonKey.PERSON_FAMILYNAME.getKeyName(), "Smith" );
+        myPersonProps.setProperty( PersonKey.PERSON_EMAIL.getKeyName(), MAIL_WEB_DE );
+        myPersonProps.setProperty( PersonKey.PERSON_GENDER.getKeyName(), "m" );
+        myPersonProps.put( PersonKey.PERSON_BIRTHDATE.getKeyName(), new SimpleDateFormat( "yyyy-MM-dd" ).parse( "1998-12-09" ) );
     }
 
     @Test

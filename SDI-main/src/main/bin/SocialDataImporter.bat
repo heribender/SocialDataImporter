@@ -28,7 +28,7 @@ set CLASSPATH=%CLASSPATH%;%LIB_DIR%/spring-core-4.1.1.RELEASE.jar
 set CLASSPATH=%CLASSPATH%;%LIB_DIR%/spring-expression-4.1.1.RELEASE.jar
 
 
-:: set CMD_LINE=java -cp %CLASSPATH% -Dinputcollector.usernamekey=Username ch.sdi.SocialDataImporter 
+:: set CMD_LINE=java -cp %CLASSPATH% -Dinputcollector.thing.alternateName=Username ch.sdi.SocialDataImporter 
 set CMD_LINE=java -cp %CLASSPATH% ch.sdi.SocialDataImporter 
 echo executing command line: %CMD_LINE%
 %CMD_LINE%

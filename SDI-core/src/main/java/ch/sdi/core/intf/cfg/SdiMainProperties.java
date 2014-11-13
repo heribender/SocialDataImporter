@@ -36,7 +36,7 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT =
             "sdi.propertiesoverride.includeroot";
 
-    public static final String KEY_CSV_TYPE = "sdi.collect.type";
+    public static final String KEY_COLLECT_TYPE = "sdi.collect.type";
 
     public static final String KEY_COLLECT_CSV_FILENAME = "sdi.collect.csv.filename";
     public static final String KEY_COLLECT_CSV_DELIMITER = "sdi.collect.csv.delimiter";

@@ -72,7 +72,7 @@ public class UserPropertyOverloaderTest
         // content should have been entered into the environment
         Assert.assertNotNull( env.getPropertySources().get( InputCollectorMappingProperties.class.getSimpleName() ) );
         Assert.assertEquals( "universe", env.getProperty( "hello" ) );
-        Assert.assertEquals( "Screennamex", env.getProperty( "inputcollector.usernamekey" ) );
+        Assert.assertEquals( "Screenname", env.getProperty( "inputcollector.thing.alternateName" ) );
     }
 
 }

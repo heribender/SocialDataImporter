@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.UserPropertyOverloader;
 import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.InputTransformer;
 import ch.sdi.core.impl.data.Person;
@@ -55,6 +56,9 @@ public class SocialDataImporterRunner
     private InputCollectorExecutor myCollectorExecutor;
     @Autowired
     private InputTransformer  myInputTransformer;
+    @Autowired
+    private UserPropertyOverloader  myUserPropertyOverloader;
+
 
     /**
      * Constructor
@@ -67,14 +71,13 @@ public class SocialDataImporterRunner
 
     public void run( String[] args ) throws SdiException
     {
+        myUserPropertyOverloader.overrideByUserProperties();
 
         myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
 
         MutablePropertySources propertySources = myEnv.getPropertySources();
         propertySources.addFirst(
                    new SimpleCommandLinePropertySource( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE, args ));
-
-        // TODO: user override properties
 
         if ( myLog.isDebugEnabled() )
         {
@@ -104,16 +107,16 @@ public class SocialDataImporterRunner
         } // if myLog.isDebugEnabled()
 
 
-        myLog.trace( "inputcollector.usernamekey: " + myEnv.getProperty( "inputcollector.usernamekey" ) );
+        myLog.trace( "inputcollector.thing.alternateName: " + myEnv.getProperty( "inputcollector.thing.alternateName" ) );
 
         Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
-        myLog.debug( "collected persons: " + inputPersons );
 
+        if ( myLog.isDebugEnabled() )
+        {
+            myLog.debug( "collected persons: " + inputPersons );
+        } // if myLog.isDebugEnabled()
 
-
-
-
-
+        // TODO: execute import
 
     }
 

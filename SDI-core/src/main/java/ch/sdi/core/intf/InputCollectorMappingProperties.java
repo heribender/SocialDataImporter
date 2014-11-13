@@ -39,5 +39,6 @@ public interface InputCollectorMappingProperties extends SdiProperties
 
     public static final String RESOURCE_NAME =
             ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
+    public static final String KEY_PREFIX = "inputcollector.";
 
 }

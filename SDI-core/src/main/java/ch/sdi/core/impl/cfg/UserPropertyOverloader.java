@@ -31,6 +31,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiProps;
@@ -48,6 +49,7 @@ import ch.sdi.core.util.ClassUtil;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
+@Component
 public class UserPropertyOverloader
 {
 
