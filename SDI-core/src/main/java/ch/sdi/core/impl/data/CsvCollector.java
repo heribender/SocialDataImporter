@@ -212,6 +212,13 @@ public class CsvCollector implements InputCollector
     {
         Collection<Object> result = new ArrayList<Object>();
 
+        if ( aRow.size() != aConverters.size() )
+        {
+            throw new SdiException( "Mismatch! Number of read fields: " + aRow.size()
+                                    + "; number of fieldnames: " + aConverters.size(),
+                                    SdiException.EXIT_CODE_PARSE_ERROR );
+        } // if aRow.size() != aConverters.size()
+
         for ( int i = 0; i < aConverters.size(); i++ )
         {
             result.add( aConverters.get( i ).convert( aRow.get( i ) ) );

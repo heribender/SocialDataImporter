@@ -96,6 +96,34 @@ public class CsvParserTest
         assertEquals( 1, list.size() );
     }
 
+    @Test
+    public void testParseEmptyFields() throws Throwable
+    {
+        String testFileName = "CSV_testdata_noHeader_empty_fields.csv";
+
+        InputStream is;
+        List<List<String>>actual;
+        List<String> list;
+
+        myLog.debug( "Testing empty fields" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
+        myClassUnderTest.setCharset( "UTF-8" );
+        actual = myClassUnderTest.parse( is, ";" );
+        myLog.debug( "Received: " + actual );
+        assertEquals( 2, actual.size() );
+        assertEquals( "[[Bobby, Smith, C., Bob, bob@gmail.com, 7.3.57, ], [Sandy, Hübscher, , Sandra, sandra@lamp.vm, , ]]", actual.toString() );
+        list = actual.get( 0 );
+        assertEquals( 7, list.size() );
+        assertEquals( "", list.get( 6 ) );
+        list = actual.get( 1 );
+        assertEquals( 7, list.size() );
+        assertEquals( "", list.get( 2 ) );
+        assertEquals( "", list.get( 5 ) );
+        assertEquals( "", list.get( 6 ) );
+
+
+    }
+
     @Test( expected=NullPointerException.class )
     public void testNullDelimiter() throws Throwable
     {

@@ -85,6 +85,13 @@ public class CsvParser implements InputParser
                     list.add( sc.next() );
                 }
 
+                // Note: if the line is terminated by the delimiter (last entry not present, the last entry
+                // will not appear in the scanned enumeration. Check for this special case:
+                if ( line.endsWith( aDelimiter ) )
+                {
+                    list.add( "" );
+                } // if line.endsWith( aDelimiter )
+
                 result.add( list );
             }
             finally

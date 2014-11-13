@@ -108,6 +108,12 @@ public class ConverterDate implements FieldConverter<Date>
     @Override
     public Date convert( String aValue ) throws SdiException
     {
+        if ( !StringUtils.hasText( aValue ) )
+        {
+            // TODO: make it configurable if this field is mandatory or not!
+            return null;
+        }
+
         DateFormat df;
         if ( StringUtils.hasText( myDatePattern ) )
         {

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.intf.cfg.SdiMainProperties;
+import ch.sdi.core.intf.data.CollectorResult;
 import ch.sdi.core.intf.data.InputCollector;
 
 
@@ -66,9 +67,7 @@ public class InputCollectorExecutor
         CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiMainProperties.KEY_CSV_TYPE ) );
 
         InputCollector collector = myInputCollectorFactory.getCollector( ct );
-        collector.execute();
-
-        // TODO: Collect
+        CollectorResult collectorResult = collector.execute();
 
         // TODO: Transform
 
