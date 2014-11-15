@@ -26,7 +26,7 @@
 
     <modules>
         <module>SDI-core</module>
-        <module>SDI-oxwall</module>
+        <module>SDI-plugins-oxwall</module>
         <module>SDI-main</module>
         <!-- -->
     </modules>
