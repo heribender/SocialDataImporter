@@ -16,20 +16,38 @@
  */
 
 
-package ch.sdi.core.intf.data;
+package ch.sdi.core.target;
 
 import java.util.Collection;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+import ch.sdi.core.intf.TargetJob;
 
 
 /**
  * TODO
  *
- * @version 1.0 (09.11.2014)
+ * @version 1.0 (15.11.2014)
  * @author  Heri
  */
-public interface CollectorResult
+@Component
+public class TargetJobFactory
 {
-    public Collection<String> getFieldnames();
-    public Collection<Collection<Object>> getRows();
+
+    /** logger for this class */
+    private Logger myLog = LogManager.getLogger( TargetJobFactory.class );
+    @Autowired
+    private Environment  myEnv;
+
+    public Collection<TargetJob> getJobs()
+    {
+        return null;
+
+    }
 
 }

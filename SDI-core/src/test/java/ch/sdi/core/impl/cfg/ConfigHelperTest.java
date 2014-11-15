@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.sdi.core.intf.InputCollectorMappingProperties;
-import ch.sdi.core.intf.cfg.SdiProperties;
+import ch.sdi.core.intf.SdiProperties;
 
 
 /**

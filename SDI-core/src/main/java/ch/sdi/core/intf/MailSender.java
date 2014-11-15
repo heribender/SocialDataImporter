@@ -15,20 +15,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package ch.sdi.core.intf;
 
-package ch.sdi.core.intf.data;
-
-import ch.sdi.core.exc.SdiException;
+import org.apache.commons.mail.EmailException;
 
 
 /**
- * TODO
+ * Generic base for the mail sender to be used.
  *
- * @version 1.0 (08.11.2014)
+ * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-public interface InputCollector
+public interface MailSender<T>
 {
 
-    public CollectorResult execute() throws SdiException;
+    /**
+     * Enriches the given mail instance with the needed parameters for delivering it to an SMTP host and
+     * sends it.
+     * <p>
+     *
+     * @param aMail
+     *        the mail to be sent. All content which is not transport specific (receipient(s), subject,
+     *        body, etc.) are expected to be already set correctyl.
+     * @throws EmailException
+     *         on any problem. The original exception is embedded.
+     */
+    public void sendMail( T aMail ) throws EmailException;
+
 }

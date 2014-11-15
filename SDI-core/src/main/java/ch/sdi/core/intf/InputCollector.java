@@ -16,9 +16,7 @@
  */
 
 
-package ch.sdi.core.intf.data;
-
-import org.springframework.core.env.Environment;
+package ch.sdi.core.intf;
 
 import ch.sdi.core.exc.SdiException;
 
@@ -26,12 +24,11 @@ import ch.sdi.core.exc.SdiException;
 /**
  * TODO
  *
- * @version 1.0 (09.11.2014)
+ * @version 1.0 (08.11.2014)
  * @author  Heri
  */
-public interface FieldConverter<T>
+public interface InputCollector
 {
-    public FieldConverter<T> init( Environment aEnv, String aFieldname ) throws SdiException;
-    public T convert( String aValue ) throws SdiException;
 
+    public CollectorResult execute() throws SdiException;
 }

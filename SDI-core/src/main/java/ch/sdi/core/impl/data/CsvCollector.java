@@ -38,10 +38,10 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
-import ch.sdi.core.intf.data.CollectorResult;
-import ch.sdi.core.intf.data.FieldConverter;
-import ch.sdi.core.intf.data.InputCollector;
+import ch.sdi.core.intf.CollectorResult;
+import ch.sdi.core.intf.FieldConverter;
+import ch.sdi.core.intf.InputCollector;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -84,7 +84,7 @@ public class CsvCollector implements InputCollector
 
     /**
      * @throws SdiException
-     * @see ch.sdi.core.intf.data.InputCollector#execute()
+     * @see ch.sdi.core.intf.InputCollector#execute()
      */
     @Override
     public CollectorResult execute() throws SdiException

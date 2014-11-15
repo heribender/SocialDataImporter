@@ -15,28 +15,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.impl.data;
 
-import java.util.Collection;
+package ch.sdi.core.intf;
+
+import org.springframework.core.env.Environment;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.CollectorResult;
 
 
 /**
  * TODO
  *
- * @version 1.0 (13.11.2014)
+ * @version 1.0 (09.11.2014)
  * @author  Heri
  */
-public interface InputTransformer
+public interface FieldConverter<T>
 {
-
-    /**
-     * @param aCollectorResult
-     * @return
-     */
-    public Collection<? extends Person<?>> execute( CollectorResult aCollectorResult )
-            throws SdiException;
+    public FieldConverter<T> init( Environment aEnv, String aFieldname ) throws SdiException;
+    public T convert( String aValue ) throws SdiException;
 
 }

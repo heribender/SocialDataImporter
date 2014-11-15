@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
-import ch.sdi.core.intf.data.InputCollector;
+import ch.sdi.core.intf.InputCollector;
 
 
 /**

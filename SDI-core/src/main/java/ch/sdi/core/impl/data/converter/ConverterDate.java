@@ -33,8 +33,8 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
-import ch.sdi.core.intf.data.FieldConverter;
+import ch.sdi.core.intf.FieldConverter;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -81,7 +81,7 @@ public class ConverterDate implements FieldConverter<Date>
     }
 
     /**
-     * @see ch.sdi.core.intf.data.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
+     * @see ch.sdi.core.intf.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
      */
     @Override
     public ConverterDate init( Environment aEnv, String aFieldname ) throws SdiException
@@ -103,7 +103,7 @@ public class ConverterDate implements FieldConverter<Date>
     }
 
     /**
-     * @see ch.sdi.core.intf.data.FieldConverter#convert(java.lang.String)
+     * @see ch.sdi.core.intf.FieldConverter#convert(java.lang.String)
      */
     @Override
     public Date convert( String aValue ) throws SdiException

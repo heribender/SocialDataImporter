@@ -38,8 +38,8 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.converter.ConverterDate;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
-import ch.sdi.core.intf.data.CollectorResult;
+import ch.sdi.core.intf.CollectorResult;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**

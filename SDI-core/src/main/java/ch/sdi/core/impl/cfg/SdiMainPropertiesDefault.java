@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClas
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.sdi.core.intf.cfg.SdiMainProperties;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**

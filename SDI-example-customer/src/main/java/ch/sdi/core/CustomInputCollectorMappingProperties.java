@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**

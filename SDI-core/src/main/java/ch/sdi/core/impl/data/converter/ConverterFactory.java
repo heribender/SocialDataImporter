@@ -34,8 +34,8 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
-import ch.sdi.core.intf.data.FieldConverter;
+import ch.sdi.core.intf.FieldConverter;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**

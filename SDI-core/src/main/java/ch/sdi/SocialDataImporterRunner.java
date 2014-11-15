@@ -35,6 +35,7 @@ import ch.sdi.core.impl.cfg.UserPropertyOverloader;
 import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.InputTransformer;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.target.TargetExecutor;
 
 
 /**
@@ -58,6 +59,8 @@ public class SocialDataImporterRunner
     private InputTransformer  myInputTransformer;
     @Autowired
     private UserPropertyOverloader  myUserPropertyOverloader;
+    @Autowired
+    private TargetExecutor  myTargetExecutor;
 
 
     /**
@@ -116,7 +119,7 @@ public class SocialDataImporterRunner
             myLog.debug( "collected persons: " + inputPersons );
         } // if myLog.isDebugEnabled()
 
-        // TODO: execute import
+        myTargetExecutor.execute( inputPersons );
 
     }
 

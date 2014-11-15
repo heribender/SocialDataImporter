@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.intf.MailProperties;
-import ch.sdi.core.intf.mail.MailSender;
+import ch.sdi.core.intf.MailSender;
 
 
 /**

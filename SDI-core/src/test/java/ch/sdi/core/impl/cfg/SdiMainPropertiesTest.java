@@ -21,7 +21,7 @@ package ch.sdi.core.impl.cfg;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-import ch.sdi.core.intf.cfg.SdiMainProperties;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**

@@ -15,7 +15,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.intf.parser;
+package ch.sdi.core.intf;
 
 import java.io.IOException;
 import java.io.InputStream;

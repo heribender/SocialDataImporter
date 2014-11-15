@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.data.FieldConverter;
+import ch.sdi.core.intf.FieldConverter;
 
 
 /**
@@ -37,7 +37,7 @@ import ch.sdi.core.intf.data.FieldConverter;
 public class ConverterString implements FieldConverter<String>
 {
     /**
-     * @see ch.sdi.core.intf.data.FieldConverter#convert(java.lang.String)
+     * @see ch.sdi.core.intf.FieldConverter#convert(java.lang.String)
      */
     @Override
     public String convert( String aValue ) throws SdiException
@@ -46,7 +46,7 @@ public class ConverterString implements FieldConverter<String>
     }
 
     /**
-     * @see ch.sdi.core.intf.data.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
+     * @see ch.sdi.core.intf.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
      */
     @Override
     public FieldConverter<String> init( Environment aEnv, String aFieldname ) throws SdiException

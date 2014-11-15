@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.intf.data.CollectorResult;
+import ch.sdi.core.intf.CollectorResult;
 
 
 /**
@@ -51,7 +51,7 @@ public class InputTransformerProperties implements InputTransformer
 
     /**
      * @throws SdiException
-     * @see ch.sdi.core.impl.data.InputTransformer#execute(ch.sdi.core.intf.data.CollectorResult)
+     * @see ch.sdi.core.impl.data.InputTransformer#execute(ch.sdi.core.intf.CollectorResult)
      */
     @Override
     public Collection<? extends Person<?>> execute( CollectorResult aCollectorResult ) throws SdiException

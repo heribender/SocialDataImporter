@@ -30,7 +30,7 @@ import org.apache.logging.log4j.Logger;
  * @version 1.0 (01.11.2014)
  * @author  Heri
  */
-public class PasswordEncryptor implements ch.sdi.core.intf.pw.PasswordEncryptor
+public class PasswordEncryptor implements ch.sdi.core.intf.PasswordEncryptor
 {
 
     private Logger myLog = LogManager.getLogger( PasswordEncryptor.class );
@@ -51,7 +51,7 @@ public class PasswordEncryptor implements ch.sdi.core.intf.pw.PasswordEncryptor
 
     /**
      * @throws NoSuchAlgorithmException
-     * @see ch.sdi.core.intf.pw.PasswordEncryptor#encrypt(java.lang.String)
+     * @see ch.sdi.core.intf.PasswordEncryptor#encrypt(java.lang.String)
      */
     @Override
     public String encrypt( String aPassword ) throws NoSuchAlgorithmException

@@ -29,7 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.core.intf.parser.InputParser;
+import ch.sdi.core.intf.InputParser;
 
 
 /**

@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiProps;
-import ch.sdi.core.intf.cfg.SdiMainProperties;
+import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.core.util.ClassUtil;
 
 

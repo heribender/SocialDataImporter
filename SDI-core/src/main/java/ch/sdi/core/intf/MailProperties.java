@@ -19,7 +19,6 @@ package ch.sdi.core.intf;
 
 import ch.sdi.core.annotations.SdiProps;
 import ch.sdi.core.impl.cfg.ConfigHelper;
-import ch.sdi.core.intf.cfg.SdiProperties;
 
 
 /**
