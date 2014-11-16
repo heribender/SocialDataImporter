@@ -169,6 +169,13 @@ public class CsvCollectorTest
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+                                        locateFile( "CSV_testdata_withHeader0_Avatar.csv" ).getCanonicalPath() );
+        myLog.debug( "loading avatar picture (jpg hex dump)" );
+        testSuccess();
+
+        // avatar
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         locateFile( "CSV_testdata_noHeader_empty_fields.csv" ).getCanonicalPath() );
         myLog.debug( "empty field content -> Empty String or null (if date)" );
         testSuccess();

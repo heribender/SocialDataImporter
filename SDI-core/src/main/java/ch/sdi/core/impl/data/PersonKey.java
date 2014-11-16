@@ -360,7 +360,20 @@ public enum PersonKey
      * Description: URL of the item.<p>
      * Type       : URL<p>
      */
-    THING_URL ( "thing.url" );
+    THING_URL ( "thing.url" ),
+
+    //////////////////////////////////////////////////////////////////
+    // added by SDI since missing
+    //////////////////////////////////////////////////////////////////
+
+    /**
+     * Description: password of the user<p>
+     * Type       : Text<p>
+     */
+    PASSWORD ( "person.password" )
+
+
+    ;
 
     private String myKeyName;
 
