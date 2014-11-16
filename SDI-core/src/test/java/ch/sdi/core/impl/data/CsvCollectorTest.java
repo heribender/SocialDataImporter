@@ -37,6 +37,7 @@ import ch.sdi.core.TestUtils;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.converter.ConverterDate;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
+import ch.sdi.core.impl.data.converter.ConverterJpgFromHexDump;
 import ch.sdi.core.impl.parser.CsvParser;
 import ch.sdi.core.intf.CollectorResult;
 import ch.sdi.core.intf.SdiMainProperties;
@@ -73,6 +74,7 @@ public class CsvCollectorTest
     @Before
     public void setUp() throws Exception
     {
+        TestUtils.addToEnvironment( env, "sdi.converter.avatar", ConverterJpgFromHexDump.CONVERTER_NAME  );
         TestUtils.addToEnvironment( env, "sdi.converter.birthday", ConverterDate.CONVERTER_NAME  );
         TestUtils.addToEnvironment( env, "sdi.converter." + ConverterDate.CONVERTER_NAME
                                     + ".birthday.pattern", "dd.MM.yy"  );
@@ -82,6 +84,7 @@ public class CsvCollectorTest
                                     + ".entrydate.pattern", "yyyy-MM-dd mm:ss"  );
 
     }
+
 
     /**
      * @param aFilename
@@ -169,14 +172,15 @@ public class CsvCollectorTest
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
-                                        locateFile( "CSV_testdata_withHeader0_Avatar.csv" ).getCanonicalPath() );
+                                        locateFile( "CSV_testdata_noHeader_empty_fields.csv" ).getCanonicalPath() );
         myLog.debug( "loading avatar picture (jpg hex dump)" );
         testSuccess();
 
         // avatar
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
         TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
-                                        locateFile( "CSV_testdata_noHeader_empty_fields.csv" ).getCanonicalPath() );
+                                        locateFile( "CSV_testdata_withHeader0_Avatar.csv" ).getCanonicalPath() );
         myLog.debug( "empty field content -> Empty String or null (if date)" );
         testSuccess();
 

@@ -41,7 +41,7 @@ import ch.sdi.core.intf.FieldConverter;
  * @version 1.0 (16.11.2014)
  * @author  Heri
  */
-@SdiConverter( ConverterDate.CONVERTER_NAME )
+@SdiConverter( ConverterJpgFromHexDump.CONVERTER_NAME )
 @Component
 //@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ConverterJpgFromHexDump extends ConverterImage
@@ -49,6 +49,7 @@ public class ConverterJpgFromHexDump extends ConverterImage
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( ConverterJpgFromHexDump.class );
+    public static final String CONVERTER_NAME = "toJpgFromHexDump";
 
     /**
      * @see ch.sdi.core.intf.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
