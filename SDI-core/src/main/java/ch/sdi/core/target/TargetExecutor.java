@@ -53,7 +53,7 @@ public class TargetExecutor
             .filter(p ->
             {
                 // returns the
-                return handlePerson( p );
+                return !handlePerson( p );
             } )
 //            .collect( (Collector<?, A, R>) failedPersons );
 //            .map( p ->
@@ -69,6 +69,7 @@ public class TargetExecutor
         if ( failedPersons.isEmpty() )
         {
             myLog.info( "All data successfully handled for target" );
+            return;
         } // if failedPersons.isEmpty()
 
         throw new SdiException( "" + failedPersons.size() + " could not have been processed",

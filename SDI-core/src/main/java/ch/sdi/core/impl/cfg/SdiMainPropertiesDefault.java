@@ -40,7 +40,7 @@ import ch.sdi.core.intf.SdiMainProperties;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(name="ch.sdi.core.intf.cfg.SdiMainProperties" )
+@ConditionalOnMissingClass(name="ch.sdi.core.intf.SdiMainProperties" )
 @Configuration
 @PropertySource("classpath:/sdimain.properties" )
 public class SdiMainPropertiesDefault implements SdiMainProperties

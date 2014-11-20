@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 
 /**
  * Classes with this annotation are assumed to be data converters
- * (see {@link ch.sdi.core.intf.data.FieldConverter<T>})
+ * (see {@link ch.sdi.core.intf.FieldConverter<T>})
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri

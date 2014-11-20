@@ -38,7 +38,7 @@ import ch.sdi.core.intf.MailProperties;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(name="ch.sdi.core.intf.cfg.SdiProperties.MailProperties" )
+@ConditionalOnMissingClass(name="ch.sdi.core.intf.SdiProperties.MailProperties" )
 @Configuration
 @PropertySource("classpath:/" + "Mail.properties" )
 public class MailPropertiesDefault implements MailProperties
