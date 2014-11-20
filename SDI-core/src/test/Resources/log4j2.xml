@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration packages="ch.sdi">
 
     <!-- Note: the file is found since the default runtime JRE in eclipse has the VM argument -Dlog4j.configurationFile=../log4j2.xml. 
         TODO: solve this with maven (copy resource to classpath) -->
@@ -42,7 +42,9 @@
                 <TimeBasedTriggeringPolicy />
             </Policies>
         </RollingFile>
-
+        
+        <SdiReportAppender name="ReportAppender" />
+        
     </Appenders>
 
     <Loggers>
@@ -67,6 +69,8 @@
             <AppenderRef ref="STDOUT" />
             <AppenderRef ref="STDERR" />
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="ReportAppender" />
+            
         </Root>
     </Loggers>
 

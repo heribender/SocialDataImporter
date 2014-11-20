@@ -36,6 +36,7 @@ import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.InputTransformer;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.target.TargetExecutor;
+import ch.sdi.report.SdiReporter;
 
 
 /**
@@ -61,6 +62,9 @@ public class SocialDataImporterRunner
     private UserPropertyOverloader  myUserPropertyOverloader;
     @Autowired
     private TargetExecutor  myTargetExecutor;
+    @Autowired
+    private SdiReporter  mySdiReporter;
+
 
 
     /**
@@ -112,14 +116,26 @@ public class SocialDataImporterRunner
 
         myLog.trace( "inputcollector.thing.alternateName: " + myEnv.getProperty( "inputcollector.thing.alternateName" ) );
 
-        Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
-
-        if ( myLog.isDebugEnabled() )
+        try
         {
-            myLog.debug( "collected persons: " + inputPersons );
-        } // if myLog.isDebugEnabled()
+            mySdiReporter.reset();
 
-        myTargetExecutor.execute( inputPersons );
+            Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
+
+            if ( myLog.isDebugEnabled() )
+            {
+                myLog.debug( "collected persons: " + inputPersons );
+            } // if myLog.isDebugEnabled()
+
+            myTargetExecutor.execute( inputPersons );
+
+        }
+        finally
+        {
+            String report = mySdiReporter.getReport();
+            myLog.debug( "Generated report:\n" + report );
+            // TODO: Write it to a file
+        }
 
     }
 

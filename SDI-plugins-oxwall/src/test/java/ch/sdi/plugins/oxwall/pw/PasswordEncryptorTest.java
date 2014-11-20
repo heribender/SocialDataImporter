@@ -17,6 +17,8 @@
 
 package ch.sdi.plugins.oxwall.pw;
 
+import java.util.Date;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -48,6 +50,9 @@ public class PasswordEncryptorTest
 
         myLog.debug( "Creating class under test" );
         myClassUnderTest = new PasswordEncryptor( "53442de4b15f3" );
+        long stampFromDB = 1414797228L; // <- unix timestamp (seconds since 1970)
+        Date joinStamp = new Date( stampFromDB * 1000 );
+        myLog.error( joinStamp );
     }
 
     /**
