@@ -28,9 +28,9 @@ import org.apache.logging.log4j.core.config.plugins.PluginAttribute;
 import org.apache.logging.log4j.core.config.plugins.PluginElement;
 import org.apache.logging.log4j.core.config.plugins.PluginFactory;
 import org.apache.logging.log4j.message.Message;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+
+import ch.sdi.core.util.ApplicationContextProvider;
 
 
 /**
@@ -40,7 +40,7 @@ import org.springframework.context.ApplicationContextAware;
  * @author Heri
  */
 @Plugin( name = "SdiReportAppender", category = "Core", elementType = "appender", printObject = true )
-public class SdiReportAppender extends AbstractAppender implements ApplicationContextAware
+public class SdiReportAppender extends AbstractAppender
 {
 
     private static final long serialVersionUID = 1L;
@@ -83,32 +83,47 @@ public class SdiReportAppender extends AbstractAppender implements ApplicationCo
     {
         Message m = aEvent.getMessage();
 
+//        LOGGER.error( "Received Event: " + m.getClass().getSimpleName() );
         if ( ! ( m instanceof ReportMsg ) )
         {
             return;
         } // if ! ( m instanceof ReportMsg )
 
-        if ( myReporter == null )
+        SdiReporter reporter = getReporter();
+
+        if ( reporter == null )
         {
             LOGGER.error( "Bean SdiReporter is null" );
             return;
-        } // if myReporter == null
+        } // if reporter == null
+
 
         myReporter.add( (ReportMsg) m );
     }
 
-    /**
-     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
-    @Override
-    public void setApplicationContext( ApplicationContext aApplicationContext ) throws BeansException
+    private SdiReporter getReporter()
     {
+        if ( myReporter != null )
+        {
+            return myReporter;
+        }
 
-        myReporter = aApplicationContext.getBean( SdiReporter.class );
+        ApplicationContext ctxt = ApplicationContextProvider.getApplicationContext();
+
+        if ( ctxt == null )
+        {
+            LOGGER.error( "ApplicationContext is null. Maybe too early? Or we are in a unit test" );
+            return null;
+        } // if ctxt == null
+
+        myReporter = ctxt.getBean( SdiReporter.class );
+
         if ( myReporter == null )
         {
             LOGGER.error( "Bean SdiReporter not found" );
         } // if myReporter == null
+
+        return myReporter;
     }
 
 }

@@ -42,6 +42,7 @@ import ch.sdi.core.intf.CollectorResult;
 import ch.sdi.core.intf.FieldConverter;
 import ch.sdi.core.intf.InputCollector;
 import ch.sdi.core.intf.SdiMainProperties;
+import ch.sdi.report.ReportMsg;
 
 
 /**
@@ -145,6 +146,7 @@ public class CsvCollector implements InputCollector
         }
 
         myFieldnames = evaluateFieldNames( parsed, headerRow );
+        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Fieldnames", myFieldnames ) );
 
         int toSkip = 0;
 
@@ -180,6 +182,8 @@ public class CsvCollector implements InputCollector
                 throw t;
             }
         }
+
+        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Rows", myRows ) );
 
         return new CollectorResult() {
 

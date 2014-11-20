@@ -55,7 +55,8 @@ import ch.sdi.core.intf.SdiMainProperties;
                                CsvCollector.class,
                                InputCollectorFactory.class,
                                ConverterFactory.class,
-                               ConverterDate.class })
+                               ConverterDate.class,
+                               ConverterJpgFromHexDump.class })
 public class CsvCollectorTest
 {
 

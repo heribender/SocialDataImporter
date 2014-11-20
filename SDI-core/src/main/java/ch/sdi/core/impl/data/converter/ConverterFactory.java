@@ -91,6 +91,8 @@ public class ConverterFactory
 
         Map<String, Object>  beans = myAppCtxt.getBeansWithAnnotation( SdiConverter.class );
 
+        myLog.trace( "Found candidates for converter: " + beans.keySet() );
+
         for ( Object bean : beans.values() )
         {
             if ( !( bean instanceof FieldConverter ) )

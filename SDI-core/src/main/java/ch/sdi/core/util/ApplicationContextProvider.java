@@ -15,14 +15,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+package ch.sdi.core.util;
 
-package ch.sdi.report;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 
@@ -30,41 +27,22 @@ import org.springframework.stereotype.Component;
  * TODO
  *
  * @version 1.0 (20.11.2014)
- * @author  Heri
+ * @author Heri
  */
 @Component
-public class SdiReporter
+public class ApplicationContextProvider implements ApplicationContextAware
 {
 
-    /** logger for this class */
-    private Logger myLog = LogManager.getLogger( SdiReporter.class );
+    private static ApplicationContext myCtx = null;
 
-    private List<ReportMsg> myMessages = new ArrayList<ReportMsg>();
-
-    /**
-     * Constructor
-     *
-     */
-    public SdiReporter()
+    public static ApplicationContext getApplicationContext()
     {
-        super();
+        return myCtx;
     }
 
-    public void reset()
+    @Override
+    public void setApplicationContext( ApplicationContext aCtx ) throws BeansException
     {
-        myLog.info( "resetting " + this.getClass().getSimpleName() );
-        myMessages = new ArrayList<ReportMsg>();
-    }
-
-    public void add( ReportMsg aMsg )
-    {
-        myLog.trace( "adding a message" );
-        myMessages.add( aMsg );
-    }
-
-    public String getReport()
-    {
-        myLog.debug( "Rendering the report" );
-        return "TODO (Format this list nicely): " + myMessages;
+        myCtx = aCtx;
     }
 }

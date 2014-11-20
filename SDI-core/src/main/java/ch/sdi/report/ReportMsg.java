@@ -20,6 +20,7 @@ package ch.sdi.report;
 import java.util.Map;
 
 import org.apache.logging.log4j.message.Message;
+import org.springframework.util.StringUtils;
 
 
 /**
@@ -33,49 +34,52 @@ public class ReportMsg implements Message
 
     public enum ReportType
     {
-        START, APPEND, STOP
+        COLLECTOR, MAIL_TARGET, SQL_TARGET, FTP_TARGET
     };
 
     private final ReportType myType;
-    private final String myTable;
-    private final Map<String, String> myArgs;
+    private final String[] myKeys;
+    private final Object[] myValues;
 
-    public ReportMsg( ReportType type, String table )
+    public ReportMsg( ReportType type, String aKey, Object aValue )
     {
-        this( type, table, null );
+        this( type, new String[] { aKey }, new Object[] { aValue } );
     }
 
-    public ReportMsg( ReportType type, String table, Map<String, String> aArgs )
+    public ReportMsg( ReportType type, String[] aKeys, Object[] aValues )
     {
         this.myType = type;
-        this.myTable = table;
-        this.myArgs = aArgs;
+        this.myKeys = aKeys;
+        this.myValues = aValues;
     }
 
     @Override
-    public String getFormattedMessage() {
-        switch (myType) {
-            case START:
-              return myTable + " " + myType;
-            case APPEND:
-              return myTable + " " + myType;
-            case STOP:
-                return myTable + " " + myType;
+    public String getFormattedMessage()
+    {
+        switch ( myType )
+        {
+            case COLLECTOR:
+            case MAIL_TARGET:
+            case SQL_TARGET:
+            case FTP_TARGET:
+                return getMessageFormat();
             default:
-               return "Unhandled type: "  + myType;
+                return "Unhandled type: " + myType;
         }
     }
 
     public String getMessageFormat()
     {
-        return myType + " " + myTable;
+        return myType
+                + "; keys: [" + StringUtils.arrayToCommaDelimitedString( myKeys )
+                + "], values: [" + StringUtils.arrayToCommaDelimitedString( myValues ) + "]";
     }
 
-    private String formatCols( Map<String, String> cols )
+    private String formatCols( Map<String, Object> cols )
     {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for ( Map.Entry<String, String> entry : cols.entrySet() )
+        for ( Map.Entry<String, Object> entry : cols.entrySet() )
         {
             if ( !first )
             {
@@ -103,7 +107,7 @@ public class ReportMsg implements Message
     @Override
     public Object[] getParameters()
     {
-        return new Object[] { myArgs };
+        return new Object[] { myKeys, myValues };
     }
 
     /**
@@ -114,5 +118,11 @@ public class ReportMsg implements Message
     {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public String toString()
+    {
+        return getMessageFormat();
     }
 }

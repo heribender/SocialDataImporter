@@ -24,7 +24,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -101,7 +100,6 @@ public class UserTest
 
         myLog.debug( "Received ID: " + id );
 
-        Assert.fail( "Not yet implemented" );
     }
 
 }

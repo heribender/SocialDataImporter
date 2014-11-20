@@ -82,7 +82,7 @@ public class TargetExecutor
      */
     private boolean handlePerson( Person<?> aPerson )
     {
-        myLog.debug( "processing person" + aPerson.getFamilyName() );
+        myLog.debug( "processing person " + aPerson.getFamilyName() );
 
         return true;
     }

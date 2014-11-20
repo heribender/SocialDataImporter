@@ -49,9 +49,10 @@ public class ReportMsgTest
     @Test
     public void test()
     {
-        myLog.debug( new ReportMsg( ReportType.START, "Hallo" ) );
-        myLog.debug( new ReportMsg( ReportType.APPEND, "Hallo" ) );
-        myLog.debug( new ReportMsg( ReportType.STOP, "Hallo" ) );
+        for ( ReportType type : ReportType.values() )
+        {
+            myLog.debug( new ReportMsg( type, "Hallo", null ) );
+        }
     }
 
 }
