@@ -45,13 +45,13 @@ public class MailCreator
     private Logger myLog = LogManager.getLogger( MailCreator.class );
 
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment  myEnv;
 
     public Email createMailFor( Person<?> aPerson ) throws EmailException
     {
         Email email = new SimpleEmail();
         email.addTo( aPerson.getEMail() );
-        email.setSubject( env.getProperty( MailProperties.SUBJECT ) );
+        email.setSubject( myEnv.getProperty( MailProperties.SUBJECT ) );
         email.setMsg( createMailBody( aPerson ) );
 
         return email;

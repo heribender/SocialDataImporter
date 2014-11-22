@@ -55,7 +55,7 @@ public class ConverterFactoryTest
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( ConverterFactoryTest.class );
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment  myEnv;
     @Autowired
     private ConverterFactory myClassUnderTest;
 
@@ -65,15 +65,15 @@ public class ConverterFactoryTest
     @Before
     public void setUp() throws Exception
     {
-        TestUtils.addToEnvironment( env, "sdi.converter.dateField",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.dateField",
                                          ConverterDate.CONVERTER_NAME  );
-        TestUtils.addToEnvironment( env, "sdi.converter.anotherDateField",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.anotherDateField",
                                          ConverterDate.CONVERTER_NAME  );
-        TestUtils.addToEnvironment( env, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".pattern",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".pattern",
                                          "yyyy-MM-dd"  );
-        TestUtils.addToEnvironment( env, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".dateField.pattern",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".dateField.pattern",
                                          "yyyy-MM-dd hh:mm:ss"  );
-        TestUtils.addToEnvironment( env, "sdi.converter.custom",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.custom",
                                          "customConverter"  );
     }
 
