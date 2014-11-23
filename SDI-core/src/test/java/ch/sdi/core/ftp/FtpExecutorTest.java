@@ -48,11 +48,17 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StreamUtils;
+
+import ch.sdi.core.TestUtils;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -68,7 +74,7 @@ import org.springframework.util.StreamUtils;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={FtpExecutor.class })
-public class FtpExecutorTest
+public class FtpExecutorTest implements ApplicationContextAware
 {
 
     /** */
@@ -81,6 +87,13 @@ public class FtpExecutorTest
     private static String myTargetDirLocal;
     private static List<Authority> myFtpAuthorities;
     private FtpServerFactory myServerFactory;
+    private static ApplicationContext myCtx = null;
+
+    @Override
+    public void setApplicationContext( ApplicationContext aCtx ) throws BeansException
+    {
+        myCtx = aCtx;
+    }
 
     /**
      * @throws java.lang.Exception
@@ -89,7 +102,6 @@ public class FtpExecutorTest
     public static void setUpStatic() throws Exception
     {
         myTargetDirLocal = new File( TEST_TARGET_DIR_LOCAL ).getCanonicalPath() + File.separator;
-
         myFtpAuthorities = new ArrayList<Authority>();
         myFtpAuthorities.add(new WritePermission());
     }
@@ -108,8 +120,45 @@ public class FtpExecutorTest
     @Before
     public void setUp() throws Exception
     {
-        myClassUnderTest = new FtpExecutor();
+        myClassUnderTest = myCtx.getBean( FtpExecutor.class );
         myServerFactory = new FtpServerFactory();
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     */
+    @Test
+    public void testInitBySpring() throws Throwable
+    {
+        myLog.debug( "Testing self-initialize by Spring context" );
+
+        String targetDir = myTargetDirLocal;
+        cleanTargetDir( targetDir );
+        Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
+
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_FTP_CMD_LINE,
+                                    "-A localhost"  );
+
+        registerFtpUser( "anonymous",
+                         System.getProperty( "user.name" ) + "@" + InetAddress.getLocalHost().getHostName() );
+
+        FtpServer server = startFtpServer();
+        try
+        {
+            // omit call to init in order to auto initialize by spring context
+            myClassUnderTest.connectAndLogin();
+            myClassUnderTest.uploadFiles( filesToUpload );
+            myClassUnderTest.logoutAndDisconnect();
+            assertFilesUploaded( createFileUploadMap( targetDir ) );
+        }
+        finally
+        {
+            if ( server != null )
+            {
+                myLog.debug( "stopping the embedded FTP server" );
+                server.stop();
+            } // if myServer != null
+        }
     }
 
     /**
@@ -118,6 +167,8 @@ public class FtpExecutorTest
     @Test
     public void testUploadAnonymous() throws Throwable
     {
+        myLog.debug( "Testing Anonymous login" );
+
         String targetDir = myTargetDirLocal;
         cleanTargetDir( targetDir );
         Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
@@ -155,6 +206,8 @@ public class FtpExecutorTest
     @Test
     public void testUploadLogin() throws Throwable
     {
+        myLog.debug( "Testing normal login" );
+
         String targetDir = myTargetDirLocal;
         cleanTargetDir( targetDir );
         Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
@@ -191,6 +244,8 @@ public class FtpExecutorTest
     @Test
     public void testUploadLoginSSLImplicite() throws Throwable
     {
+        myLog.debug( "Testing SSL login (implicite)" );
+
         String targetDir = myTargetDirLocal;
         cleanTargetDir( targetDir );
         Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );

@@ -35,10 +35,15 @@ import org.apache.commons.net.ftp.FTPSClient;
 import org.apache.commons.net.util.TrustManagerUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -87,6 +92,7 @@ import ch.sdi.core.exc.SdiException;
  * @author Heri
  */
 @Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class FtpExecutor
 {
     public static final String USAGE =
@@ -105,6 +111,8 @@ public class FtpExecutor
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( FtpExecutor.class );
+    @Autowired
+    private Environment myEnv;
 
     private boolean myLocalActive = false;
     private boolean myUseEpsvWithIPv4 = false;
@@ -122,6 +130,7 @@ public class FtpExecutor
     private String myServer;
     private FTPClient myFtp;
     private PrintCommandToLoggerListener myPrintCommandToLoggerListener;
+    private boolean myInitialized;
 
     /**
      * @param aArgs
@@ -219,6 +228,7 @@ public class FtpExecutor
                 myPassword = aArgs[base++];
             }
 
+            myInitialized = true;
         }
         catch ( Throwable t )
         {
@@ -237,10 +247,34 @@ public class FtpExecutor
 
     /**
      * @throws SdiException
+     *
+     */
+    private void initBySpringContext() throws SdiException
+    {
+        String cmdLine = myEnv.getProperty( SdiMainProperties.KEY_FTP_CMD_LINE );
+        myLog.debug( "FTP command line read from spring context: " + cmdLine );
+
+        if ( !StringUtils.hasText( cmdLine ) )
+        {
+            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_CMD_LINE + " not found",
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if !StringUtils.hasText( cmdLine )
+
+        String[] args = cmdLine.split( " " );
+        init( args );
+    }
+
+    /**
+     * @throws SdiException
      * @throws IOException
      */
     public void connectAndLogin() throws SdiException, IOException
     {
+        if ( !myInitialized )
+        {
+            initBySpringContext();
+        } // if !initialized
+
         try
         {
             if ( myProtocol == null )

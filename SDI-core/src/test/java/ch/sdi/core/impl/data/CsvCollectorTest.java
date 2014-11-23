@@ -52,7 +52,6 @@ import ch.sdi.core.intf.SdiMainProperties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={CsvCollector.class,
                                CsvParser.class,
-                               CsvCollector.class,
                                InputCollectorFactory.class,
                                ConverterFactory.class,
                                ConverterDate.class,
@@ -63,7 +62,7 @@ public class CsvCollectorTest
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( CsvCollectorTest.class );
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment myEnv;
     @Autowired
     private CsvCollector myClassUnderTest;
 
@@ -75,13 +74,13 @@ public class CsvCollectorTest
     @Before
     public void setUp() throws Exception
     {
-        TestUtils.addToEnvironment( env, "sdi.converter.avatar", ConverterJpgFromHexDump.CONVERTER_NAME  );
-        TestUtils.addToEnvironment( env, "sdi.converter.birthday", ConverterDate.CONVERTER_NAME  );
-        TestUtils.addToEnvironment( env, "sdi.converter." + ConverterDate.CONVERTER_NAME
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.avatar", ConverterJpgFromHexDump.CONVERTER_NAME  );
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.birthday", ConverterDate.CONVERTER_NAME  );
+        TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME
                                     + ".birthday.pattern", "dd.MM.yy"  );
-        TestUtils.addToEnvironment( env, "sdi.converter.entrydate",
+        TestUtils.addToEnvironment( myEnv, "sdi.converter.entrydate",
                                     ConverterDate.CONVERTER_NAME  );
-        TestUtils.addToEnvironment( env, "sdi.converter." + ConverterDate.CONVERTER_NAME
+        TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME
                                     + ".entrydate.pattern", "yyyy-MM-dd mm:ss"  );
 
     }
@@ -107,80 +106,80 @@ public class CsvCollectorTest
         myLog.debug( "delimiter not yet set in environment" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER, ";" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER, ";" );
 
         myLog.debug( "filename not yet set in environment" );
         testException();
 
         myLog.debug( "wrong filename in environment" );
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME, "blabla" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME, "blabla" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_noHeader.csv" ).getCanonicalPath() );
 
         myLog.debug( "fieldnames not yet set in environment" );
         testException();
 
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
                                     "Screenname,Name,Middlename,Prename,email,birthday,entrydate" );
 
         myLog.debug( "fieldnames now set in environment" );
         testSuccess();
 
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
         myLog.debug( "skip >= rowsize. Ignored because headerRow is false" );
         testSuccess();
 
 
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
         myLog.debug( "skip >= rowsize. HeaderRow=true -> Exception" );
         testException();
 
         // CSV_testdata_withHeader0.csv:
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_withHeader0.csv" ).getCanonicalPath() );
-        TestUtils.removeFromEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
+        TestUtils.removeFromEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
 
         myLog.debug( "CSV_testdata_withHeader0.csv success" );
         testSuccess();
 
         // CSV_testdata_withHeader2.csv:
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     locateFile( "CSV_testdata_withHeader2.csv" ).getCanonicalPath() );
         myLog.debug( "CSV_testdata_withHeader2.csv success" );
         testSuccess();
 
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "5" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "5" );
         myLog.debug( "skip >= rowsize. HeaderRow=true -> Exception" );
         testException();
 
         // CSV-File with too many entries
-        TestUtils.addToEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
                 "Screenname,Name,Middlename,Prename,email,birthday" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         locateFile( "CSV_testdata_noHeader.csv" ).getCanonicalPath() );
         myLog.debug( "CSV-File with too many entries -> Exception" );
         testException();
 
         // empty field content
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES,
                 "Screenname,Name,Middlename,Prename,email,birthday,entrydate" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "0" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "false" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         locateFile( "CSV_testdata_noHeader_empty_fields.csv" ).getCanonicalPath() );
         myLog.debug( "loading avatar picture (jpg hex dump)" );
         testSuccess();
 
         // avatar
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
-        TestUtils.replaceInEnvironment( env, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
+        TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         locateFile( "CSV_testdata_withHeader0_Avatar.csv" ).getCanonicalPath() );
         myLog.debug( "empty field content -> Empty String or null (if date)" );
         testSuccess();

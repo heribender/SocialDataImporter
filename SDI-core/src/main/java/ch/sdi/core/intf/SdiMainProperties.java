@@ -46,4 +46,20 @@ public interface SdiMainProperties extends SdiProperties
 
     public static final String KEY_PREFIX_CONVERTER = "sdi.converter.";
 
+    public static final String KEY_TARGET_TEMP_DIR = "sdi.target.tmpDir";
+
+    public static final String KEY_PREFIX_TARGET_JOB = "sdi.targetjob.";
+
+    public static final String KEY_MAIL_JOB = KEY_PREFIX_TARGET_JOB + "mail";
+    public static final String KEY_SQL_JOB = KEY_PREFIX_TARGET_JOB + "sql";
+    public static final String KEY_FTP_JOB = KEY_PREFIX_TARGET_JOB + "ftp";
+
+    public static final String KEY_SQL_CONNECT_STRING = KEY_SQL_JOB + ".connectString";
+    public static final String KEY_SQL_USER = KEY_SQL_JOB + ".user";
+    public static final String KEY_SQL_PASSWORD = KEY_SQL_JOB + ".password";
+
+    public static final String KEY_FTP_DEST_DIR = KEY_FTP_JOB + ".destinationDir";
+    public static final String KEY_FTP_CMD_LINE = KEY_FTP_JOB + ".cmdLine";
+
+
 }
