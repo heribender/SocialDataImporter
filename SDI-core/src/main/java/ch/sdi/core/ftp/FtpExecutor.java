@@ -130,6 +130,8 @@ public class FtpExecutor
     {
         try
         {
+            myLog.debug( "analyzing given arguments: "
+                         + StringUtils.arrayToCommaDelimitedString( aArgs ) );
             int base = 0;
             int minParams = 3; // listings require 3 params
             for ( base = 0; base < aArgs.length; base++ )
@@ -183,6 +185,12 @@ public class FtpExecutor
                 }
                 else
                 {
+                    if ( aArgs[base].startsWith( "-" ) )
+                    {
+                        myLog.warn( "unhandled argument: " + aArgs[base] );
+                        continue;
+                    } // if aArgs[base].startsWith( "-" )
+
                     break;
                 }
             }
@@ -244,6 +252,7 @@ public class FtpExecutor
                 }
                 else
                 {
+                    myLog.debug( "Using simple FTPClient" );
                     myFtp = new FTPClient();
                 }
             }
@@ -252,10 +261,12 @@ public class FtpExecutor
                 FTPSClient ftps;
                 if ( myProtocol.equals( "true" ) )
                 {
+                    myLog.debug( "Using FTPSClient with implicite SSL" );
                     ftps = new FTPSClient( true );
                 }
                 else if ( myProtocol.equals( "false" ) )
                 {
+                    myLog.debug( "Using FTPSClient with no implicite SSL" );
                     ftps = new FTPSClient( false );
                 }
                 else
@@ -263,34 +274,45 @@ public class FtpExecutor
                     String prot[] = myProtocol.split( "," );
                     if ( prot.length == 1 )
                     { // Just protocol
+                        myLog.debug( "Using FTPSClient with protocol " + myProtocol );
                         ftps = new FTPSClient( myProtocol );
                     }
                     else
                     { // protocol,true|false
+                        myLog.debug( "Using FTPSClient with " + prot[0] + " and " + prot[1] );
                         ftps = new FTPSClient( prot[0], Boolean.parseBoolean( prot[1] ) );
                     }
                 }
                 myFtp = ftps;
                 if ( "all".equals( myTrustmgr ) )
                 {
+                    myLog.debug( "Using AcceptAllTrustManager" );
                     ftps.setTrustManager( TrustManagerUtils.getAcceptAllTrustManager() );
                 }
                 else if ( "valid".equals( myTrustmgr ) )
                 {
+                    myLog.debug( "Using ValidateServerCertificateTrustManager" );
                     ftps.setTrustManager( TrustManagerUtils.getValidateServerCertificateTrustManager() );
                 }
                 else if ( "none".equals( myTrustmgr ) )
                 {
+                    myLog.debug( "Setting TrustManager to null" );
                     ftps.setTrustManager( null );
+                }
+                else
+                {
+                    myLog.debug( "Using no TrustManager at all" );
                 }
             }
 
             if ( myKeepAliveTimeout >= 0 )
             {
+                myLog.debug( "Setting KeepAliveTimeout to " + myKeepAliveTimeout );
                 myFtp.setControlKeepAliveTimeout( myKeepAliveTimeout );
             }
             if ( myControlKeepAliveReplyTimeout >= 0 )
             {
+                myLog.debug( "Setting ControlKeepAliveReplyTimeout to " + myControlKeepAliveReplyTimeout );
                 myFtp.setControlKeepAliveReplyTimeout( myControlKeepAliveReplyTimeout );
             }
 
@@ -305,10 +327,12 @@ public class FtpExecutor
                 int reply;
                 if ( myPort > 0 )
                 {
+                    myLog.debug( "Connecting to " + myServer + ":" + myPort );
                     myFtp.connect( myServer, myPort );
                 }
                 else
                 {
+                    myLog.debug( "Connecting to " + myServer + " (default port)" );
                     myFtp.connect( myServer );
                 }
 
@@ -366,6 +390,7 @@ public class FtpExecutor
         {
             try
             {
+                myLog.debug( "Uploading a file to " + target );
                 myFtp.storeFile( target, aFilesToUpload.get( target ) );
                 myFtp.noop(); // check that control connection is working OK
             }

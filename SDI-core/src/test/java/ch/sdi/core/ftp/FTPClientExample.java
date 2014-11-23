@@ -50,6 +50,10 @@ import ch.sdi.core.exc.SdiException;
 
 
 /**
+ * The base of this example is copied from
+ * (http://commons.apache.org/proper/commons-net/examples/ftp/FTPClientExample.java) and adapted for
+ * using it embedded.<p>
+ *
  * This is an example program demonstrating how to use the FTPClient class.
  * This program connects to an FTP server and retrieves the specified
  * file. If the -s flag is used, it stores the local file at the FTP server.
@@ -125,8 +129,8 @@ public final class FTPClientExample
 
         args.add( "-s" ); // store file on sesrver
         args.add( "-b" ); // binary transfer mode
-        args.add( "-#" ); 
-        
+        args.add( "-#" );
+
         args.add( "192.168.99.1" );
         args.add( "heri" ); // user
         args.add( "heri" ); // pw

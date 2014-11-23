@@ -18,25 +18,50 @@
 
 package ch.sdi.core.ftp;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.ftplet.UserManager;
+import org.apache.ftpserver.listener.Listener;
+import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.ssl.SslConfigurationFactory;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StreamUtils;
 
 
 /**
- * TODO
+ * Tests the FtpExecutor with anonymous login, username/password without SLL and with implicite SSL by
+ * uploading two files (test resources) to the target "./../testTarget"
+ * <p>
+ * The test opens an embedded FTPServer as counterpart for our FTPClient. For SSL the server needs a
+ * certificate which it finds in src\test\Resources\keystore.jks (password is "password").
+ * <p>
  *
  * @version 1.0 (22.11.2014)
  * @author  Heri
@@ -46,12 +71,36 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class FtpExecutorTest
 {
 
+    /** */
+    private static final String TEST_TARGET_DIR_LOCAL = "./../testTarget/";
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( FtpExecutorTest.class );
+    private static Logger myLog = LogManager.getLogger( FtpExecutorTest.class );
     @Autowired
     private ConfigurableEnvironment  myEnv;
-    @Autowired
     private FtpExecutor myClassUnderTest;
+    private static String myTargetDirLocal;
+    private static List<Authority> myFtpAuthorities;
+    private FtpServerFactory myServerFactory;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @BeforeClass
+    public static void setUpStatic() throws Exception
+    {
+        myTargetDirLocal = new File( TEST_TARGET_DIR_LOCAL ).getCanonicalPath() + File.separator;
+
+        myFtpAuthorities = new ArrayList<Authority>();
+        myFtpAuthorities.add(new WritePermission());
+    }
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @AfterClass
+    public static void setTearDownStatic() throws Exception
+    {
+    }
 
     /**
      * @throws java.lang.Exception
@@ -59,34 +108,251 @@ public class FtpExecutorTest
     @Before
     public void setUp() throws Exception
     {
+        myClassUnderTest = new FtpExecutor();
+        myServerFactory = new FtpServerFactory();
     }
 
     /**
      * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
      */
     @Test
-    public void testUpload() throws Throwable
+    public void testUploadAnonymous() throws Throwable
     {
-        Map<String,InputStream> filesToUpload = new TreeMap<String,InputStream>();
-
-        String targetDir = "/var/www/";
-
-        filesToUpload.put( targetDir + "sdimain_test.properties",
-                           ClassLoader.getSystemResourceAsStream( "sdimain_test.properties" ) );
-        filesToUpload.put( targetDir + "log4j2.xml",
-                           ClassLoader.getSystemResourceAsStream( "log4j2.xml" ) );
+        String targetDir = myTargetDirLocal;
+        cleanTargetDir( targetDir );
+        Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
 
         List<String> args = new ArrayList<String>();
+        args.add( "-bla" ); // invalid option should be ignored
+        args.add( "-A" ); // anonymous
+        args.add( "localhost" );
 
-        args.add( "192.168.99.1" );
+        registerFtpUser( "anonymous",
+                         System.getProperty( "user.name" ) + "@" + InetAddress.getLocalHost().getHostName() );
+
+        FtpServer server = startFtpServer();
+        try
+        {
+            myClassUnderTest.init( args.toArray( new String[args.size()] ) );
+            myClassUnderTest.connectAndLogin();
+            myClassUnderTest.uploadFiles( filesToUpload );
+            myClassUnderTest.logoutAndDisconnect();
+            assertFilesUploaded( createFileUploadMap( targetDir ) );
+        }
+        finally
+        {
+            if ( server != null )
+            {
+                myLog.debug( "stopping the embedded FTP server" );
+                server.stop();
+            } // if myServer != null
+        }
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     */
+    @Test
+    public void testUploadLogin() throws Throwable
+    {
+        String targetDir = myTargetDirLocal;
+        cleanTargetDir( targetDir );
+        Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
+
+        List<String> args = new ArrayList<String>();
+        args.add( "localhost" );
         args.add( "heri" ); // user
         args.add( "heri" ); // pw
 
-        myClassUnderTest.init( args.toArray( new String[args.size()] ) );
-        myClassUnderTest.connectAndLogin();
-        myClassUnderTest.uploadFiles( filesToUpload );
-        myClassUnderTest.logoutAndDisconnect();
+        registerFtpUser( "heri", "heri" );
 
+        FtpServer server = startFtpServer();
+        try
+        {
+            myClassUnderTest.init( args.toArray( new String[args.size()] ) );
+            myClassUnderTest.connectAndLogin();
+            myClassUnderTest.uploadFiles( filesToUpload );
+            myClassUnderTest.logoutAndDisconnect();
+            assertFilesUploaded( createFileUploadMap( targetDir ) );
+        }
+        finally
+        {
+            if ( server != null )
+            {
+                myLog.debug( "stopping the embedded FTP server" );
+                server.stop();
+            } // if myServer != null
+        }
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     */
+    @Test
+    public void testUploadLoginSSLImplicite() throws Throwable
+    {
+        String targetDir = myTargetDirLocal;
+        cleanTargetDir( targetDir );
+        Map<String, InputStream> filesToUpload = createFileUploadMap( targetDir );
+
+        List<String> args = new ArrayList<String>();
+        args.add( "-p" );
+        args.add( "false" );  // activate implicite SSL
+        args.add( "localhost" );
+        args.add( "heri" ); // user
+        args.add( "heri" ); // pw
+
+        ListenerFactory listenerFactory = new ListenerFactory();
+
+        // define SSL configuration
+        SslConfigurationFactory ssl = new SslConfigurationFactory();
+        ssl.setKeystoreFile(new File("keystore.jks"));  // this is in core/test/resources and contains one
+                                                        // selfsigned certificate
+        ssl.setKeystorePassword("password");
+        listenerFactory.setSslConfiguration(ssl.createSslConfiguration());
+        listenerFactory.setImplicitSsl(false);
+
+        // replace the default listener
+        Listener listenerOrg = myServerFactory.getListener( "default" );
+        try
+        {
+            myServerFactory.addListener("default", listenerFactory.createListener());
+
+            registerFtpUser( "heri", "heri" );
+
+            FtpServer server = startFtpServer();
+            try
+            {
+                myClassUnderTest.init( args.toArray( new String[args.size()] ) );
+                myClassUnderTest.connectAndLogin();
+                myClassUnderTest.uploadFiles( filesToUpload );
+                myClassUnderTest.logoutAndDisconnect();
+                assertFilesUploaded( createFileUploadMap( targetDir ) );
+            }
+            finally
+            {
+                if ( server != null )
+                {
+                    myLog.debug( "stopping the embedded FTP server" );
+                    server.stop();
+                } // if myServer != null
+            }
+        }
+        finally
+        {
+            myServerFactory.addListener("default", listenerOrg );
+        }
+    }
+
+    /**
+     * @param aCreateFileUploadMap
+     */
+    private void assertFilesUploaded( Map<String, InputStream> aCreateFileUploadMap )
+    {
+        for ( String targetFileName : aCreateFileUploadMap.keySet() )
+        {
+            assertFileUpdloaded( targetFileName, aCreateFileUploadMap.get( targetFileName ) );
+        }
+    }
+
+    /**
+     * @param aTargetFileName
+     * @param aInputStream
+     */
+    private void assertFileUpdloaded( String aTargetFileName, InputStream aInputStream )
+    {
+        File target = new File( aTargetFileName );
+        Assert.assertTrue( target.exists() );
+        byte[] input = copyStreamToByteArray( aInputStream );
+        byte[] output = null;
+        try
+        {
+            output = copyStreamToByteArray( new FileInputStream( target ) );
+        }
+        catch ( FileNotFoundException t )
+        {
+            myLog.error( "Should not occur", t );
+            Assert.fail( "FileNotFoundException while opening file " + target.getPath() );
+        }
+        Assert.assertArrayEquals( input, output );
+
+
+    }
+
+    /**
+     * @param aInputStream
+     * @return
+     */
+    private byte[] copyStreamToByteArray( InputStream aInputStream )
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            StreamUtils.copy( aInputStream, baos );
+        }
+        catch ( IOException t )
+        {
+            Assert.fail( "IOException while copying stream. " + t );
+        }
+        byte[] input = baos.toByteArray();
+        return input;
+    }
+
+    /**
+     * @param aTargetDir
+     */
+    private void cleanTargetDir( String aTargetDir )
+    {
+        File[] list = new File( aTargetDir ).listFiles();
+        for ( File file : list )
+        {
+            file.delete();
+        }
+
+    }
+
+    /**
+     * @param aUsername
+     * @param aPassword
+     * @throws FtpException
+     */
+    private void registerFtpUser( String aUsername, String aPassword ) throws FtpException
+    {
+        BaseUser user = new BaseUser();
+        user.setName( aUsername );
+        user.setPassword( aPassword );
+        user.setAuthorities(myFtpAuthorities);
+        UserManager userManager = myServerFactory.getUserManager();
+        userManager.save(user);
+    }
+
+    /**
+     * @return
+     * @throws FtpException
+     */
+    private FtpServer startFtpServer() throws FtpException
+    {
+        FtpServer result;
+        result = myServerFactory.createServer();
+
+        myLog.debug( "starting an embedded FTP server" );
+        result.start();
+        return result;
+    }
+
+    /**
+     * @param aTargetDir
+     * @return
+     */
+    private Map<String, InputStream> createFileUploadMap( String aTargetDir )
+    {
+        Map<String,InputStream> filesToUpload = new TreeMap<String,InputStream>();
+
+        filesToUpload.put( aTargetDir + "sdimain_test.properties",
+                           ClassLoader.getSystemResourceAsStream( "sdimain_test.properties" ) );
+        filesToUpload.put( aTargetDir + "log4j2.xml",
+                           ClassLoader.getSystemResourceAsStream( "log4j2.xml" ) );
+        return filesToUpload;
     }
 
 }
