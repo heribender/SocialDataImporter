@@ -18,22 +18,14 @@
 
 package ch.sdi.core.intf;
 
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
-
 
 /**
- * TODO
+ * Job preparations which are customer dependent
  *
- * @version 1.0 (15.11.2014)
+ * @version 1.0 (24.11.2014)
  * @author  Heri
  */
-public interface TargetJob
+public interface CustomPreparePersonJob extends PreparePersonJob
 {
-
-    /**
-     * @param aPerson
-     */
-    void execute( Person<?> aPerson ) throws SdiException;
 
 }

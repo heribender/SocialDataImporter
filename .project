@@ -22,7 +22,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1415386160562</id>
+			<id>1416860346401</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
@@ -31,7 +31,7 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415386160567</id>
+			<id>1416860346409</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
@@ -40,16 +40,16 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415386160572</id>
+			<id>1416860346414</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
-				<arguments>1.0-name-matches-false-false-SDI-oxwall</arguments>
+				<arguments>1.0-name-matches-false-false-SDI-plugins-oxwall</arguments>
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415386160577</id>
+			<id>1416860346419</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
@@ -58,12 +58,21 @@
 			</matcher>
 		</filter>
 		<filter>
-			<id>1415386160581</id>
+			<id>1416860346424</id>
 			<name></name>
 			<type>30</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-logs</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1416860346429</id>
+			<name></name>
+			<type>30</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-testTarget</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

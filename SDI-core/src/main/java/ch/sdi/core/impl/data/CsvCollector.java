@@ -225,7 +225,12 @@ public class CsvCollector implements InputCollector
 
         for ( int i = 0; i < aConverters.size(); i++ )
         {
-            result.add( aConverters.get( i ).convert( aRow.get( i ) ) );
+            Object o =  aConverters.get( i ).convert( aRow.get( i ) );
+            if ( o == null )
+            {
+                o = new NullField();
+            } // if o == null
+            result.add( o );
         }
 
         return result;

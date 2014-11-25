@@ -20,6 +20,8 @@ package ch.sdi.core.target;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.cfg.ConfigHelper;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.intf.CustomTargetJobContext;
+import ch.sdi.core.intf.SdiMainProperties;
+import ch.sdi.core.intf.TargetJob;
+import ch.sdi.core.intf.TargetJobContext;
+import ch.sdi.report.ReportMsg;
 
 
 /**
@@ -44,47 +53,115 @@ public class TargetExecutor
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( TargetExecutor.class );
     @Autowired
-    private Environment  myEnv;
+    private Environment myEnv;
+    @Autowired
+    private DefaultTargetJobContext myDefaultJobContext;
+    @Autowired
+    private CustomTargetJobContext myCustomTargetJobContext;
+    private TargetJobContext myTargetJobContext;
+    private boolean mySkipFailedPersons;
+    private Map<Person<?>,Throwable> myFailedPersons;
+    private Collection<Person<?>> myDuplicatePersons;
+
 
     public void execute( Collection<? extends Person<?>> aPersons) throws SdiException
     {
-        Collection<Person<?>> failedPersons = new ArrayList<Person<?>>();
-        aPersons.stream()
-            .filter(p ->
-            {
-                // returns the
-                return !handlePerson( p );
-            } )
-//            .collect( (Collector<?, A, R>) failedPersons );
-//            .map( p ->
-//            {
-//                return ( "origValue == null || origValue.isEmpty() )
-//                        ? result + "No default value found. Adding new value to environment: \""
-//                                 + props.getProperty( key ) + "\""
-//                        : result + "Overriding default value \"" + origValue + "\" with new value: \""
-//                                 + props.getProperty( key ) + "\"";
-//            })
-            .forEach( p -> failedPersons.add( p ) ) ;
+        boolean dryRun = ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
+        mySkipFailedPersons = dryRun ? true : ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_TARGET_IGNORE_FAILED_PERSON, false );
 
-        if ( failedPersons.isEmpty() )
+        myFailedPersons = new TreeMap<Person<?>,Throwable>();
+        myDuplicatePersons = new ArrayList<Person<?>>();
+
+        /*
+         * Because ConditionalOnMissingBean annotation does obviously not work for beans which must be
+         * injected we let both inject here, the DefaultJobContext and a possible CustomTargetJobContext.
+         * Note that the DefaultJobContext does not do anything, so the whole application would be
+         * senseless without a CustomTargetJobContext implementation available.
+         */
+        myTargetJobContext = myDefaultJobContext;
+        if ( myCustomTargetJobContext != null )
         {
-            myLog.info( "All data successfully handled for target" );
-            return;
-        } // if failedPersons.isEmpty()
+            myTargetJobContext = myCustomTargetJobContext;
+        } // if myCustomTargetJobContext != null
 
-        throw new SdiException( "" + failedPersons.size() + " could not have been processed",
-                                SdiException.EXIT_CODE_IMPORT_ERROR );
+        myTargetJobContext.prepare();
+
+        try
+        {
+            for ( Person<?> person : aPersons )
+            {
+                processPerson( person );
+            }
+
+            if ( myFailedPersons.isEmpty() )
+            {
+                myLog.info( "All data successfully handled for target" );
+            } // if failedPersons.isEmpty()
+
+        }
+        finally
+        {
+            if ( !myFailedPersons.isEmpty() )
+            {
+                myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET_PROBLEM, "FailedPersons", myFailedPersons ) );
+            } // if failedPersons.isEmpty()
+
+            if ( !myDuplicatePersons.isEmpty() )
+            {
+                myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET, "DuplicatePersons", myDuplicatePersons ) );
+            } // if failedPersons.isEmpty()
+
+            myTargetJobContext.release();
+        }
+
+
     }
 
     /**
      * @param aPerson
      * @return
      */
-    private boolean handlePerson( Person<?> aPerson )
+    private void processPerson( Person<?> aPerson ) throws SdiException
     {
-        myLog.debug( "processing person " + aPerson.getFamilyName() );
+        myLog.debug( "processing person " + aPerson.getEMail() );  // TODO: make primary key configurable
 
-        return true;
+        try
+        {
+            myTargetJobContext.preparePerson( aPerson );
+
+            for ( TargetJob job : myTargetJobContext.getJobs() )
+            {
+                job.execute( aPerson );
+            }
+
+            myTargetJobContext.finalizePerson( aPerson );
+
+        }
+        catch ( SdiDuplicatePersonException t )
+        {
+            myLog.info( "Person " + aPerson.getFamilyName() +
+                    " already a user of the target platform. Skip" );
+            myDuplicatePersons.add( aPerson );
+        }
+        catch ( Throwable t )
+        {
+            myFailedPersons.put( aPerson, t );
+
+            if ( mySkipFailedPersons )
+            {
+                myLog.warn( "Problem while processing person " + aPerson.getEMail() // TODO: make primary key configurable
+                            + "; continuing with next person", t );
+                return;
+            }
+
+            if ( t instanceof SdiException )
+            {
+                throw (SdiException) t;
+            } // if t instanceof SdiException
+
+            throw new SdiException( t.getMessage(), t, SdiException.EXIT_CODE_IMPORT_ERROR );
+        }
+
     }
 
 }

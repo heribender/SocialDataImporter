@@ -16,24 +16,50 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.plugins.oxwall.job;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.intf.SqlJob;
 
 
 /**
  * TODO
  *
- * @version 1.0 (15.11.2014)
+ * @version 1.0 (24.11.2014)
  * @author  Heri
  */
-public interface TargetJob
+@Component
+public class OxSqlJob implements SqlJob
 {
+    /** logger for this class */
+    private Logger myLog = LogManager.getLogger( OxSqlJob.class );
+    @Autowired
+    private Environment myEnv;
 
     /**
-     * @param aPerson
+     * Constructor
+     *
      */
-    void execute( Person<?> aPerson ) throws SdiException;
+    public OxSqlJob()
+    {
+        super();
+    }
+
+    /**
+     * @see ch.sdi.core.intf.TargetJob#execute(ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public void execute( Person<?> aPerson ) throws SdiException
+    {
+        // TODO Auto-generated method stub
+
+    }
 
 }

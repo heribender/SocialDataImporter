@@ -119,7 +119,7 @@ public class UserPropertyOverloader
                 })
                 .forEach( msg -> myLog.debug( msg ) ) ;
 
-            String name = clazz.getSimpleName();
+            String name = SdiMainProperties.USER_OVERRIDE_PREFIX + clazz.getSimpleName();
             PropertySource<?> ps = new PropertiesPropertySource( name, props );
             MutablePropertySources mps = env.getPropertySources();
             if ( mps.get( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE ) != null )
@@ -150,7 +150,7 @@ public class UserPropertyOverloader
 
         result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, defaultRoot ) );
 
-        String newRoot = env.getProperty( SdiMainProperties.KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT );
+        String newRoot = env.getProperty( SdiMainProperties.KEY_PROPERTIESOVERRIDE_INCLUDEROOT );
         if ( StringUtils.hasText( newRoot ) )
         {
             String[] newRoots = newRoot.split( "," );

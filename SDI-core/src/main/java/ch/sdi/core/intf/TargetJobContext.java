@@ -18,6 +18,8 @@
 
 package ch.sdi.core.intf;
 
+import java.util.Collection;
+
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 
@@ -25,15 +27,15 @@ import ch.sdi.core.impl.data.Person;
 /**
  * TODO
  *
- * @version 1.0 (15.11.2014)
+ * @version 1.0 (24.11.2014)
  * @author  Heri
  */
-public interface TargetJob
+public interface TargetJobContext
 {
-
-    /**
-     * @param aPerson
-     */
-    void execute( Person<?> aPerson ) throws SdiException;
+    public Collection<? extends TargetJob> getJobs() throws SdiException;
+    public void prepare() throws SdiException;
+    public void preparePerson( Person<?> aPerson ) throws SdiException;
+    public void finalizePerson( Person<?> aPerson ) throws SdiException;
+    public void release() throws SdiException;
 
 }

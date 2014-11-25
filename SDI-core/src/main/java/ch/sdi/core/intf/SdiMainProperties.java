@@ -32,8 +32,8 @@ public interface SdiMainProperties extends SdiProperties
     public static final String USER_OVERRIDE_PREFIX = "user.";
     public static final String SDI_PROPERTIES_RESOURCE_NAME = "Sdi.properties";
 
-    public static final String KEY_SDI_DRYRUN = "sdi.dry-run";
-    public static final String KEY_SDI_PROPERTIESOVERRIDE_INCLUDEROOT =
+    public static final String KEY_DRYRUN = "sdi.dry-run";
+    public static final String KEY_PROPERTIESOVERRIDE_INCLUDEROOT =
             "sdi.propertiesoverride.includeroot";
 
     public static final String KEY_COLLECT_TYPE = "sdi.collect.type";
@@ -47,6 +47,7 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_PREFIX_CONVERTER = "sdi.converter.";
 
     public static final String KEY_TARGET_TEMP_DIR = "sdi.target.tmpDir";
+    public static final String KEY_TARGET_IGNORE_FAILED_PERSON = "sdi.target.ignoreFailedPerson";
 
     public static final String KEY_PREFIX_TARGET_JOB = "sdi.targetjob.";
 

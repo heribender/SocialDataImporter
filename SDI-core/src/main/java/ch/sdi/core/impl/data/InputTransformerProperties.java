@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.intf.CollectorResult;
@@ -102,7 +103,17 @@ public class InputTransformerProperties implements InputTransformer
                                     SdiException.EXIT_CODE_PARSE_ERROR );
         } // if !iter.hasNext()
 
-        String name = props.getProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() );
+        // TODO: make it configurable which field can be used as primary key which will be the name of the
+        // embedded PropertySource and must be unique (TODO: verify if this is even needed).
+        String name = props.getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
+        if ( !StringUtils.hasText( name ) )
+        {
+            throw new SdiException( "Person has no mail address or the configuration of the field mapping"
+                                    + " is not correct. "
+                                    + "\n    Fieldnames: " + aFieldNames
+                                    + "\n    Fields:     " + aRow,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if !StringUtils.hasText( name )
 
         PropertiesPerson result = new PropertiesPerson( name, props );
 

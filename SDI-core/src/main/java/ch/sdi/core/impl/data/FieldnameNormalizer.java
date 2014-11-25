@@ -57,6 +57,7 @@ public class FieldnameNormalizer
     public Collection<String> normalize( Collection<String> aFieldnames ) throws SdiException
     {
 
+        // TODO: write testcase!
         Map<String,String> replaceMap = new HashMap<String,String>();
 
         for ( PersonKey key : PersonKey.values() )

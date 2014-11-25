@@ -34,23 +34,42 @@ public class ReportMsg implements Message
 
     public enum ReportType
     {
-        COLLECTOR, MAIL_TARGET, SQL_TARGET, FTP_TARGET
+        COLLECTOR,
+        COLLECTOR_PROBLEM,
+        TARGET,
+        TARGET_PROBLEM,
+        MAIL_TARGET,
+        SQL_TARGET,
+        FTP_TARGET
     };
 
     private final ReportType myType;
     private final String[] myKeys;
     private final Object[] myValues;
+    private final Throwable[] myThrowables;
 
     public ReportMsg( ReportType type, String aKey, Object aValue )
     {
         this( type, new String[] { aKey }, new Object[] { aValue } );
     }
 
-    public ReportMsg( ReportType type, String[] aKeys, Object[] aValues )
+    // TODO: still used?
+    private ReportMsg( ReportType type, String[] aKeys, Object[] aValues )
+    {
+        this( type, aKeys, aValues, null );
+    }
+
+//    public ReportMsg( ReportType type, String aKey, Object aValue, Throwable aThrowable )
+//    {
+//        this( type, new String[] { aKey }, new Object[] { aValue }, new Throwable[] { aThrowable } );
+//    }
+
+    private ReportMsg( ReportType type, String[] aKeys, Object[] aValues, Throwable[] aThrowables )
     {
         this.myType = type;
         this.myKeys = aKeys;
         this.myValues = aValues;
+        this.myThrowables = aThrowables;
     }
 
     @Override
@@ -59,6 +78,9 @@ public class ReportMsg implements Message
         switch ( myType )
         {
             case COLLECTOR:
+            case COLLECTOR_PROBLEM:
+            case TARGET:
+            case TARGET_PROBLEM:
             case MAIL_TARGET:
             case SQL_TARGET:
             case FTP_TARGET:
@@ -72,7 +94,27 @@ public class ReportMsg implements Message
     {
         return myType
                 + "; keys: [" + StringUtils.arrayToCommaDelimitedString( myKeys )
-                + "], values: [" + StringUtils.arrayToCommaDelimitedString( myValues ) + "]";
+                + "], values: [" + StringUtils.arrayToCommaDelimitedString( myValues )
+                + "], Throwables: [" + renderThrowables( myThrowables ) + "]"
+                ;
+    }
+
+    /**
+     * @param aThrowables
+     * @return
+     */
+    private String renderThrowables( Throwable[] aThrowables )
+    {
+        StringBuilder sb = new StringBuilder();
+
+        if ( myThrowables != null )
+        {
+            for ( Throwable t : aThrowables )
+            {
+                sb.append( t.getClass().getSimpleName() ).append( ": " ).append( t.getMessage() ).append( ", " );
+            }
+        } // if myThrowables != null
+        return sb.toString();
     }
 
     private String formatCols( Map<String, Object> cols )

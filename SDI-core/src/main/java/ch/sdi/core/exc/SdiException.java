@@ -29,6 +29,7 @@ public class SdiException extends Exception
 {
     private static final long serialVersionUID = 1L;
 
+    public static final int EXIT_CODE_NO_ERROR = 0;
     public static final int EXIT_CODE_UNKNOWN_ERROR = 1;
     public static final int EXIT_CODE_PARSE_ERROR = 2;
     public static final int EXIT_CODE_CONFIG_ERROR = 3;

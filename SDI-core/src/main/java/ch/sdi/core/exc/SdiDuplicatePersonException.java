@@ -16,24 +16,52 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.core.exc;
 
-import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 
 
 /**
  * TODO
  *
- * @version 1.0 (15.11.2014)
+ * @version 1.0 (24.11.2014)
  * @author  Heri
  */
-public interface TargetJob
+public class SdiDuplicatePersonException extends SdiException
 {
+    private static final long serialVersionUID = 1L;
+    private Person<?> myPerson;
 
     /**
-     * @param aPerson
+     * Constructor
+     *
+     * @param aExitCode
      */
-    void execute( Person<?> aPerson ) throws SdiException;
+    public SdiDuplicatePersonException( Person<?> aPerson )
+    {
+        super( EXIT_CODE_NO_ERROR );
+        myPerson = aPerson;
+    }
+
+    /**
+     * Constructor
+     *
+     * @param aMessage
+     * @param aExitCode
+     */
+    public SdiDuplicatePersonException( String aMessage, Person<?> aPerson )
+    {
+        super( aMessage, EXIT_CODE_NO_ERROR );
+        myPerson = aPerson;
+    }
+
+
+    /**
+     * @return person
+     */
+    public Person<?> getPerson()
+    {
+        return myPerson;
+    }
 
 }

@@ -36,5 +36,5 @@ public interface PasswordEncryptor
      * @return the encrypted password
      * @throws NoSuchAlgorithmException
      */
-    public String encrypt( String aPassword ) throws NoSuchAlgorithmException;
+    public String encrypt( String aPassword );
 }

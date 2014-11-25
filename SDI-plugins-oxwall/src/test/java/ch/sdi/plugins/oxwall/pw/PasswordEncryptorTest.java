@@ -24,6 +24,17 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import ch.sdi.core.TestUtils;
+import ch.sdi.plugins.oxwall.TargetConfiguration;
 
 
 /**
@@ -32,13 +43,25 @@ import org.junit.Test;
  * @version 1.0 (01.11.2014)
  * @author Heri
  */
-public class PasswordEncryptorTest
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes={PasswordEncryptor.class })
+public class PasswordEncryptorTest implements ApplicationContextAware
 {
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( PasswordEncryptorTest.class );
 
     private PasswordEncryptor myClassUnderTest;
+    @Autowired
+    private ConfigurableEnvironment  myEnv;
+    private static ApplicationContext myCtx = null;
+    private static final String SALT = "53442de4b15f3";
+
+    @Override
+    public void setApplicationContext( ApplicationContext aCtx ) throws BeansException
+    {
+        myCtx = aCtx;
+    }
 
     /**
      * @throws java.lang.Exception
@@ -48,8 +71,12 @@ public class PasswordEncryptorTest
     {
 //        logTest();
 
+        TestUtils.addToEnvironment( myEnv, TargetConfiguration.KEY_PW_SALT, SALT );
+
         myLog.debug( "Creating class under test" );
-        myClassUnderTest = new PasswordEncryptor( "53442de4b15f3" );
+        myClassUnderTest = myCtx.getBean( PasswordEncryptor.class );
+
+        // TODO: only try out what the oxwall time stamp in DB means:
         long stampFromDB = 1414797228L; // <- unix timestamp (seconds since 1970)
         Date joinStamp = new Date( stampFromDB * 1000 );
         myLog.error( joinStamp );
@@ -61,7 +88,8 @@ public class PasswordEncryptorTest
     private void logTest()
     {
         System.out.println("Working Directory = " +
-                System.getProperty("user.dir"));        myLog.trace( "Trace: logtest" );
+                System.getProperty("user.dir"));
+        myLog.trace( "Trace: logtest" );
         myLog.debug( "Debug: logtest" );
         myLog.info( "info: logtest" );
         myLog.warn( "Warn: logtest" );

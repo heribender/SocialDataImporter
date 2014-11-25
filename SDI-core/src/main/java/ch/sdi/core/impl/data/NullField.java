@@ -16,24 +16,18 @@
  */
 
 
-package ch.sdi.core.intf;
-
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
+package ch.sdi.core.impl.data;
 
 
 /**
- * TODO
+ * Field representation if the corresponding parsed field is null or empty (is needed for later putting
+ * to a HashMap which does not like null values).
+ * <p>
  *
- * @version 1.0 (15.11.2014)
+ * @version 1.0 (25.11.2014)
  * @author  Heri
  */
-public interface TargetJob
+public class NullField
 {
-
-    /**
-     * @param aPerson
-     */
-    void execute( Person<?> aPerson ) throws SdiException;
 
 }

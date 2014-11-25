@@ -22,6 +22,11 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.stereotype.Component;
+
+import ch.sdi.plugins.oxwall.TargetConfiguration;
 
 
 /**
@@ -30,51 +35,25 @@ import org.apache.logging.log4j.Logger;
  * @version 1.0 (01.11.2014)
  * @author  Heri
  */
+@Component
 public class PasswordEncryptor implements ch.sdi.core.intf.PasswordEncryptor
 {
 
     private Logger myLog = LogManager.getLogger( PasswordEncryptor.class );
-
-    private String mySalt;
-
-
-    /**
-     * Constructor
-     *
-     * @param aSalt
-     */
-    public PasswordEncryptor( String aSalt )
-    {
-        super();
-        mySalt = aSalt;
-    }
+    @Autowired
+    private ConfigurableEnvironment  myEnv;
 
     /**
      * @throws NoSuchAlgorithmException
      * @see ch.sdi.core.intf.PasswordEncryptor#encrypt(java.lang.String)
      */
     @Override
-    public String encrypt( String aPassword ) throws NoSuchAlgorithmException
+    public String encrypt( String aPassword )
     {
-        String hash = DigestUtils.sha256Hex( mySalt + aPassword );
+        String salt = myEnv.getProperty( TargetConfiguration.KEY_PW_SALT );
+        String hash = DigestUtils.sha256Hex( salt + aPassword );
         myLog.debug( "hashed password: " + hash );
         return new String( hash );
     }
 
-    /**
-     * @return salt
-     */
-    public String getSalt()
-    {
-        return mySalt;
-    }
-
-    /**
-     * @param  aSalt
-     *         salt to set
-     */
-    public void setSalt( String aSalt )
-    {
-        mySalt = aSalt;
-    }
 }
