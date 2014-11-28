@@ -370,7 +370,13 @@ public enum PersonKey
      * Description: password of the user<p>
      * Type       : Text<p>
      */
-    PASSWORD ( "person.password" )
+    PASSWORD ( "person.password" ),
+
+    /**
+     * Description: encrypted password of the user (e.g. hashed)<p>
+     * Type       : Text<p>
+     */
+    ENCRYPTED_PASSWORD ( "person.enc_password" )
 
 
     ;

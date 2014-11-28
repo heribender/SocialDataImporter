@@ -17,8 +17,6 @@
 
 package ch.sdi.core.impl.data;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
@@ -45,7 +43,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getUsername()
     {
-        return "" + getProperty( PersonKey.THING_ALTERNATENAME.getKeyName() );
+        return internalGetStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() );
     }
 
     /**
@@ -63,17 +61,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getGivenname()
     {
-        return "" + getProperty( PersonKey.PERSON_GIVENNAME.getKeyName() );
+        return internalGetStringProperty( PersonKey.PERSON_GIVENNAME.getKeyName() );
     }
 
     /**
      * @param  aGivenname
      *         givenname to set
      */
-    @SuppressWarnings( "unchecked" )
     public void setGivenname( String aGivenname )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_GIVENNAME.getKeyName(), aGivenname );
+        getSource().put( PersonKey.PERSON_GIVENNAME.getKeyName(), aGivenname );
     }
 
     /**
@@ -81,17 +78,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getMiddlename()
     {
-        return "" + getProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName() );
+        return internalGetStringProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName() );
     }
 
     /**
      * @param  aMiddlename
      *         middlename to set
      */
-    @SuppressWarnings( "unchecked" )
     public void setMiddlename( String aMiddlename )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_ADDITIONALNAME.getKeyName(), aMiddlename );
+        getSource().put( PersonKey.PERSON_ADDITIONALNAME.getKeyName(), aMiddlename );
     }
 
     /**
@@ -99,17 +95,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getFamilyName()
     {
-        return "" + getProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() );
+        return internalGetStringProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() );
     }
 
     /**
      * @param  aFamilyName
      *         familyName to set
      */
-    @SuppressWarnings( "unchecked" )
     public void setFamilyName( String aFamilyName )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_FAMILYNAME.getKeyName(), aFamilyName );
+        getSource().put( PersonKey.PERSON_FAMILYNAME.getKeyName(), aFamilyName );
     }
 
     /**
@@ -117,17 +112,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getEMail()
     {
-        return "" + getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
+        return internalGetStringProperty( PersonKey.PERSON_EMAIL.getKeyName() );
     }
 
     /**
      * @param  aEMail
      *         eMail to set
      */
-    @SuppressWarnings( "unchecked" )
     public void setEMail( String aEMail )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_EMAIL.getKeyName(), aEMail );
+        getSource().put( PersonKey.PERSON_EMAIL.getKeyName(), aEMail );
     }
 
     /**
@@ -135,17 +129,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getGender()
     {
-        return "" + getProperty( PersonKey.PERSON_GENDER.getKeyName() );
+        return internalGetStringProperty( PersonKey.PERSON_GENDER.getKeyName() );
     }
 
     /**
      * @param  aValue
      *         Gender
      */
-    @SuppressWarnings( "unchecked" )
     public void setGender( String aValue )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_BIRTHDATE.getKeyName(), aValue );
+        getSource().put( PersonKey.PERSON_BIRTHDATE.getKeyName(), aValue );
     }
 
     /**
@@ -153,44 +146,43 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public Date getBirthdate()
     {
-        Object o = getProperty( PersonKey.PERSON_BIRTHDATE.getKeyName() );
+        return internalGetProperty( PersonKey.PERSON_BIRTHDATE.getKeyName(), Date.class );
 
-        if ( o == null )
-        {
-            return null;
-        } // if o == null
+//        if ( o == null )
+//        {
+//            return null;
+//        } // if o == null
+//
+//        if ( o instanceof Date )
+//        {
+//            return (Date) o;
+//        } // if o instanceof Date
+//
+//        if ( o instanceof String )
+//        {
+//            try
+//            {
+//                return new SimpleDateFormat().parse( "" + o );
+//            }
+//            catch ( ParseException t )
+//            {
+//                myLog.error( "Failed to parse birthday " + o, t );
+//                return null;
+//            }
+//        } // if o instanceof String
 
-        if ( o instanceof Date )
-        {
-            return (Date) o;
-        } // if o instanceof Date
-
-        if ( o instanceof String )
-        {
-            try
-            {
-                return new SimpleDateFormat().parse( "" + o );
-            }
-            catch ( ParseException t )
-            {
-                myLog.error( "Failed to parse birthday " + o, t );
-                return null;
-            }
-        } // if o instanceof String
-
-        myLog.warn( "Unknown value type in property " + PersonKey.PERSON_BIRTHDATE.getKeyName() + ": " + o.getClass().getName() );
-
-        return null;
+//        myLog.warn( "Unknown value type in property " + PersonKey.PERSON_BIRTHDATE.getKeyName() + ": " + o.getClass().getName() );
+//
+//        return null;
     }
 
     /**
      * @param  aValue
      *         Gender
      */
-    @SuppressWarnings( "unchecked" )
     public void setBirthdate( Date aValue )
     {
-        ((Map) getSource() ).put( PersonKey.PERSON_BIRTHDATE.getKeyName(), aValue );
+        getSource().put( PersonKey.PERSON_BIRTHDATE.getKeyName(), aValue );
     }
 
     // TODO: add property for PersonKey.THING_IMAGE
@@ -199,9 +191,38 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      * @see org.springframework.core.env.PropertySource#getProperty(java.lang.String)
      */
     @Override
-    public Object getProperty( String aName )
+    public Object getProperty( String aKey )
     {
-        return getSource().get( aName );
+        return internalGetProperty( aKey, Object.class );
+    }
+
+    private String internalGetStringProperty( String aKey )
+    {
+        return internalGetProperty( aKey, String.class );
+    }
+
+    @SuppressWarnings( "unchecked" )
+    private <R> R internalGetProperty( String aKey, Class<? super R> aClass )
+    {
+        Object o = getSource().get( aKey );
+
+        if ( o instanceof NullField || o == null )
+        {
+            return null;
+        } // if o instanceof NullField
+
+        if ( aClass.isAssignableFrom( o.getClass() ) )
+        {
+            return (R) o;
+        } // if aClass.isAssignableFrom( o.getClass() )
+
+        throw new IllegalStateException( "Unexpected value type: " + o.getClass()
+                                         + "; expected: " + aClass.getSimpleName() );
+    }
+
+    public void setProperty( String aKey, Object aValue )
+    {
+        getSource().put( aKey, aValue );
     }
 
     /**

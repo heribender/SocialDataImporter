@@ -31,6 +31,7 @@ import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
@@ -108,6 +109,8 @@ public class OxTargetJobContext implements CustomTargetJobContext
 
         String password = RandomStringUtils.random( 8, true, true );
         String encrypted = myPasswordEncryptor.encrypt( password );
+        aPerson.setProperty( PersonKey.PASSWORD.getKeyName(), password );
+        aPerson.setProperty( PersonKey.ENCRYPTED_PASSWORD.getKeyName(), encrypted );
 
 
         // TODO: generate Avatar-Pictures
