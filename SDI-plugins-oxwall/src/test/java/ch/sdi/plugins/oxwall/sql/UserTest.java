@@ -120,7 +120,26 @@ public class UserTest extends CrudTestBase<OxUser>
         query.setParameter( emailParam, "heri22@lamp.vm" );
         List<OxUser> results = query.getResultList();
         myLog.debug( "results: " + results );
+        Assert.assertEquals( 1, results.size() );
 
+
+        myLog.debug( "finding user by email and emailVerify=true (no data)" );
+        criteria = cb.createQuery(OxUser.class);
+        root = criteria.from(OxUser.class);
+        ParameterExpression<Boolean> emailVerifyParam = cb.parameter(Boolean.class);
+        criteria.select(root).where( cb.and( cb.equal( root.get("email"), emailParam ) ),
+                                             cb.equal( root.get( "emailVerify" ), emailVerifyParam ) );
+
+        query = em.createQuery(criteria);
+        query.setParameter( emailParam, "heri22@lamp.vm" );
+        query.setParameter( emailVerifyParam, true ); // -> no such row
+        results = query.getResultList();
+        Assert.assertEquals( 0, results.size() );
+
+        myLog.debug( "finding user by email and emailVerify=false (1 row)" );
+        query.setParameter( emailVerifyParam, false );
+        results = query.getResultList();
+        Assert.assertEquals( 1, results.size() );
     }
 
 }

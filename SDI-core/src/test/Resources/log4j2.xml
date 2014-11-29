@@ -62,11 +62,19 @@
             name="org.hibernate.type.BasicTypeRegistry"
             level="info">
         </Logger>
-        
+        <Logger
+            name="org.hibernate.hql.internal.ast.QueryTranslatorImpl"
+            level="info">
+        </Logger>
         <Logger
             name="org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory"
             level="info">
         </Logger>
+        <Logger
+            name="org.hibernate.loader.entity.EntityLoader"
+            level="info">
+        </Logger>
+        
         
 
         <Logger
