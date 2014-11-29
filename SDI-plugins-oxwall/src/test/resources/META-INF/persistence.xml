@@ -10,8 +10,7 @@
         <class>ch.sdi.plugins.oxwall.sql.OxProfileData</class>
         <class>ch.sdi.plugins.oxwall.sql.OxUserGroupMembership</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
-    <!-- 
-        -->
+
         <properties>
             <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:unit-testing-jpa"/>
             <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver"/>
@@ -20,16 +19,18 @@
             <property name="hibernate.connection.username" value="sa"/>
             <property name="hibernate.connection.password" value=""/>
         </properties>
+    <!-- 
+        -->
 
     <!-- 
         <properties>
 
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
-            <property name="hibernate.connection.url" value="jdbc:mysql://XXX:3306/X" />
-            <property name="hibernate.connection.username" value="X" />
-            <property name="hibernate.connection.password" value="X" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://192.168.99.1/test" />
+            <property name="hibernate.connection.username" value="root" />
+            <property name="hibernate.connection.password" value="admin" />
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
             <property name="hibernate.transaction.flush_before_completion" value="true" />

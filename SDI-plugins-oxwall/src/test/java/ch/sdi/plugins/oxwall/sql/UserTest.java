@@ -17,6 +17,14 @@
 
 package ch.sdi.plugins.oxwall.sql;
 
+import java.util.List;
+
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Root;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
@@ -31,6 +39,8 @@ import org.junit.Test;
  * @version 1.0 (16.11.2014)
  * @author Heri
  */
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes={OxUser.class, UserTest.class })
 public class UserTest extends CrudTestBase<OxUser>
 {
 
@@ -55,15 +65,14 @@ public class UserTest extends CrudTestBase<OxUser>
     @Before
     public  void setUp() throws Exception
     {
-        super.createSession();
-//        super.deleteAll();
+        super.setUp();
     }
 
     @Override
     @After
     public void tearDown() throws Exception
     {
-        super.closeSession();
+        super.tearDown();
     }
 
 
@@ -73,24 +82,44 @@ public class UserTest extends CrudTestBase<OxUser>
         super.startTransaction();
 
         OxUser newUser = new OxUser();
-        newUser.setUsername( "Heri20" );
+        newUser.setUsername( "Heri22" );
         newUser.setAccountType( "accountType" );
         newUser.setActivityStamp( 1396986027L );
-        newUser.setEmail( "heri20@lamp.vm" );
+        newUser.setEmail( "heri22@lamp.vm" );
         newUser.setJoinIp( 1234L );
         newUser.setJoinStamp( 1396980000L );
         newUser.setPassword( "asdflkj" );
 
-        saveOrUpdate( newUser );
+        persist( newUser );
+        myLog.debug( "Persisted user: " + newUser );
 
         super.commitTransaction();
 
         myLog.debug( "UserId after commit: " + newUser.getId() );
         Assert.assertTrue( newUser.getId() != 0 );
 
+        myLog.debug( "detaching newUser in order to fetch a new instance from EntityManager" );
+        em.detach( newUser );
         OxUser user = findById( newUser.getId() );
         Assert.assertNotNull( user );
         myLog.debug( "Retrieved user: " + user );
+        Assert.assertTrue( newUser != user );
+        user.setPassword( "aaaaaaaa" );
+        persist( user );
+        em.detach( user );
+
+        myLog.debug( "finding user by email" );
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
+        Root<OxUser> root = criteria.from(OxUser.class);
+        ParameterExpression<String> emailParam = cb.parameter(String.class);
+        criteria.select(root).where(cb.equal( root.get("email"), emailParam ));
+
+        TypedQuery<OxUser> query = em.createQuery(criteria);
+        query.setParameter( emailParam, "heri22@lamp.vm" );
+        List<OxUser> results = query.getResultList();
+        myLog.debug( "results: " + results );
 
     }
 

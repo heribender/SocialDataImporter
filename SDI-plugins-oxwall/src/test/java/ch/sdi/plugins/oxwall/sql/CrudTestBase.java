@@ -32,8 +32,6 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.ejb.HibernateEntityManager;
-import org.junit.After;
-import org.junit.Before;
 
 
 /**
@@ -49,7 +47,8 @@ public class CrudTestBase<T>
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( CrudTestBase.class );
 
-    private  HibernateEntityManager em;
+//    @PersistenceContext(unitName="test") ??? this is never loaded, regardless if executed with SpringTestRunner, etc.
+    protected  HibernateEntityManager em;
 
     protected Session mySession;
 
@@ -66,19 +65,19 @@ public class CrudTestBase<T>
     /**
      * @throws java.lang.Exception
      */
-    @Before
     public  void setUp() throws Exception
     {
-        // TODO: only a try out what the oxwall time stamp in DB means:
+        // only a try out what the oxwall time stamp in DB means:
         long stampFromDB = 1396986027L; // <- unix timestamp (seconds since 1970)
         Date joinStamp = new Date( stampFromDB * 1000 );
         myLog.error( "Join-Stamp: " + joinStamp );
 
+        createSession();
     }
 
-    @After
-    public  void tearDown() throws Exception
+    public void tearDown() throws Exception
     {
+        closeSession();
     }
 
     /**
@@ -95,7 +94,7 @@ public class CrudTestBase<T>
      * @param aEntity
      * @return
      */
-    protected T saveOrUpdate( T aEntity )
+    protected T persist( T aEntity )
     {
         em.persist( aEntity );
         return aEntity;
@@ -104,7 +103,6 @@ public class CrudTestBase<T>
     protected void delete( T aEntity )
     {
         em.remove( aEntity );
-//        mySession.delete( aEntity );
     }
 
     /**
@@ -167,7 +165,7 @@ public class CrudTestBase<T>
     public void commitTransaction()
     {
         // TODO: investigate in MySQL transaction management since the commit or rollback currently
-        // has no effect (the user is already persisted after save() ).
+        // has no effect (the user is already persisted after persist() ).
         if ( myTransaction != null )
         {
             myLog.debug( "going to commit" );
