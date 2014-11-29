@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -70,7 +71,8 @@ public class UserPropertyOverloaderTest
         myClassUnderTest.overrideByUserProperties();
         // Note: user.InputCollectorMapping.properties should have been found on the classpath and the
         // content should have been entered into the environment
-        Assert.assertNotNull( env.getPropertySources().get( InputCollectorMappingProperties.class.getSimpleName() ) );
+        Assert.assertNotNull( env.getPropertySources().get( SdiMainProperties.USER_OVERRIDE_PREFIX
+                                                            + InputCollectorMappingProperties.class.getSimpleName() ) );
         Assert.assertEquals( "universe", env.getProperty( "hello" ) );
         Assert.assertEquals( "Screenname", env.getProperty( "inputcollector.thing.alternateName" ) );
     }
