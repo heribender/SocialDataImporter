@@ -35,10 +35,10 @@ import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
-import ch.sdi.core.intf.MailJob;
 import ch.sdi.core.intf.PasswordEncryptor;
 import ch.sdi.core.intf.SqlJob;
 import ch.sdi.core.intf.TargetJob;
+import ch.sdi.plugins.oxwall.job.OxMailJob;
 
 
 /**
@@ -61,7 +61,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Autowired
     private PasswordEncryptor myPasswordEncryptor;
     @Autowired
-    private MailJob myMailJob;
+    private OxMailJob myMailJob;
     @Autowired
     private FtpJob myFtpJob;
     @Autowired
@@ -105,6 +105,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void preparePerson( Person<?> aPerson ) throws SdiException
     {
+        String mail = aPerson.getEMail();
         // TODO: check duplicate
 
         String password = RandomStringUtils.random( 8, true, true );

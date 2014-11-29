@@ -132,11 +132,13 @@
                 <artifactId>mail</artifactId>
                 <version>1.4.7</version>
             </dependency>
+            <!-- 
             <dependency>
                 <groupId>javax.persistence</groupId>
                 <artifactId>persistence-api</artifactId>
                 <version>1.0.2</version>
             </dependency>
+             -->
             <dependency>
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
@@ -170,10 +172,21 @@
                 <version>${logger.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.hibernate.javax.persistence</groupId>
+                <artifactId>hibernate-jpa-2.0-api</artifactId>
+                <version>1.0.1.Final</version>
+            </dependency>
+            <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>1.5.6</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <!--HIBERNATE-SPRING - LOGGER (log4j)-->
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>1.7.6</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>

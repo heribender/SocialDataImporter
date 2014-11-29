@@ -1,0 +1,196 @@
+Oxwall DB reverse engineering (V1.7.1)
+
+Tables which have a field userId:
+---------------------------------
+
+ow_base_attachment
+ow_base_authorization_moderator
+ow_base_authorization_user_role
+ow_base_avatar
+ow_base_billing_sale
+ow_base_comment
+ow_base_component_entity_place
+ow_base_component_entity_position
+ow_base_component_place_cache
+ow_base_email_verify
+ow_base_flag
+ow_base_invitation
+ow_base_invite_code
+ow_base_login_cookie
+ow_base_mass_mailing_ignore_user
+ow_base_media_panel_file
+ow_base_place_entity_scheme
+ow_base_preference_data
+ow_base_question_data
+ow_base_rate
+ow_base_remote_auth
+ow_base_search_result
+ow_base_user_auth_token
+ow_base_user_block
+ow_base_user_disapprove
+ow_base_user_featured
+ow_base_user_online
+ow_base_user_reset_password
+ow_base_user_status
+ow_base_user_suspend
+ow_base_vote
+ow_event_invite
+ow_event_item
+ow_event_user
+ow_forum_edit_post
+ow_forum_post
+ow_forum_read_topic
+ow_forum_subscription
+ow_forum_topic
+ow_friends_friendship
+ow_groups_group
+ow_groups_group_user
+ow_groups_invite
+ow_links_link
+ow_mailbox_file_upload
+ow_newsfeed_action_set
+ow_newsfeed_activity
+ow_newsfeed_follow
+ow_newsfeed_like
+ow_notifications_notification
+ow_notifications_rule
+ow_notifications_schedule
+ow_notifications_send_queue
+ow_notifications_unsubscribe
+ow_photo_album
+ow_photo_temporary
+ow_video_clip
+
+Maybe relevant for User import
+------------------------------
+ow_base_user
+    INSERT INTO `ow_base_user`(`id`, `email`, `username`, `password`, `joinStamp`, `activityStamp`, `accountType`, `emailVerify`, `joinIp`)
+	username: SDI-name: thing.alternateName
+	password: SHA-256(salt+password)
+	joinStamp: join date (unix timestamp (seconds since 1970) ) default '0'
+	activityStamp: (unix timestamp (seconds since 1970) ) default '0'  
+	accountType: the desired account
+	             Nena1: all have 290365aadde35a97f11207ca7e4279cc 	
+				 see below ow_base_question_account_type 
+	emailVerify: 0 if user has not yet verified email, 1 if it is verified ( TODO: (if 0) additional steps have to be done like providing a dataset in ow_base_email_verify and send the hash to the new user)
+	joinIp: int(11) Nena1 example: 1535710340 (all positive)
+	        PHP: ip2long(OW::getRequest()->getRemoteAddress())
+			    example: (see http://php.net/manual/en/function.ip2long.php)
+					$ip   = gethostbyname('www.example.com');
+					$long = ip2long($ip);
+					if ($long == -1 || $long === FALSE) {
+						echo 'Invalid IP, please try again';
+					} else {
+						echo $ip   . "\n";           // 192.0.34.166
+						echo $long . "\n";           // -1073732954
+						printf("%u\n", ip2long($ip)); // 3221234342
+					}
+
+					example above reverse-engineered:
+					192.0.34.166 -> 0xC0 0x00 0x22 0xA6 -> 0xC00022A6 -> 3221234342 (unsinged) -> -1073732954 (signed)
+						
+					real example 1535710340 (Nena1 and Pi):
+                    0x5B891484 -> 0x5B 0x89 0x14 0x84 -> 91.137.20.132 (whois resolves to "Thueringer Netkom GmbH")
+					real example 3559071562 (heri):
+					0x1536B654 -> 0x15 0x36 0xB6 0x54 -> 21.54.182.84 (whois resolves to DNIC, Columbus, OH)
+					    -> both resolutions do not make any sense to me!
+					real example from local network (192.168.99.110): 1234
+					0x4D2 -> 0x00 0x00 0x04 0xD2 -> 0.0.4.210
+					    -> neither this makes any sense!
+		-> Source V1.7.1: the joinIp is only inserted but never read. So I think it does not really matter what to insert here.
+			
+ow_base_question_account_type
+    INSERT INTO `ow_base_question_account_type`(`id`, `name`, `sortOrder`, `roleId`)
+	    Nena1: only one entry:
+		    (53, '290365aadde35a97f11207ca7e4279cc', 0);
+		     each user has the 'name' (hash) in its accountType field
+			 
+
+ow_base_authorization_moderator
+    -> all moderators / administrators
+
+ow_base_authorization_user_role
+    default role: 12
+	special role: 31
+	
+ow_base_authorization_role
+    12   wqewq
+	31   nena1_mitglieder
+	
+ow_base_avatar
+	INSERT INTO `ow_base_avatar`(`id`, `userId`, `hash`)
+		field 'hash' 
+			e.g. "1396979170" (all have 10 digits)
+		used for filename in ow_userfiles/plugins/base/avatars:
+			- avatar_<userId>_<hash>.jpg (1)
+			- avatar_big_<userId>_<hash>.jpg (2)
+			- avatar_original_<userId>_<hash>.jpg (3)
+		where:
+			(1) 90x90 pixels, 96 dpi, 24 pixelBits
+			(2) 190x190 pixels, 96 dpi, 24 pixelBits
+			(3) any size (original uploaded)
+
+ow_base_login_cookie
+    most users have a hash (e.g. 9b688ab281d83d92aff2d0f48021c5a4), but not all
+	(e.g. has no hash: news@lamp.vm , maybe no login yet?)
+	
+ow_base_preference_data
+    each user has values like
+	    - send_wellcome_letter
+		- mailbox_create_conversation_display_capcha
+		- mailbox_create_conversation_stamp
+		- profile_details_update_stamp
+	some users only have one of these values set (wellcome_letter), some have more than one
+    I assume it's not needed for user import
+	
+ow_base_question_data
+   some basic profile values:
+       - sex
+	   - realname
+	   - birthdate
+	   - the others are hashes (!) and concern the platform instance specific questions/data
+            e.g. 0b0e44da932442a185649d851e108d71			-> phone number
+			    is referenced in ow_base_question   (properties of the question itself like editable etc.)
+					INSERT INTO `ow_base_question` (`id`, `name`, `sectionName`, `accountTypeName`, `type`, `presentation`, `required`, `onJoin`, `onEdit`, `onSearch`, `onView`, `base`, `removable`, `columnCount`, `sortOrder`, `custom`, `parent	
+					(128, '0b0e44da932442a185649d851e108d71', 'f90cde5913235d172603cc4e7b9726e3', NULL, 'text', 'text', 0, 1, 1, 0, 1, 0, 1, 1, 6, '[]', NULL);
+				type: enum field: (text, select, datetime, boolean, multiselect) default text
+				sectionName: the section (Tab in GUI) where the profile field appears
+				acctountTypeName: (all NULL in Nena1. TODO: Maybe if there were more than one account type there would be an entry)
+		   entered values of each user is in ow_base_question_data (foreign key userId):
+				   INSERT INTO `ow_base_question_data` (`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`) VALUES
+				   (61, '0b0e44da932442a185649d851e108d71', 2, '+41 79 823 54 32', 0, NULL),
+
+	INSERT INTO `ow_base_language_value` (`id`, `languageId`, `keyId`, `value`) VALUES			   
+	(64715, 28, 18020, 'Natelnummer'),			
+		28 -> deutsch   (1 is english)
+		18020 -> key (id) in ow_base_language_key:
+			 INSERT INTO `ow_base_language_key` (`id`, `prefixId`, `key`) VALUES
+			(18020, 7, 'questions_question_0b0e44da932442a185649d851e108d71_label'),
+				7 -> ow_base_language_prefix.id=7, .prefix=base, .label=BASE
+				questions_question_0b0e44da932442a185649d851e108d71_label -> ???
+	(63173, 28, 2010, 'Drei Gründe, warum ich bei NeNa1 mitmache:'),
+
+	Values are inserted into ow_base_question_data:
+    INSERT INTO `ow_base_question_data`(`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`)
+		questionName: one of the field ow_base_question_data.questionName
+		userId:       the new userId
+		value:        depends on the type of the field (text, int, date)
+
+ow_friends_friendship
+    friendships
+	
+ow_groups_group
+    INSERT INTO `ow_groups_group`(`id`, `title`, `description`, `imageHash`, `timeStamp`, `userId`, `privacy`, `whoCanView`, `whoCanInvite`)
+	    id: used in m:n relationship in 
+
+ow_groups_group_user
+    m:n relationship between user and group
+    INSERT INTO `ow_groups_group_user`(`id`, `groupId`, `userId`, `timeStamp`, `privacy`)
+	    userId: new userId
+		groupId: the group the new user belongs to
+		timeStamp: join date (unix timestamp (seconds since 1970) )
+		privacy (varchar(100)):  ??? in my installation all is 'everybody'
+		          I cannot see any corresponding functionality in GUI. There you just can join or leave a group, but not configure any privacy.
+				  
+				  
+	

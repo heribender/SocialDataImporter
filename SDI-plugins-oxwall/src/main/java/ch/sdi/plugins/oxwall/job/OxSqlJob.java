@@ -62,4 +62,14 @@ public class OxSqlJob implements SqlJob
 
     }
 
+    /**
+     * @see ch.sdi.core.intf.SqlJob#isAlreadyPresent(ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException
+    {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
 }

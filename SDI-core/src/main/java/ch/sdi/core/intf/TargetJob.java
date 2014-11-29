@@ -36,4 +36,5 @@ public interface TargetJob
      */
     void execute( Person<?> aPerson ) throws SdiException;
 
+
 }

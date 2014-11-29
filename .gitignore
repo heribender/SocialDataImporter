@@ -8,3 +8,6 @@
 /SDI-plugins-oxwall/bin
 /SDI-core/resized.jpg
 /testTarget
+/SDI-plugins-oxwall/.settings/org.eclipse.wst.common.project.facet.core.xml
+/SDI-plugins-oxwall/.settings/org.eclipse.wst.common.project.facet.core.prefs.xml
+/SDI-plugins-oxwall/.settings/org.eclipse.jpt.core.prefs

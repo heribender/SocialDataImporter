@@ -54,9 +54,27 @@
         </Logger>
 
         <Logger
+            name="org.hibernate"
+            level="debug">
+        </Logger>
+        
+        <Logger
+            name="org.hibernate.type.BasicTypeRegistry"
+            level="info">
+        </Logger>
+        
+        <Logger
+            name="org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory"
+            level="info">
+        </Logger>
+        
+
+        <Logger
             name="org.springframework"
             level="info">
         </Logger>
+
+
 
         <!-- springs ClassPathScanningCandidateComponentProvider fetches the logger by getClass() which
         results in our derived class ch.sdi.core.util.ClassUtil$MyClassScanner -->

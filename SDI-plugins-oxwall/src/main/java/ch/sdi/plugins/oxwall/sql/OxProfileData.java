@@ -16,27 +16,39 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.plugins.oxwall.sql;
 
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
  * TODO
  *
- * @version 1.0 (23.11.2014)
+ * @version 1.0 (29.11.2014)
  * @author  Heri
  */
-public interface SqlJob extends TargetJob
+@Entity
+@Table(name="ow_base_question_data")
+public class OxProfileData
 {
-    /**
-     * Check if the person is already present in the target platform.
-     * <p>
+    /*
+     * Reverse engineered from a real oxwall DB (Nena1):
      *
-     * @param aPerson
+     * Profile data:
+     * ------------
+     * Values are inserted into ow_base_question_data:
+          INSERT INTO `ow_base_question_data`(`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`)
+              questionName: one of the field ow_base_question_data.questionName
+              userId:       the new userId
+              value:        depends on the type of the field (text, int, date)
      */
-    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
 
 }

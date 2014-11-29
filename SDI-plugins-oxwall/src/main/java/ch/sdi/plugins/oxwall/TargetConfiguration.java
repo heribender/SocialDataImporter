@@ -21,6 +21,8 @@ package ch.sdi.plugins.oxwall;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import ch.sdi.core.annotations.SdiProps;
+
 
 /**
  * TODO
@@ -30,6 +32,7 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @PropertySource("classpath:/" + "target.properties" )
+@SdiProps( "target" )
 public class TargetConfiguration
 {
     public static final String KEY_PW_SALT = "ox.passwordsalt";

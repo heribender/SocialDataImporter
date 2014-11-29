@@ -19,11 +19,8 @@ package ch.sdi.plugins.oxwall.sql;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,71 +31,66 @@ import org.junit.Test;
  * @version 1.0 (16.11.2014)
  * @author Heri
  */
-public class UserTest
+public class UserTest extends CrudTestBase<OxUser>
 {
+
+    /**
+     * Constructor
+     *
+     * @param aClass
+     */
+    public UserTest()
+    {
+        super( OxUser.class );
+    }
+
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( UserTest.class );
 
-
     /**
      * @throws java.lang.Exception
      */
+    @Override
     @Before
-    public void setUp() throws Exception
+    public  void setUp() throws Exception
     {
+        super.createSession();
+//        super.deleteAll();
     }
 
-    @Test
-    public void testSave()
+    @Override
+    @After
+    public void tearDown() throws Exception
     {
-        SessionFactory factory;
-        try
-        {
-            Configuration configuration = new Configuration()
-                .addAnnotatedClass(User.class)
-                .configure();
-//            StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder()
-//                .applySettings(configuration.getProperties());
-//            factory = configuration.buildSessionFactory(builder.build());
-            factory = configuration.buildSessionFactory();
-        }
-        catch ( Throwable ex )
-        {
-            myLog.error( "Problems creating session factory", ex );
-            throw ex;
-        }
+        super.closeSession();
+    }
 
-        Session session = factory.openSession();
 
-        Transaction tx = null;
-        Integer id = null;
-        try
-        {
-            tx = session.beginTransaction();
-            User user = new User();
-            user.setUsername( "Heri1" );
-            user.setAccountType( "accountType" );
-            user.setActivityStamp( 1234L );
-            user.setEmail( "heri2@lamp.vm" );
-            user.setJoinIp( 1234L );
-            user.setJoinStamp( 1234L );
-            user.setPassword( "asdflkj" );
-            id = (Integer) session.save( user );
-            tx.commit();
-        }
-        catch ( HibernateException e )
-        {
-            if ( tx != null )
-                tx.rollback();
-            myLog.error( e.getMessage() );
-        }
-        finally
-        {
-            session.close();
-        }
+    @Test
+    public void testCreate()
+    {
+        super.startTransaction();
 
-        myLog.debug( "Received ID: " + id );
+        OxUser newUser = new OxUser();
+        newUser.setUsername( "Heri20" );
+        newUser.setAccountType( "accountType" );
+        newUser.setActivityStamp( 1396986027L );
+        newUser.setEmail( "heri20@lamp.vm" );
+        newUser.setJoinIp( 1234L );
+        newUser.setJoinStamp( 1396980000L );
+        newUser.setPassword( "asdflkj" );
+
+        saveOrUpdate( newUser );
+
+        super.commitTransaction();
+
+        myLog.debug( "UserId after commit: " + newUser.getId() );
+        Assert.assertTrue( newUser.getId() != 0 );
+
+        OxUser user = findById( newUser.getId() );
+        Assert.assertNotNull( user );
+        myLog.debug( "Retrieved user: " + user );
 
     }
 

@@ -17,8 +17,6 @@
 
 package ch.sdi.plugins.oxwall.pw;
 
-import java.util.Date;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
@@ -76,10 +74,6 @@ public class PasswordEncryptorTest implements ApplicationContextAware
         myLog.debug( "Creating class under test" );
         myClassUnderTest = myCtx.getBean( PasswordEncryptor.class );
 
-        // TODO: only try out what the oxwall time stamp in DB means:
-        long stampFromDB = 1414797228L; // <- unix timestamp (seconds since 1970)
-        Date joinStamp = new Date( stampFromDB * 1000 );
-        myLog.error( joinStamp );
     }
 
     /**
