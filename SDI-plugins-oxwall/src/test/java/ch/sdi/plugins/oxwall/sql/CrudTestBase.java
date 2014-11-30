@@ -21,17 +21,13 @@ package ch.sdi.plugins.oxwall.sql;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
+import javax.persistence.EntityTransaction;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.ejb.HibernateEntityManager;
+
+import ch.sdi.plugins.oxwall.job.EntityManagerProvider;
 
 
 /**
@@ -49,10 +45,7 @@ public class CrudTestBase<T>
 
 //    @PersistenceContext(unitName="test") ??? this is never loaded, regardless if executed with SpringTestRunner, etc.
     protected  HibernateEntityManager em;
-
-    protected Session mySession;
-
-    private Transaction myTransaction;
+    private EntityTransaction myTransaction;
 
     private Class<T> myClass;
 
@@ -72,12 +65,12 @@ public class CrudTestBase<T>
         Date joinStamp = new Date( stampFromDB * 1000 );
         myLog.error( "Join-Stamp: " + joinStamp );
 
-        createSession();
+        initPersistence();
     }
 
     public void tearDown() throws Exception
     {
-        closeSession();
+        closeEntityMangaer();
     }
 
     /**
@@ -106,48 +99,22 @@ public class CrudTestBase<T>
     }
 
     /**
-     *
-     */
-    protected void deleteAll()
-    {
-        getTableName();
-        Query q1 = em.createQuery("DELETE FROM Country c");
-        TypedQuery<T> q2 =
-                em.createQuery("DELETE FROM Country c", myClass );
-        // TODO Auto-generated method stub
-
-    }
-
-
-    /**
-     *
-     */
-    private void getTableName()
-    {
-        // TODO Auto-generated method stub
-
-    }
-
-    /**
      * @param aClass
      */
-    protected void createSession()
+    protected void initPersistence()
     {
-        EntityManagerFactory emFactory = Persistence.createEntityManagerFactory( "test" );
-        EntityManager o =  emFactory.createEntityManager();
-        em = (HibernateEntityManager) o;
-        mySession = em.getSession();
+        em = EntityManagerProvider.getEntityManager( "oxwall" );
     }
 
     /**
      *
      */
-    protected void closeSession()
+    protected void closeEntityMangaer()
     {
-        if ( mySession != null )
+        if ( em != null )
         {
-            mySession.close();
-        } // if mySession != null
+            em.close();
+        } // if em != null
     }
 
     /**
@@ -156,7 +123,8 @@ public class CrudTestBase<T>
     public void startTransaction()
     {
         myLog.debug( "starting transaction" );
-        myTransaction = mySession.beginTransaction();
+        myTransaction = em.getTransaction();
+        myTransaction.begin();
     }
 
     /**

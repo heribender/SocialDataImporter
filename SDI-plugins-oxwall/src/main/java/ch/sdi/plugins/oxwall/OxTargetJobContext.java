@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
@@ -95,8 +96,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void prepare() throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        mySqlJob.initPersistence();
     }
 
     /**
@@ -105,8 +105,10 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void preparePerson( Person<?> aPerson ) throws SdiException
     {
-        String mail = aPerson.getEMail();
-        // TODO: check duplicate
+        if ( mySqlJob.isAlreadyPresent( aPerson ) )
+        {
+            throw new SdiDuplicatePersonException( aPerson );
+        } // if mySqlJob.isAlreadyPresent( aPerson )
 
         String password = RandomStringUtils.random( 8, true, true );
         String encrypted = myPasswordEncryptor.encrypt( password );
@@ -124,26 +126,34 @@ public class OxTargetJobContext implements CustomTargetJobContext
         {
             myLog.debug( "Skipping custom prepare job (not configured)" );
         }
+
+        mySqlJob.startTransaction();
+
     }
 
     /**
      * @see ch.sdi.core.intf.TargetJobContext#finalizePerson()
      */
     @Override
-    public void finalizePerson( Person<?> aPerson ) throws SdiException
+    public void finalizePerson( Person<?> aPerson, SdiException aException ) throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        if ( aException == null )
+        {
+            mySqlJob.commitTransaction();
+        }
+        else
+        {
+            mySqlJob.rollbackTransaction();
+        } // if..else aException == null
     }
 
     /**
      * @see ch.sdi.core.intf.TargetJobContext#release()
      */
     @Override
-    public void release() throws SdiException
+    public void release( SdiException aException ) throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        mySqlJob.closePersistence();
     }
 
 }

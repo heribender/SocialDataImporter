@@ -16,49 +16,35 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.plugins.oxwall.job;
 
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
+import org.hibernate.ejb.HibernateEntityManager;
 
 
 /**
  * TODO
  *
- * @version 1.0 (23.11.2014)
+ * @version 1.0 (30.11.2014)
  * @author  Heri
  */
-public interface SqlJob extends TargetJob
+public class EntityManagerProvider
 {
-    /**
-     * Check if the person is already present in the target platform.
-     * <p>
-     *
-     * @param aPerson
-     */
-    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
 
-    /**
-     *
-     */
-    public void initPersistence();
+    private static EntityManagerFactory myFactory;
 
-    public void closePersistence();
+    public static HibernateEntityManager getEntityManager( String aPersistenceUnit )
+    {
+        if ( myFactory == null )
+        {
+            myFactory = Persistence.createEntityManagerFactory( aPersistenceUnit );
+        } // if myFactory == null
 
-    /**
-     *
-     */
-    public void startTransaction();
+        EntityManager o =  myFactory.createEntityManager();
+        return (HibernateEntityManager) o;
 
-    /**
-     *
-     */
-    public void commitTransaction();
-
-    /**
-     *
-     */
-    public void rollbackTransaction();
-
-
+    }
 }

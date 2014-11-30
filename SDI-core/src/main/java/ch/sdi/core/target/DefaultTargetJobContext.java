@@ -84,7 +84,7 @@ public class DefaultTargetJobContext implements TargetJobContext
      * @see ch.sdi.core.intf.TargetJobContext#finalizePerson(ch.sdi.core.impl.data.Person)
      */
     @Override
-    public void finalizePerson( Person<?> aPerson ) throws SdiException
+    public void finalizePerson( Person<?> aPerson, SdiException aException ) throws SdiException
     {
         myLog.debug( "No platform specific TargetJobContext configured. Doing nothing" );
     }
@@ -93,7 +93,7 @@ public class DefaultTargetJobContext implements TargetJobContext
      * @see ch.sdi.core.intf.TargetJobContext#release()
      */
     @Override
-    public void release() throws SdiException
+    public void release( SdiException aException ) throws SdiException
     {
         myLog.debug( "No platform specific TargetJobContext configured. Doing nothing" );
     }

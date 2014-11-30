@@ -35,7 +35,7 @@ public interface TargetJobContext
     public Collection<? extends TargetJob> getJobs() throws SdiException;
     public void prepare() throws SdiException;
     public void preparePerson( Person<?> aPerson ) throws SdiException;
-    public void finalizePerson( Person<?> aPerson ) throws SdiException;
-    public void release() throws SdiException;
+    public void finalizePerson( Person<?> aPerson, SdiException aException ) throws SdiException;
+    public void release( SdiException aException ) throws SdiException;
 
 }
