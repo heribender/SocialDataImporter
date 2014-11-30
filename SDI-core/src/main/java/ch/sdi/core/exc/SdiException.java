@@ -91,6 +91,34 @@ public class SdiException extends Exception
         return myExitCode;
     }
 
+    /**
+     * @param aThrowable
+     * @return
+     */
+    public static SdiException toSdiException( Throwable aThrowable )
+    {
+        return toSdiException( aThrowable, SdiException.EXIT_CODE_UNKNOWN_ERROR );
+    }
+
+    /**
+     * @param aThrowable
+     * @return
+     */
+    public static SdiException toSdiException( Throwable aThrowable, int aErrorCode )
+    {
+        SdiException newEx;
+        if ( aThrowable instanceof SdiException )
+        {
+            newEx = (SdiException) aThrowable;
+        }
+        else
+        {
+            newEx = new SdiException( "Throwable caught ", aThrowable, aErrorCode );
+        } // if..else t instanceof SdiException
+
+        return newEx;
+    }
+
     @Override
     public String toString()
     {

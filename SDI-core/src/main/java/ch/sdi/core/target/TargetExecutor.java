@@ -99,6 +99,12 @@ public class TargetExecutor
             } // if failedPersons.isEmpty()
 
         }
+        catch ( Throwable t )
+        {
+            SdiException newEx = SdiException.toSdiException( t );
+            myTargetJobContext.release( newEx );
+            throw newEx;
+        }
         finally
         {
             if ( !myFailedPersons.isEmpty() )
@@ -111,7 +117,7 @@ public class TargetExecutor
                 myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET, "DuplicatePersons", myDuplicatePersons ) );
             } // if failedPersons.isEmpty()
 
-            myTargetJobContext.release();
+            myTargetJobContext.release( null );
         }
 
 
@@ -134,7 +140,7 @@ public class TargetExecutor
                 job.execute( aPerson );
             }
 
-            myTargetJobContext.finalizePerson( aPerson );
+            myTargetJobContext.finalizePerson( aPerson, null );
 
         }
         catch ( SdiDuplicatePersonException t )
@@ -142,6 +148,7 @@ public class TargetExecutor
             myLog.info( "Person " + aPerson.getFamilyName() +
                     " already a user of the target platform. Skip" );
             myDuplicatePersons.add( aPerson );
+            myTargetJobContext.finalizePerson( aPerson, t );
         }
         catch ( Throwable t )
         {
@@ -154,12 +161,11 @@ public class TargetExecutor
                 return;
             }
 
-            if ( t instanceof SdiException )
-            {
-                throw (SdiException) t;
-            } // if t instanceof SdiException
+            SdiException newEx = SdiException.toSdiException( t, SdiException.EXIT_CODE_IMPORT_ERROR );
 
-            throw new SdiException( t.getMessage(), t, SdiException.EXIT_CODE_IMPORT_ERROR );
+            myTargetJobContext.finalizePerson( aPerson, newEx );
+
+            throw newEx;
         }
 
     }
