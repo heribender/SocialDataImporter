@@ -41,7 +41,7 @@ import org.junit.Test;
  */
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes={OxUser.class, UserTest.class })
-public class UserTest extends CrudTestBase<OxUser>
+public class OxUserTest extends CrudTestBase<OxUser>
 {
 
     /**
@@ -49,14 +49,14 @@ public class UserTest extends CrudTestBase<OxUser>
      *
      * @param aClass
      */
-    public UserTest()
+    public OxUserTest()
     {
         super( OxUser.class );
     }
 
 
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( UserTest.class );
+    private Logger myLog = LogManager.getLogger( OxUserTest.class );
 
     /**
      * @throws java.lang.Exception

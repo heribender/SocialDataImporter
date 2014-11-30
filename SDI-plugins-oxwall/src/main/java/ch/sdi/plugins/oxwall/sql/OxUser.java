@@ -76,43 +76,8 @@ public class OxUser
                                 -> neither this makes any sense!
                 -> Source V1.7.1: the joinIp is only inserted but never read. So I think it does not really matter what to insert here.
 
-     * Profile data:
-     * ------------
-     * Values are inserted into ow_base_question_data:
-          INSERT INTO `ow_base_question_data`(`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`)
-              questionName: one of the field ow_base_question_data.questionName
-              userId:       the new userId
-              value:        depends on the type of the field (text, int, date)
-
-        ow_base_avatar
-            INSERT INTO `ow_base_avatar`(`id`, `userId`, `hash`)
-                field 'hash'
-                    e.g. "1396979170" (all have 10 digits)
-                used for filename in ow_userfiles/plugins/base/avatars:
-                    - avatar_<userId>_<hash>.jpg (1)
-                    - avatar_big_<userId>_<hash>.jpg (2)
-                    - avatar_original_<userId>_<hash>.jpg (3)
-                where:
-                    (1) 90x90 pixels, 96 dpi, 24 pixelBits
-                    (2) 190x190 pixels, 96 dpi, 24 pixelBits
-                    (3) any size (original uploaded)
-
-      Group membership:
-      ----------------
-          ow_groups_group
-              INSERT INTO `ow_groups_group`(`id`, `title`, `description`, `imageHash`, `timeStamp`, `userId`, `privacy`, `whoCanView`, `whoCanInvite`)
-                  id: used in m:n relationship in
-
-          ow_groups_group_user
-              m:n relationship between user and group
-              INSERT INTO `ow_groups_group_user`(`id`, `groupId`, `userId`, `timeStamp`, `privacy`)
-                  userId: new userId
-                  groupId: the group the new user belongs to
-                  timeStamp: join date (unix timestamp (seconds since 1970) )
-                  privacy (varchar(100)):  ??? in my installation all is 'everybody'
-                          I cannot see any corresponding functionality in GUI. There you just can join or leave a group, but not configure any privacy.
-
      */
+
     @Id
     @GeneratedValue
     private Long id;

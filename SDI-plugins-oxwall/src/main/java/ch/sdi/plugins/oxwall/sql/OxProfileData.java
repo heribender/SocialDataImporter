@@ -18,6 +18,10 @@
 
 package ch.sdi.plugins.oxwall.sql;
 
+
+
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -49,6 +53,143 @@ public class OxProfileData
     @Id
     @GeneratedValue
     private Long id;
+    private String questionName;
+    private Long userId;
+    private String textValue = "";
+    private Long intValue = 0L;
+    private Date dateValue;
 
+    /**
+     * @return id
+     */
+    public Long getId()
+    {
+        return id;
+    }
+
+    /**
+     * @param  aId
+     *         id to set
+     */
+    public void setId( Long aId )
+    {
+        id = aId;
+    }
+
+    /**
+     * @return questionName
+     */
+    public String getQuestionName()
+    {
+        return questionName;
+    }
+
+    /**
+     * @param  aQuestionName
+     *         questionName to set
+     */
+    public void setQuestionName( String aQuestionName )
+    {
+        questionName = aQuestionName;
+    }
+
+    /**
+     * @return userId
+     */
+    public Long getUserId()
+    {
+        return userId;
+    }
+
+    /**
+     * @param  aUserId
+     *         userId to set
+     */
+    public void setUserId( Long aUserId )
+    {
+        userId = aUserId;
+    }
+
+    /**
+     * @return textValue
+     */
+    public String getTextValue()
+    {
+        return textValue;
+    }
+
+    /**
+     * @param  aTextValue
+     *         textValue to set
+     */
+    public void setTextValue( String aTextValue )
+    {
+        // column is defined to be NotNull
+        if ( aTextValue == null )
+        {
+            textValue = "";
+        }
+        else
+        {
+            textValue = aTextValue;
+        } // if..else aIntValue == null
+    }
+
+    /**
+     * @return intValue
+     */
+    public Long getIntValue()
+    {
+        return intValue;
+    }
+
+    /**
+     * @param  aIntValue
+     *         intValue to set
+     */
+    public void setIntValue( Long aIntValue )
+    {
+        // column is defined to be NotNull
+        if ( aIntValue == null )
+        {
+            intValue = 0L;
+        }
+        else
+        {
+            intValue = aIntValue;
+        } // if..else aIntValue == null
+    }
+
+    /**
+     * @return dateValue
+     */
+    public Date getDateValue()
+    {
+        return dateValue;
+    }
+
+    /**
+     * @param  aDateValue
+     *         dateValue to set
+     */
+    public void setDateValue( Date aDateValue )
+    {
+        dateValue = aDateValue;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    id           : " ).append( id );
+        sb.append( "\n    questionName : " ).append( questionName );
+        sb.append( "\n    userId       : " ).append( userId );
+        sb.append( "\n    textValue    : " ).append( textValue );
+        sb.append( "\n    intValue     : " ).append( intValue );
+        sb.append( "\n    dateValue    : " ).append( dateValue );
+
+        return sb.toString();
+    }
 
 }
