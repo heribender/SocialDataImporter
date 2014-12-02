@@ -42,14 +42,14 @@ import ch.sdi.plugins.oxwall.TargetConfiguration;
  * @author Heri
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={PasswordEncryptor.class })
-public class PasswordEncryptorTest implements ApplicationContextAware
+@ContextConfiguration(classes={OxPasswordEncryptor.class })
+public class OxPasswordEncryptorTest implements ApplicationContextAware
 {
 
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( PasswordEncryptorTest.class );
+    private Logger myLog = LogManager.getLogger( OxPasswordEncryptorTest.class );
 
-    private PasswordEncryptor myClassUnderTest;
+    private OxPasswordEncryptor myClassUnderTest;
     @Autowired
     private ConfigurableEnvironment  myEnv;
     private static ApplicationContext myCtx = null;
@@ -72,7 +72,7 @@ public class PasswordEncryptorTest implements ApplicationContextAware
         TestUtils.addToEnvironment( myEnv, TargetConfiguration.KEY_PW_SALT, SALT );
 
         myLog.debug( "Creating class under test" );
-        myClassUnderTest = myCtx.getBean( PasswordEncryptor.class );
+        myClassUnderTest = myCtx.getBean( OxPasswordEncryptor.class );
 
     }
 
@@ -92,7 +92,7 @@ public class PasswordEncryptorTest implements ApplicationContextAware
     }
 
     /**
-     * Test method for {@link ch.sdi.plugins.oxwall.pw.PasswordEncryptor#encrypt(java.lang.String)}.
+     * Test method for {@link ch.sdi.plugins.oxwall.pw.OxPasswordEncryptor#encrypt(java.lang.String)}.
      */
     @Test
     public void testEncrypt() throws Throwable

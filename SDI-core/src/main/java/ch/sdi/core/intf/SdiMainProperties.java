@@ -35,6 +35,7 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_DRYRUN = "sdi.dry-run";
     public static final String KEY_PROPERTIESOVERRIDE_INCLUDEROOT =
             "sdi.propertiesoverride.includeroot";
+    public static final String KEY_OUTPUT_DIR = "sdi.outputDir";
 
     public static final String KEY_COLLECT_TYPE = "sdi.collect.type";
 

@@ -18,6 +18,7 @@
 
 package ch.sdi.plugins.oxwall;
 
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -68,6 +69,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Autowired
     private SqlJob mySqlJob;
 
+
     /**
      * Constructor
      *
@@ -115,6 +117,8 @@ public class OxTargetJobContext implements CustomTargetJobContext
         aPerson.setProperty( PersonKey.PASSWORD.getKeyName(), password );
         aPerson.setProperty( PersonKey.ENCRYPTED_PASSWORD.getKeyName(), encrypted );
 
+        BufferedImage bufferedImage = aPerson.getProperty( PersonKey.THING_IMAGE.getKeyName(),
+                                                           BufferedImage.class );
 
         // TODO: generate Avatar-Pictures
 

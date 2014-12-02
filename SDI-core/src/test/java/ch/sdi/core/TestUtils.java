@@ -18,15 +18,14 @@
 package ch.sdi.core;
 
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
+
+import ch.sdi.core.impl.cfg.ConfigHelper;
 
 
 /**
@@ -51,7 +50,7 @@ public class TestUtils
      */
     public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
     {
-        Map<String, Object> map = getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "setting property " + aKey + " = " + aValue + " into the environment" );
         map.remove( aKey );
@@ -60,7 +59,7 @@ public class TestUtils
 
     public static void removeFromEnvironment( ConfigurableEnvironment aEnv, String aKey )
     {
-        Map<String, Object> map = getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "removing property " + aKey + " from the environment" );
         map.remove( aKey );
@@ -68,39 +67,11 @@ public class TestUtils
 
     public static void replaceInEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
     {
-        Map<String, Object> map = getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "replacing property " + aKey + " in the environment. New value: " + aValue  );
         map.remove( aKey );
         map.put( aKey, aValue );
-    }
-
-    /**
-     * @param aEnv
-     * @param aPropertySourceName
-     * @return
-     */
-    private static Map<String, Object> getOrCreatePropertySource( ConfigurableEnvironment aEnv,
-                                                                  String aPropertySourceName )
-    {
-        MutablePropertySources mps = aEnv.getPropertySources();
-        PropertySource<?> ps = mps.get( aPropertySourceName );
-        PropertiesPropertySource pps = null;
-
-        if ( ps == null )
-        {
-            Properties props = new Properties();
-            pps = new PropertiesPropertySource( aPropertySourceName, props );
-            mps.addFirst( pps );
-        }
-        else
-        {
-            Assert.assertTrue( ps instanceof PropertiesPropertySource );
-            pps = (PropertiesPropertySource) ps;
-        }
-
-        Map<String,Object> map = pps.getSource();
-        return map;
     }
 
     /**

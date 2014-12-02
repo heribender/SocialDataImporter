@@ -146,7 +146,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public Date getBirthdate()
     {
-        return internalGetProperty( PersonKey.PERSON_BIRTHDATE.getKeyName(), Date.class );
+        return getProperty( PersonKey.PERSON_BIRTHDATE.getKeyName(), Date.class );
 
 //        if ( o == null )
 //        {
@@ -193,16 +193,16 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
     @Override
     public Object getProperty( String aKey )
     {
-        return internalGetProperty( aKey, Object.class );
+        return getProperty( aKey, Object.class );
     }
 
     private String internalGetStringProperty( String aKey )
     {
-        return internalGetProperty( aKey, String.class );
+        return getProperty( aKey, String.class );
     }
 
     @SuppressWarnings( "unchecked" )
-    private <R> R internalGetProperty( String aKey, Class<? super R> aClass )
+    public <R> R getProperty( String aKey, Class<R> aClass )
     {
         Object o = getSource().get( aKey );
 

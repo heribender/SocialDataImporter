@@ -17,9 +17,17 @@
 
 package ch.sdi.core.impl.cfg;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertiesPropertySource;
+import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
@@ -36,8 +44,10 @@ public class ConfigHelper
 {
 
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( ConfigHelper.class );
+    private static Logger myLog = LogManager.getLogger( ConfigHelper.class );
     public static final String PROP_SOURCE_NAME_CMD_LINE = "CommandLineArguments";
+    private static final String PROP_SOURCE_NAME_DYNAMIC = "DynamicProperties";
+    public static final String KEY_PROP_OUTPUT_DIR = "dynamic.outputDir.file";
 
     /**
      * Converts the given classname into a properties file name according following rules:
@@ -185,6 +195,48 @@ public class ConfigHelper
         {
             return aDefault;
         }
+    }
+
+    /**
+     * @param aEnv
+     * @param aKey
+     * @param aValue
+     */
+    public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, Object aValue )
+    {
+        Map<String, Object> map = getOrCreatePropertySource( aEnv, PROP_SOURCE_NAME_DYNAMIC );
+
+        myLog.debug( "setting property " + aKey + " = " + aValue + " into the environment" );
+        map.remove( aKey );
+        map.put( aKey, aValue );
+    }
+
+    /**
+     * @param aEnv
+     * @param aPropertySourceName
+     * @return
+     */
+    public static Map<String, Object> getOrCreatePropertySource( ConfigurableEnvironment aEnv,
+                                                                 String aPropertySourceName )
+    {
+        MutablePropertySources mps = aEnv.getPropertySources();
+        PropertySource<?> ps = mps.get( aPropertySourceName );
+        PropertiesPropertySource pps = null;
+
+        if ( ps == null )
+        {
+            Properties props = new Properties();
+            pps = new PropertiesPropertySource( aPropertySourceName, props );
+            mps.addFirst( pps );
+        }
+        else
+        {
+            Assert.assertTrue( ps instanceof PropertiesPropertySource );
+            pps = (PropertiesPropertySource) ps;
+        }
+
+        Map<String,Object> map = pps.getSource();
+        return map;
     }
 
 

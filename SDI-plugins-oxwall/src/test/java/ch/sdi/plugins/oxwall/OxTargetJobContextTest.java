@@ -15,45 +15,57 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.plugins.oxwall.pw;
 
-import java.security.NoSuchAlgorithmException;
+package ch.sdi.plugins.oxwall;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.stereotype.Component;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.sdi.plugins.oxwall.TargetConfiguration;
+import ch.sdi.plugins.oxwall.job.OxFtpJob;
+import ch.sdi.plugins.oxwall.job.OxMailJob;
+import ch.sdi.plugins.oxwall.job.OxSqlJob;
+import ch.sdi.plugins.oxwall.pw.OxPasswordEncryptor;
 
 
 /**
  * TODO
  *
- * @version 1.0 (01.11.2014)
+ * @version 1.0 (01.12.2014)
  * @author  Heri
  */
-@Component
-public class PasswordEncryptor implements ch.sdi.core.intf.PasswordEncryptor
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes={ OxTargetJobContext.class,
+                                OxPasswordEncryptor.class,
+                                OxMailJob.class,
+                                OxFtpJob.class,
+                                OxSqlJob.class })
+public class OxTargetJobContextTest
 {
-
-    private Logger myLog = LogManager.getLogger( PasswordEncryptor.class );
+    /** logger for this class */
+    private Logger myLog = LogManager.getLogger( OxTargetJobContextTest.class );
+    @Autowired
+    private OxTargetJobContext myClassUnderTest;
     @Autowired
     private ConfigurableEnvironment  myEnv;
 
     /**
-     * @throws NoSuchAlgorithmException
-     * @see ch.sdi.core.intf.PasswordEncryptor#encrypt(java.lang.String)
+     * @throws java.lang.Exception
      */
-    @Override
-    public String encrypt( String aPassword )
+    @Before
+    public void setUp() throws Exception
     {
-        String salt = myEnv.getProperty( TargetConfiguration.KEY_PW_SALT );
-        String hash = DigestUtils.sha256Hex( salt + aPassword );
-        myLog.debug( "hashed password: " + hash );
-        return new String( hash );
     }
 
+    @Test
+    public void test()
+    {
+
+    }
 }
