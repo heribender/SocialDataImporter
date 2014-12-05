@@ -18,16 +18,22 @@
 
 package ch.sdi.core.impl.data.converter;
 
-import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.data.converter.ConverterGender.Gender;
 import ch.sdi.core.intf.FieldConverter;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -39,30 +45,66 @@ import ch.sdi.core.intf.FieldConverter;
 @SdiConverter( ConverterGender.CONVERTER_NAME )
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ConverterGender implements FieldConverter<Date>
+public class ConverterGender implements FieldConverter<Gender>
 {
-    // TODO: implement a configurable gender converter which fills field person.gender
+
+    /** logger for this class */
+    private Logger myLog = LogManager.getLogger( ConverterGender.class );
+
+    public enum Gender
+    {
+        male,
+        female,
+        unknown,
+        dontcare
+    }
 
     public static final String CONVERTER_NAME = "toGender";
+
+    private Map<String,Gender> myGenderMapping;
 
     /**
      * @see ch.sdi.core.intf.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
      */
     @Override
-    public FieldConverter<Date> init( Environment aEnv, String aFieldname ) throws SdiException
+    public FieldConverter<Gender> init( Environment aEnv, String aFieldname ) throws SdiException
     {
-        // TODO Auto-generated method stub
-        return null;
+        myGenderMapping = new HashMap<String,Gender>();
+
+        for ( Gender gender : Gender.values() )
+        {
+            String pattern = aEnv.getProperty( SdiMainProperties.KEY_PREFIX_CONVERTER
+                                               + CONVERTER_NAME + "." + gender );
+            if ( StringUtils.hasText( pattern ) )
+            {
+                pattern = pattern.trim();
+                myLog.trace( "Gender mapping found for " + gender + ": " + pattern );
+                myGenderMapping.put( pattern, gender );
+            } // if StringUtils.hasText( pattern )
+        }
+
+        return this;
     }
 
     /**
      * @see ch.sdi.core.intf.FieldConverter#convert(java.lang.String)
      */
     @Override
-    public Date convert( String aValue ) throws SdiException
+    public Gender convert( String aValue ) throws SdiException
     {
-        // TODO Auto-generated method stub
-        return null;
+        Gender result = myGenderMapping.get( aValue );
+
+        if ( result != null )
+        {
+            return result;
+        } // if result != null
+
+        if ( StringUtils.hasText( aValue ) )
+        {
+            myLog.warn( "Unknown gender pattern received: " + aValue );
+        } // if StringUtils.hasText( aValue )
+
+        return Gender.unknown;
     }
 
 }

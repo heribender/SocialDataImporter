@@ -48,6 +48,36 @@ public class OxProfileData
               questionName: one of the field ow_base_question_data.questionName
               userId:       the new userId
               value:        depends on the type of the field (text, int, date)
+          where one of the xxxValue fields is filled, depending on the type of the value
+
+       some question names are hardcoded:
+       - sex
+       - realname
+       - birthdate
+       the others are hashes:
+        the others are hashes (!) and concern the platform instance specific questions/data
+                    e.g. 0b0e44da932442a185649d851e108d71           -> phone number
+                        is referenced in ow_base_question   (properties of the question itself like editable etc.)
+                            INSERT INTO `ow_base_question` (`id`, `name`, `sectionName`, `accountTypeName`, `type`, `presentation`, `required`, `onJoin`, `onEdit`, `onSearch`, `onView`, `base`, `removable`, `columnCount`, `sortOrder`, `custom`, `parent
+                            (128, '0b0e44da932442a185649d851e108d71', 'f90cde5913235d172603cc4e7b9726e3', NULL, 'text', 'text', 0, 1, 1, 0, 1, 0, 1, 1, 6, '[]', NULL);
+                        type: enum field: (text, select, datetime, boolean, multiselect) default text
+                        sectionName: the section (Tab in GUI) where the profile field appears
+                        acctountTypeName: (all NULL in Nena1. TODO: Maybe if there were more than one account type there would be an entry)
+                   entered values of each user is in ow_base_question_data (foreign key userId):
+                           INSERT INTO `ow_base_question_data` (`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`) VALUES
+                           (61, '0b0e44da932442a185649d851e108d71', 2, '+41 79 823 54 32', 0, NULL),
+
+            INSERT INTO `ow_base_language_value` (`id`, `languageId`, `keyId`, `value`) VALUES
+            (64715, 28, 18020, 'Natelnummer'),
+                28 -> deutsch   (1 is english)
+                18020 -> key (id) in ow_base_language_key:
+                     INSERT INTO `ow_base_language_key` (`id`, `prefixId`, `key`) VALUES
+                    (18020, 7, 'questions_question_0b0e44da932442a185649d851e108d71_label'),
+                        7 -> ow_base_language_prefix.id=7, .prefix=base, .label=BASE
+                        questions_question_0b0e44da932442a185649d851e108d71_label -> ???
+            (63173, 28, 2010, 'Drei Gründe, warum ich bei NeNa1 mitmache:'),
+
+
      */
 
     @Id

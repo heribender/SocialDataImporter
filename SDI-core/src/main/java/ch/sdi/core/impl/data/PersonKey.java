@@ -18,6 +18,12 @@
 
 package ch.sdi.core.impl.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.util.StringUtils;
+
 
 /**
  * TODO
@@ -360,25 +366,7 @@ public enum PersonKey
      * Description: URL of the item.<p>
      * Type       : URL<p>
      */
-    THING_URL ( "thing.url" ),
-
-    //////////////////////////////////////////////////////////////////
-    // added by SDI since missing
-    //////////////////////////////////////////////////////////////////
-
-    /**
-     * Description: password of the user<p>
-     * Type       : Text<p>
-     */
-    PASSWORD ( "person.password" ),
-
-    /**
-     * Description: encrypted password of the user (e.g. hashed)<p>
-     * Type       : Text<p>
-     */
-    ENCRYPTED_PASSWORD ( "person.enc_password" )
-
-
+    THING_URL ( "thing.url" )
     ;
 
     private String myKeyName;
@@ -401,6 +389,43 @@ public enum PersonKey
         return myKeyName;
     }
 
+    public static final String KEY_CUSTOM_KEYS = "sdi.person.customkeys";
+    private static List<String> myCustomKeys = new ArrayList<String>();
+
+    /**
+     * @param aEnv
+     */
+    public static void initCustomKeys( ConfigurableEnvironment aEnv )
+    {
+        myCustomKeys = new ArrayList<String>();
+
+        String configured = aEnv.getProperty( KEY_CUSTOM_KEYS );
+        if ( !StringUtils.hasText( configured ) )
+        {
+            return;
+        } // if !StringUtils.hasText( configured )
+
+        String[] keys = configured.trim().split( "," );
+
+        for ( String key : keys )
+        {
+            myCustomKeys.add( key );
+        }
+    }
+
+    public static List<String> getKeyNames()
+    {
+        List<String> result = new ArrayList<String>();
+
+        for ( PersonKey key : PersonKey.values() )
+        {
+            result.add( key.getKeyName() );
+        }
+
+        result.addAll( myCustomKeys );
+
+        return result;
+    }
 
 
 

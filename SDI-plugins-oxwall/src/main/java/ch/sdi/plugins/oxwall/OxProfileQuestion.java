@@ -16,42 +16,66 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.plugins.oxwall;
 
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Entity for holding oxwalls profile question names (which can be customized)
  *
- * @version 1.0 (23.11.2014)
+ * @version 1.0 (05.12.2014)
  * @author  Heri
  */
-public interface SqlJob extends TargetJob
+public class OxProfileQuestion
 {
-    /**
-     * Check if the person is already present in the target platform.
-     * <p>
-     *
-     * @param aPerson
-     */
-    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
+    private OxQuestionType myType;
+    /** the question name */
+    private String myName;
 
     /**
-     *
+     * @return type
      */
-    public void startTransaction();
+    public OxQuestionType getType()
+    {
+        return myType;
+    }
 
     /**
-     *
+     * @param  aType
+     *         type to set
      */
-    public void commitTransaction();
+    public void setType( OxQuestionType aType )
+    {
+        myType = aType;
+    }
 
     /**
-     *
+     * @return value
      */
-    public void rollbackTransaction();
+    public String getValue()
+    {
+        return myName;
+    }
+
+    /**
+     * @param  aValue
+     *         value to set
+     */
+    public void setValue( String aValue )
+    {
+        myName = aValue;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    Type : " ).append( myType );
+        sb.append( "\n    Name : " ).append( myName );
+        return sb.toString();
+    }
+
 
 
 }

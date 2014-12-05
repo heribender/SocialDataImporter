@@ -18,24 +18,26 @@
 
 package ch.sdi.plugins.oxwall;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import java.util.Date;
 
-import ch.sdi.core.annotations.SdiProps;
 
 
 /**
  * TODO
  *
- * @version 1.0 (24.11.2014)
+ * @version 1.0 (04.12.2014)
  * @author  Heri
  */
-@Configuration
-@PropertySource("classpath:/" + "target.properties" )
-@SdiProps( "target" )
-public class TargetConfiguration
+public class OxUtils
 {
-    public static final String KEY_PW_SALT = "ox.passwordsalt";
-    public static final String KEY_USER_ACCOUNT_TYPE = "ox.ow_base_user.accounttype";
 
+    public static long dateToLong( Date aDate )
+    {
+        if ( aDate == null )
+        {
+            return 0L;
+        } // if aDate = null
+
+        return aDate.getTime() * 1000;
+    }
 }

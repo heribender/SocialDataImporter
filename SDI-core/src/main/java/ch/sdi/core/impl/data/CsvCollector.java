@@ -35,7 +35,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
 import ch.sdi.core.intf.CollectorResult;
@@ -90,10 +90,10 @@ public class CsvCollector implements InputCollector
     @Override
     public CollectorResult execute() throws SdiException
     {
-        String delimiter = ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
-        boolean headerRow = ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
-        int skip = ConfigHelper.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
-        String fileName =  ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
+        String delimiter = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
+        boolean headerRow = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
+        int skip = ConfigUtils.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
+        String fileName =  ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
 
         if ( myLog.isDebugEnabled() )
         {
@@ -259,7 +259,7 @@ public class CsvCollector implements InputCollector
             return result;
         } // if aHeaderRow
 
-        String fieldNames = ConfigHelper.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
+        String fieldNames = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
         myLog.debug( "CSV Fieldnames read from configuration: " + fieldNames );
         return Arrays.asList( fieldNames.split( "," ) );
     }

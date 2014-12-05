@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
 import ch.sdi.core.intf.SdiMainProperties;
 
@@ -45,7 +45,7 @@ public class CustomInputCollectorMappingProperties implements InputCollectorMapp
     /** */
     public static final String CUSTOM_PROPERTIES_FILE_NAME =
             SdiMainProperties.USER_OVERRIDE_PREFIX +
-            ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
+            ConfigUtils.makePropertyResourceName( InputCollectorMappingProperties.class );
 
    /**
      * Constructor

@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
  */
 public class ReportMsg implements Message
 {
+    private static final long serialVersionUID = 1L;
 
     public enum ReportType
     {

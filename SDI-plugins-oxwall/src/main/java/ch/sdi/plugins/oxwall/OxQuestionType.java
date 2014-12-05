@@ -16,42 +16,18 @@
  */
 
 
-package ch.sdi.core.intf;
-
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
+package ch.sdi.plugins.oxwall;
 
 
 /**
- * TODO
+ * Data type of a oxwall question (profile field). See ch.sdi.plugins.oxwall.sql.OxProfileData
  *
- * @version 1.0 (23.11.2014)
+ * @version 1.0 (05.12.2014)
  * @author  Heri
  */
-public interface SqlJob extends TargetJob
+public enum OxQuestionType
 {
-    /**
-     * Check if the person is already present in the target platform.
-     * <p>
-     *
-     * @param aPerson
-     */
-    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
-
-    /**
-     *
-     */
-    public void startTransaction();
-
-    /**
-     *
-     */
-    public void commitTransaction();
-
-    /**
-     *
-     */
-    public void rollbackTransaction();
-
-
+    text,
+    number,
+    date;
 }

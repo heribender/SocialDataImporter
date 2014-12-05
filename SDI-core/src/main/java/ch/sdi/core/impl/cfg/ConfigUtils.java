@@ -29,7 +29,9 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
+import ch.sdi.core.annotations.SdiProps;
 import ch.sdi.core.exc.SdiException;
 
 
@@ -40,11 +42,11 @@ import ch.sdi.core.exc.SdiException;
  * @author Heri
  */
 @Component
-public class ConfigHelper
+public class ConfigUtils
 {
 
     /** logger for this class */
-    private static Logger myLog = LogManager.getLogger( ConfigHelper.class );
+    private static Logger myLog = LogManager.getLogger( ConfigUtils.class );
     public static final String PROP_SOURCE_NAME_CMD_LINE = "CommandLineArguments";
     private static final String PROP_SOURCE_NAME_DYNAMIC = "DynamicProperties";
     public static final String KEY_PROP_OUTPUT_DIR = "dynamic.outputDir.file";
@@ -53,14 +55,38 @@ public class ConfigHelper
      * Converts the given classname into a properties file name according following rules:
      *
      * <ul>
-     *     <li> if class name ends with "Properties" this suffix will be truncated and replaced by
-     *     ".properties"</li>
-     *     <li> any other class name is used as is and suffixed with ".properties"</li>
+     *     <li> if class is annotated with SdiProps the value of the annotation is used, suffixed by
+     *          ".properties" (unless already present).</li>
+     *     <li>if annotation is missing or no value configured:</li>
+     *     <ul>
+     *         <li> if class name ends with "Properties" this suffix will be truncated and replaced by
+     *         ".properties"</li>
+     *         <li> any other class name is used as is and suffixed with ".properties"</li>
+     *     </ul>
      * </ul>
      *
      */
     public static String makePropertyResourceName( Class<?> aClass )
     {
+        String found = null;
+
+        SdiProps ann = aClass.getAnnotation( SdiProps.class );
+
+        if ( ann != null )
+        {
+            found = ann.value();
+        } // if ann != null
+
+        if ( StringUtils.hasText( found ) )
+        {
+            if ( found.endsWith( ".properties" ) )
+            {
+                return found;
+            } // if condition
+
+            return found + ".properties";
+        }
+
         String classname = aClass.getSimpleName();
 
         if ( classname.endsWith( "Properties" ) || classname.endsWith( "properties" ) )

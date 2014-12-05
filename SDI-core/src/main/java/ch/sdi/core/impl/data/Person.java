@@ -43,7 +43,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getUsername()
     {
-        return internalGetStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() );
+        return getStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() );
     }
 
     /**
@@ -61,7 +61,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getGivenname()
     {
-        return internalGetStringProperty( PersonKey.PERSON_GIVENNAME.getKeyName() );
+        return getStringProperty( PersonKey.PERSON_GIVENNAME.getKeyName() );
     }
 
     /**
@@ -78,7 +78,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getMiddlename()
     {
-        return internalGetStringProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName() );
+        return getStringProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName() );
     }
 
     /**
@@ -95,7 +95,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getFamilyName()
     {
-        return internalGetStringProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() );
+        return getStringProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() );
     }
 
     /**
@@ -112,7 +112,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getEMail()
     {
-        return internalGetStringProperty( PersonKey.PERSON_EMAIL.getKeyName() );
+        return getStringProperty( PersonKey.PERSON_EMAIL.getKeyName() );
     }
 
     /**
@@ -129,7 +129,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public String getGender()
     {
-        return internalGetStringProperty( PersonKey.PERSON_GENDER.getKeyName() );
+        return getStringProperty( PersonKey.PERSON_GENDER.getKeyName() );
     }
 
     /**
@@ -146,34 +146,7 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
      */
     public Date getBirthdate()
     {
-        return getProperty( PersonKey.PERSON_BIRTHDATE.getKeyName(), Date.class );
-
-//        if ( o == null )
-//        {
-//            return null;
-//        } // if o == null
-//
-//        if ( o instanceof Date )
-//        {
-//            return (Date) o;
-//        } // if o instanceof Date
-//
-//        if ( o instanceof String )
-//        {
-//            try
-//            {
-//                return new SimpleDateFormat().parse( "" + o );
-//            }
-//            catch ( ParseException t )
-//            {
-//                myLog.error( "Failed to parse birthday " + o, t );
-//                return null;
-//            }
-//        } // if o instanceof String
-
-//        myLog.warn( "Unknown value type in property " + PersonKey.PERSON_BIRTHDATE.getKeyName() + ": " + o.getClass().getName() );
-//
-//        return null;
+        return getDateProperty( PersonKey.PERSON_BIRTHDATE.getKeyName() );
     }
 
     /**
@@ -185,8 +158,6 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
         getSource().put( PersonKey.PERSON_BIRTHDATE.getKeyName(), aValue );
     }
 
-    // TODO: add property for PersonKey.THING_IMAGE
-
     /**
      * @see org.springframework.core.env.PropertySource#getProperty(java.lang.String)
      */
@@ -196,9 +167,19 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
         return getProperty( aKey, Object.class );
     }
 
-    private String internalGetStringProperty( String aKey )
+    public String getStringProperty( String aKey )
     {
         return getProperty( aKey, String.class );
+    }
+
+    public Number getNumberProperty( String aKey )
+    {
+        return getProperty( aKey, Number.class );
+    }
+
+    public Date getDateProperty( String aKey )
+    {
+        return getProperty( aKey, Date.class );
     }
 
     @SuppressWarnings( "unchecked" )
@@ -246,7 +227,6 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
     {
         super( aName, aSource );
     }
-
 
 
 }

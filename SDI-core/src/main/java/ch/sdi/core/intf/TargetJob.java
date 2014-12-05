@@ -32,6 +32,13 @@ public interface TargetJob
 {
 
     /**
+    *
+    */
+   public void init() throws SdiException;
+
+   public void close() throws SdiException;
+
+    /**
      * @param aPerson
      */
     void execute( Person<?> aPerson ) throws SdiException;

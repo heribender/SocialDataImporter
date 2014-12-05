@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
@@ -55,6 +56,11 @@ public class OxTargetJobContext implements CustomTargetJobContext
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( OxTargetJobContext.class );
+    public static final String KEY_AVATAR_HASH = "person.avatar.hash";
+    public static final String KEY_PASSWORD = "person.password";
+    public static final String KEY_ENCRYPTED_PASSWORD = "person.enc_password";
+    public static final String KEY_PERSON_FULLNAME = "person.fullName";
+
 
     @Autowired
     private Environment myEnv;
@@ -86,8 +92,11 @@ public class OxTargetJobContext implements CustomTargetJobContext
     public Collection<? extends TargetJob> getJobs() throws SdiException
     {
         List<TargetJob> result = new ArrayList<TargetJob>();
-        result.add( myFtpJob );
+        // Basically I'd prefer to execute first the FTP job because in case of a failure in the
+        // succeeding jobs the lowest damage is done in the system. But oxwalls avatar picture files
+        // need the database ID of the new user for the filenames.
         result.add( mySqlJob );
+        result.add( myFtpJob );
         result.add( myMailJob );
         return result;
     }
@@ -98,7 +107,6 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void prepare() throws SdiException
     {
-        mySqlJob.initPersistence();
     }
 
     /**
@@ -112,15 +120,13 @@ public class OxTargetJobContext implements CustomTargetJobContext
             throw new SdiDuplicatePersonException( aPerson );
         } // if mySqlJob.isAlreadyPresent( aPerson )
 
-        String password = RandomStringUtils.random( 8, true, true );
-        String encrypted = myPasswordEncryptor.encrypt( password );
-        aPerson.setProperty( PersonKey.PASSWORD.getKeyName(), password );
-        aPerson.setProperty( PersonKey.ENCRYPTED_PASSWORD.getKeyName(), encrypted );
+        preparePassword( aPerson );
+        prepareAvatarHash( aPerson );
 
-        BufferedImage bufferedImage = aPerson.getProperty( PersonKey.THING_IMAGE.getKeyName(),
-                                                           BufferedImage.class );
-
-        // TODO: generate Avatar-Pictures
+        String fullname = aPerson.getGivenname() + " "
+                + ( StringUtils.hasText( aPerson.getMiddlename() ) ? (aPerson.getMiddlename() + " ") : "" )
+                + aPerson.getFamilyName();
+        aPerson.setProperty( KEY_PERSON_FULLNAME, fullname );
 
         if ( myCustomPreparePersonJob != null )
         {
@@ -133,6 +139,35 @@ public class OxTargetJobContext implements CustomTargetJobContext
 
         mySqlJob.startTransaction();
 
+    }
+
+    /**
+     * @param aPerson
+     */
+    private void prepareAvatarHash( Person<?> aPerson )
+    {
+        BufferedImage bufferedImage = aPerson.getProperty( PersonKey.THING_IMAGE.getKeyName(),
+                                                           BufferedImage.class );
+        if ( bufferedImage == null )
+        {
+            myLog.debug( "No avatar available" );
+            return;
+        } // if bufferedImage == null
+
+        String hash = RandomStringUtils.random( 10, "0123456789" );
+        myLog.debug( "Generated hash for avatar " + hash );
+        aPerson.setProperty( KEY_AVATAR_HASH, hash );
+    }
+
+    /**
+     * @param aPerson
+     */
+    private void preparePassword( Person<?> aPerson )
+    {
+        String password = RandomStringUtils.random( 8, true, true );
+        String encrypted = myPasswordEncryptor.encrypt( password );
+        aPerson.setProperty( KEY_PASSWORD, password );
+        aPerson.setProperty( KEY_ENCRYPTED_PASSWORD, encrypted );
     }
 
     /**
@@ -157,7 +192,6 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void release( SdiException aException ) throws SdiException
     {
-        mySqlJob.closePersistence();
     }
 
 }

@@ -255,5 +255,15 @@ public class OxUser
     }
 
 
+    /**
+     * @param  aId
+     *         id to set
+     */
+    public void setId( Long aId )
+    {
+        id = aId;
+    }
+
+
 
 }

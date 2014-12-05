@@ -52,16 +52,16 @@ public class ConfigHelperTest
     }
 
     /**
-     * Test method for {@link ch.sdi.core.impl.cfg.ConfigHelper#makePropertyResourceName(Class)}.
+     * Test method for {@link ch.sdi.core.impl.cfg.ConfigUtils#makePropertyResourceName(Class)}.
      */
     @Test
     public void testMakePropertyResourceName()
     {
-        String actual = ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
+        String actual = ConfigUtils.makePropertyResourceName( InputCollectorMappingProperties.class );
         myLog.debug( "Received: " + actual );
         Assert.assertEquals( "InputCollectorMapping.properties", actual );
 
-        actual = ConfigHelper.makePropertyResourceName( NonStandardNamedPropertiesDerivation.class );
+        actual = ConfigUtils.makePropertyResourceName( NonStandardNamedPropertiesDerivation.class );
         myLog.debug( "Received: " + actual );
         Assert.assertEquals( "NonStandardNamedPropertiesDerivation.properties", actual );
     }

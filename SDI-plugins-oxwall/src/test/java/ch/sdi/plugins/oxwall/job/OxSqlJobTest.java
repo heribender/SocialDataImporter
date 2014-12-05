@@ -20,6 +20,8 @@ package ch.sdi.plugins.oxwall.job;
 
 import java.util.Properties;
 
+import javax.persistence.EntityManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.ejb.HibernateEntityManager;
@@ -34,8 +36,10 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.sdi.core.TestUtils;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
+import ch.sdi.core.impl.data.converter.ConverterGender;
 import ch.sdi.plugins.oxwall.sql.OxUser;
 
 
@@ -65,10 +69,40 @@ public class OxSqlJobTest
     @Before
     public void setUp() throws Exception
     {
-        myClassUnderTest.initPersistence();
-        addTestUser();
-        myClassUnderTest.closePersistence();
-        myClassUnderTest.initPersistence();
+        int value = 1;
+        for ( ConverterGender.Gender gender : ConverterGender.Gender.values() )
+        {
+            String key = OxSqlJob.KEY_PREFIX_GENDER + gender;
+            TestUtils.addToEnvironment( myEnv, key, "" + value );
+            value++;
+        }
+
+        myClassUnderTest.init();
+//        provideNewEntityManager();
+
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+        myClassUnderTest.close();
+    }
+
+    /**
+     *
+     */
+    private void provideNewEntityManager()
+    {
+        HibernateEntityManager em = Whitebox.getInternalState( myClassUnderTest,
+                                                               HibernateEntityManager.class );
+        if ( em != null )
+        {
+            em.close();
+        } // if em != null
+        EntityManager newEm = EntityManagerProvider.getEntityManager( "oxwall" );
+        Assert.assertNotNull( newEm );
+        Assert.assertTrue( em != newEm );
+        Whitebox.setInternalState( myClassUnderTest, "myEntityManager", newEm );
     }
 
     /**
@@ -107,12 +141,6 @@ public class OxSqlJobTest
 
     }
 
-    @After
-    public void tearDown() throws Exception
-    {
-        myClassUnderTest.closePersistence();
-    }
-
     /**
      * Test method for {@link ch.sdi.plugins.oxwall.job.OxSqlJob#isAlreadyPresent(ch.sdi.core.impl.data.Person)}.
      * @throws Throwable
@@ -121,6 +149,8 @@ public class OxSqlJobTest
     public void testIsAlreadyPresent() throws Throwable
     {
         myLog.debug( "Testing a non present person" );
+        addTestUser();
+        provideNewEntityManager();
 
         Properties props = new Properties();
         props.put( PersonKey.PERSON_EMAIL.getKeyName(), "bla" + USER_EMAIL );

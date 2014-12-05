@@ -30,11 +30,11 @@ import org.springframework.core.env.SimpleCommandLinePropertySource;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.cfg.ConfigHelper;
-import ch.sdi.core.impl.cfg.UserPropertyOverloader;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.InputTransformer;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.target.TargetExecutor;
 import ch.sdi.report.SdiReporter;
 
@@ -84,7 +84,7 @@ public class SocialDataImporterRunner
 
         MutablePropertySources propertySources = myEnv.getPropertySources();
         propertySources.addFirst(
-                   new SimpleCommandLinePropertySource( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE, args ));
+                   new SimpleCommandLinePropertySource( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE, args ));
 
         if ( myLog.isDebugEnabled() )
         {
@@ -118,6 +118,8 @@ public class SocialDataImporterRunner
 
         try
         {
+            PersonKey.initCustomKeys( myEnv );
+
             mySdiReporter.reset();
 
             Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();

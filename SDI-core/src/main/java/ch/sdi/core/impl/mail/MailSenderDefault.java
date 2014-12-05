@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.intf.MailProperties;
 import ch.sdi.core.intf.MailSender;
 
@@ -52,12 +52,12 @@ public class MailSenderDefault implements MailSender<Email>
     public void sendMail( Email aMail ) throws EmailException
     {
         aMail.setHostName( env.getRequiredProperty( MailProperties.HOST ) );
-        aMail.setSmtpPort( ConfigHelper.getIntProperty( env, MailProperties.PORT, 25 ) );
+        aMail.setSmtpPort( ConfigUtils.getIntProperty( env, MailProperties.PORT, 25 ) );
         aMail.setSslSmtpPort( env.getProperty( MailProperties.HOST ) );
         aMail.setAuthenticator(new DefaultAuthenticator( env.getProperty( MailProperties.SMTP_USER ),
                                                          env.getProperty( MailProperties.SMTP_PASSWORD ) ) );
-        aMail.setSSLOnConnect( ConfigHelper.getBooleanProperty( env, MailProperties.SSL_ON_CONNECT, false ) );
-        aMail.setStartTLSRequired( ConfigHelper.getBooleanProperty( env, MailProperties.START_TLS_REQUIRED, false ) );
+        aMail.setSSLOnConnect( ConfigUtils.getBooleanProperty( env, MailProperties.SSL_ON_CONNECT, false ) );
+        aMail.setStartTLSRequired( ConfigUtils.getBooleanProperty( env, MailProperties.START_TLS_REQUIRED, false ) );
         aMail.setFrom( env.getRequiredProperty( MailProperties.SENDER_ADDRESS ) );
         aMail.send();
         myLog.debug( "mail successfully sent" );

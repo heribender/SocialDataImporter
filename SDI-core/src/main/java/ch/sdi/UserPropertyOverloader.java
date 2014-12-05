@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.impl.cfg;
+package ch.sdi;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiProps;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.core.util.ClassUtil;
 
@@ -76,7 +77,7 @@ public class UserPropertyOverloader
         {
             myLog.debug( "candidate for user property overloading: " + clazz.getName() );
             String fileName = SdiMainProperties.USER_OVERRIDE_PREFIX +
-                    ConfigHelper.makePropertyResourceName( clazz );
+                    ConfigUtils.makePropertyResourceName( clazz );
             InputStream is = this.getClass().getResourceAsStream( "/" + fileName );
 
             if ( is == null )
@@ -119,12 +120,11 @@ public class UserPropertyOverloader
                 })
                 .forEach( msg -> myLog.debug( msg ) ) ;
 
-            String name = SdiMainProperties.USER_OVERRIDE_PREFIX + clazz.getSimpleName();
-            PropertySource<?> ps = new PropertiesPropertySource( name, props );
+            PropertySource<?> ps = new PropertiesPropertySource( fileName, props );
             MutablePropertySources mps = env.getPropertySources();
-            if ( mps.get( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE ) != null )
+            if ( mps.get( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE ) != null )
             {
-                mps.addAfter( ConfigHelper.PROP_SOURCE_NAME_CMD_LINE, ps );
+                mps.addAfter( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE, ps );
             }
             else
             {

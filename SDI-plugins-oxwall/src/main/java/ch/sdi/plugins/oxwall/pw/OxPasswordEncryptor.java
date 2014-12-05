@@ -26,7 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
-import ch.sdi.plugins.oxwall.TargetConfiguration;
+import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 
 
 /**
@@ -50,7 +50,7 @@ public class OxPasswordEncryptor implements ch.sdi.core.intf.PasswordEncryptor
     @Override
     public String encrypt( String aPassword )
     {
-        String salt = myEnv.getProperty( TargetConfiguration.KEY_PW_SALT );
+        String salt = myEnv.getProperty( OxTargetConfiguration.KEY_PW_SALT );
         String hash = DigestUtils.sha256Hex( salt + aPassword );
         myLog.debug( "hashed password: " + hash );
         return new String( hash );

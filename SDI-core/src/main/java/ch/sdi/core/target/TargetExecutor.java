@@ -25,8 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.SdiMainProperties;
@@ -73,14 +73,14 @@ public class TargetExecutor
 
     public void execute( Collection<? extends Person<?>> aPersons) throws SdiException
     {
-        boolean dryRun = ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
-        mySkipFailedPersons = dryRun ? true : ConfigHelper.getBooleanProperty( myEnv, SdiMainProperties.KEY_TARGET_IGNORE_FAILED_PERSON, false );
+        boolean dryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
+        mySkipFailedPersons = dryRun ? true : ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_TARGET_IGNORE_FAILED_PERSON, false );
 
-        myFailedPersons = new TreeMap<Person<?>,Throwable>();
+        myFailedPersons = new LinkedHashMap<Person<?>,Throwable>();
         myDuplicatePersons = new ArrayList<Person<?>>();
 
         myOutputDir = prepareOutputDir();
-        ConfigHelper.addToEnvironment( myEnv, ConfigHelper.KEY_PROP_OUTPUT_DIR, myOutputDir );
+        ConfigUtils.addToEnvironment( myEnv, ConfigUtils.KEY_PROP_OUTPUT_DIR, myOutputDir );
 
         /*
          * Because ConditionalOnMissingBean annotation does obviously not work for beans which must be
@@ -99,16 +99,31 @@ public class TargetExecutor
 
         try
         {
-            for ( Person<?> person : aPersons )
+            try
             {
-                processPerson( person );
+                for ( TargetJob job : myTargetJobContext.getJobs() )
+                {
+                    job.init();
+                }
+
+                for ( Person<?> person : aPersons )
+                {
+                    processPerson( person );
+                }
+
+                if ( myFailedPersons.isEmpty() )
+                {
+                    myLog.info( "All data successfully handled for target" );
+                } // if failedPersons.isEmpty()
+
             }
-
-            if ( myFailedPersons.isEmpty() )
+            finally
             {
-                myLog.info( "All data successfully handled for target" );
-            } // if failedPersons.isEmpty()
-
+                for ( TargetJob job : myTargetJobContext.getJobs() )
+                {
+                    job.close();
+                }
+            }
         }
         catch ( Throwable t )
         {
@@ -163,16 +178,15 @@ public class TargetExecutor
         {
             myFailedPersons.put( aPerson, t );
 
+            SdiException newEx = SdiException.toSdiException( t, SdiException.EXIT_CODE_IMPORT_ERROR );
+            myTargetJobContext.finalizePerson( aPerson, newEx );
+
             if ( mySkipFailedPersons )
             {
                 myLog.warn( "Problem while processing person " + aPerson.getEMail() // TODO: make primary key configurable
                             + "; continuing with next person", t );
                 return;
             }
-
-            SdiException newEx = SdiException.toSdiException( t, SdiException.EXIT_CODE_IMPORT_ERROR );
-
-            myTargetJobContext.finalizePerson( aPerson, newEx );
 
             throw newEx;
         }

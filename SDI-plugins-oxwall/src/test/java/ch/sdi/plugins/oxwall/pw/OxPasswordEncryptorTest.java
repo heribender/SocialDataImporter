@@ -32,7 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
-import ch.sdi.plugins.oxwall.TargetConfiguration;
+import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 
 
 /**
@@ -69,7 +69,7 @@ public class OxPasswordEncryptorTest implements ApplicationContextAware
     {
 //        logTest();
 
-        TestUtils.addToEnvironment( myEnv, TargetConfiguration.KEY_PW_SALT, SALT );
+        TestUtils.addToEnvironment( myEnv, OxTargetConfiguration.KEY_PW_SALT, SALT );
 
         myLog.debug( "Creating class under test" );
         myClassUnderTest = myCtx.getBean( OxPasswordEncryptor.class );

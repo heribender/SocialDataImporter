@@ -25,7 +25,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 
 
 /**
@@ -50,7 +50,7 @@ public class TestUtils
      */
     public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
     {
-        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "setting property " + aKey + " = " + aValue + " into the environment" );
         map.remove( aKey );
@@ -59,7 +59,7 @@ public class TestUtils
 
     public static void removeFromEnvironment( ConfigurableEnvironment aEnv, String aKey )
     {
-        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "removing property " + aKey + " from the environment" );
         map.remove( aKey );
@@ -67,7 +67,7 @@ public class TestUtils
 
     public static void replaceInEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
     {
-        Map<String, Object> map = ConfigHelper.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
+        Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
         myLog.debug( "replacing property " + aKey + " in the environment. New value: " + aValue  );
         map.remove( aKey );

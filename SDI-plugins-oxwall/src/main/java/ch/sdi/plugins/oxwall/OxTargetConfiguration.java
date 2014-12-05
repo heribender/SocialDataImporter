@@ -16,42 +16,26 @@
  */
 
 
-package ch.sdi.core.intf;
+package ch.sdi.plugins.oxwall;
 
-import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.Person;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+
+import ch.sdi.core.annotations.SdiProps;
 
 
 /**
  * TODO
  *
- * @version 1.0 (23.11.2014)
+ * @version 1.0 (24.11.2014)
  * @author  Heri
  */
-public interface SqlJob extends TargetJob
+@Configuration
+@PropertySource("classpath:/" + "target.properties" )
+@SdiProps( "target" )
+public class OxTargetConfiguration
 {
-    /**
-     * Check if the person is already present in the target platform.
-     * <p>
-     *
-     * @param aPerson
-     */
-    public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
-
-    /**
-     *
-     */
-    public void startTransaction();
-
-    /**
-     *
-     */
-    public void commitTransaction();
-
-    /**
-     *
-     */
-    public void rollbackTransaction();
-
+    public static final String KEY_PW_SALT = "ox.passwordsalt";
+    public static final String KEY_USER_ACCOUNT_TYPE = "ox.ow_base_user.accounttype";
 
 }

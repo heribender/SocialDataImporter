@@ -18,7 +18,7 @@
 package ch.sdi.core.intf;
 
 import ch.sdi.core.annotations.SdiProps;
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 
 
 /**
@@ -37,7 +37,7 @@ public interface InputCollectorMappingProperties extends SdiProperties
 {
 
     public static final String RESOURCE_NAME =
-            ConfigHelper.makePropertyResourceName( InputCollectorMappingProperties.class );
+            ConfigUtils.makePropertyResourceName( InputCollectorMappingProperties.class );
     public static final String KEY_PREFIX = "inputcollector.";
 
 }

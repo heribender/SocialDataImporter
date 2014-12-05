@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration>
+<Configuration packages="ch.sdi">
 
     <!-- Note: the file is found since the default runtime JRE in eclipse has the VM argument -Dlog4j.configurationFile=../log4j2.xml. 
         TODO: solve this with maven (copy resource to classpath) -->
@@ -43,18 +43,53 @@
             </Policies>
         </RollingFile>
 
+        <SdiReportAppender name="ReportAppender" />
+        
     </Appenders>
 
     <Loggers>
         <Logger
+            name="org"
+            level="warn">
+        </Logger>
+
+        <Logger
+            name="org.hibernate"
+            level="debug">
+        </Logger>
+        
+        <Logger
+            name="org.hibernate.type.BasicTypeRegistry"
+            level="info">
+        </Logger>
+        <Logger
+            name="org.hibernate.hql.internal.ast.QueryTranslatorImpl"
+            level="info">
+        </Logger>
+        <Logger
+            name="org.hibernate.id.factory.internal.DefaultIdentifierGeneratorFactory"
+            level="info">
+        </Logger>
+        <Logger
+            name="org.hibernate.loader.entity.EntityLoader"
+            level="info">
+        </Logger>
+        <Logger
             name="org.springframework"
             level="info">
         </Logger>
+        <!-- springs ClassPathScanningCandidateComponentProvider fetches the logger by getClass() which
+        results in our derived class ch.sdi.core.util.ClassUtil$MyClassScanner -->
+        <Logger
+            name="ch.sdi.core.util.ClassUtil$MyClassScanner"
+            level="debug">
+        </Logger>
 
-        <Root level="debug">
+        <Root level="trace">
             <AppenderRef ref="STDOUT" />
             <AppenderRef ref="STDERR" />
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="ReportAppender" />
         </Root>
     </Loggers>
 

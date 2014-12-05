@@ -60,9 +60,9 @@ public class FieldnameNormalizer
         // TODO: write testcase!
         Map<String,String> replaceMap = new HashMap<String,String>();
 
-        for ( PersonKey key : PersonKey.values() )
+        for ( String key : PersonKey.getKeyNames() )
         {
-            String keyName = InputCollectorMappingProperties.KEY_PREFIX + key.getKeyName();
+            String keyName = InputCollectorMappingProperties.KEY_PREFIX + key;
 
             String configuredMapping = myEnv.getProperty( keyName );
 
@@ -75,7 +75,7 @@ public class FieldnameNormalizer
 
             myLog.debug( "Found input collector mapping: " + keyName + " -> " + configuredMapping );
 
-            replaceMap.put( configuredMapping, key.getKeyName() );
+            replaceMap.put( configuredMapping, key );
 
         }
 

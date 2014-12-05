@@ -18,7 +18,7 @@
 package ch.sdi.core.intf;
 
 import ch.sdi.core.annotations.SdiProps;
-import ch.sdi.core.impl.cfg.ConfigHelper;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 
 
 /**
@@ -37,7 +37,7 @@ public interface MailProperties extends SdiProperties
 {
 
     public static final String RESOURCE_NAME =
-            ConfigHelper.makePropertyResourceName( MailProperties.class );
+            ConfigUtils.makePropertyResourceName( MailProperties.class );
 
 
     public static final String SENDER_NAME = "mail.sender.name";

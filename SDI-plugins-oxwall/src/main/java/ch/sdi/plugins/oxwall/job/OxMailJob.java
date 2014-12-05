@@ -62,4 +62,24 @@ public class OxMailJob implements MailJob
 
     }
 
+    /**
+     * @see ch.sdi.core.intf.TargetJob#init()
+     */
+    @Override
+    public void init() throws SdiException
+    {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @see ch.sdi.core.intf.TargetJob#close()
+     */
+    @Override
+    public void close() throws SdiException
+    {
+        // TODO Auto-generated method stub
+
+    }
+
 }
