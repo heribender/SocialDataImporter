@@ -83,6 +83,8 @@ public class OxSqlJob implements SqlJob
     private Map<String,OxProfileQuestion> myProfileQuestions;
     private Optional<Long> myDefaultGroup = Optional.empty();
     private Map<ConverterGender.Gender,Number> myGenderMap;
+    private TypedQuery<OxUser> myQueryEMail;
+    private ParameterExpression<String> myEMailParam;
 
     /**
      * Constructor
@@ -187,16 +189,8 @@ public class OxSqlJob implements SqlJob
     @Override
     public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException
     {
-        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
-
-        CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
-        Root<OxUser> root = criteria.from(OxUser.class);
-        ParameterExpression<String> emailParam = cb.parameter(String.class);
-        criteria.select(root).where(cb.equal( root.get("email"), emailParam ));
-
-        TypedQuery<OxUser> query = myEntityManager.createQuery(criteria);
-        query.setParameter( emailParam, aPerson.getEMail() );
-        List<OxUser> results = query.getResultList();
+        myQueryEMail.setParameter( myEMailParam, aPerson.getEMail() );
+        List<OxUser> results = myQueryEMail.getResultList();
 
         if ( results.size() > 0 )
         {
@@ -208,11 +202,28 @@ public class OxSqlJob implements SqlJob
     }
 
     /**
+     *
+     */
+    private void initAlreadyPresentQuery()
+    {
+        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
+
+        CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
+        Root<OxUser> root = criteria.from(OxUser.class);
+        myEMailParam = cb.parameter(String.class);
+        criteria.select(root).where(cb.equal( root.get("email"), myEMailParam ));
+
+        myQueryEMail = myEntityManager.createQuery(criteria);
+    }
+
+    /**
      * @see ch.sdi.core.intf.TargetJob#init()
      */
     @Override
     public void init() throws SdiException
     {
+        myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
+
         myEntityManager = EntityManagerProvider.getEntityManager( "oxwall" );
 
         if ( myEntityManager == null )
@@ -221,8 +232,7 @@ public class OxSqlJob implements SqlJob
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if em == null
 
-        myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
-
+        initAlreadyPresentQuery();
         initProfileQuestions();
         initGenderMap();
         initDefaultGroups();
