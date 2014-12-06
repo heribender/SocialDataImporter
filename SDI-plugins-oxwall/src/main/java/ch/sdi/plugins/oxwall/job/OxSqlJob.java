@@ -20,9 +20,7 @@ package ch.sdi.plugins.oxwall.job;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.persistence.TypedQuery;
@@ -44,16 +42,19 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
-import ch.sdi.core.impl.data.converter.ConverterGender;
 import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.core.intf.SqlJob;
-import ch.sdi.plugins.oxwall.OxProfileQuestion;
-import ch.sdi.plugins.oxwall.OxQuestionType;
 import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 import ch.sdi.plugins.oxwall.OxTargetJobContext;
 import ch.sdi.plugins.oxwall.OxUtils;
-import ch.sdi.plugins.oxwall.sql.OxProfileData;
-import ch.sdi.plugins.oxwall.sql.OxUser;
+import ch.sdi.plugins.oxwall.profile.OxProfileQuestion;
+import ch.sdi.plugins.oxwall.profile.OxProfileQuestionDate;
+import ch.sdi.plugins.oxwall.profile.OxProfileQuestionNumber;
+import ch.sdi.plugins.oxwall.profile.OxProfileQuestionString;
+import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
+import ch.sdi.plugins.oxwall.profile.OxQuestionType;
+import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
+import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 import ch.sdi.report.ReportMsg;
 import ch.sdi.report.ReportMsg.ReportType;
 
@@ -70,20 +71,19 @@ public class OxSqlJob implements SqlJob
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( OxSqlJob.class );
     public static final String KEY_PREFIX_PROFILE_QUESTION = "ox.target.qn.";
-    public static final String KEY_PREFIX_GENDER = "ox.target.sex.";
     public static final String KEY_DEFAULT_GROUPS = "ox.target.defaultGroups";
 
     @Autowired
     private Environment myEnv;
+    @Autowired
+    private OxQuestionFactory myQuestionFactory;
 
     // does not work: @PersistenceContext(unitName="oxwall")
     protected  HibernateEntityManager myEntityManager;
     private boolean myDryRun;
     private long myDummyId = 1;
-    private Map<String,OxProfileQuestion> myProfileQuestions;
+    private List<OxProfileQuestion> myProfileQuestions;
     private Optional<Long> myDefaultGroup = Optional.empty();
-    private Map<ConverterGender.Gender,Number> myGenderMap;
-    private TypedQuery<OxUser> myQueryEMail;
     private ParameterExpression<String> myEMailParam;
 
     /**
@@ -113,39 +113,13 @@ public class OxSqlJob implements SqlJob
         user.setPassword( aPerson.getStringProperty( OxTargetJobContext.KEY_ENCRYPTED_PASSWORD ));
         saveEntity( dbEntities, user );
 
-        for ( String personKey : myProfileQuestions.keySet() )
+        for ( OxProfileQuestion question : myProfileQuestions )
         {
-            OxProfileQuestion question = myProfileQuestions.get( personKey );
             OxProfileData profileData = new OxProfileData();
-            profileData.setQuestionName( question.getValue() );
             profileData.setUserId( user.getId() );
-            switch ( question.getType() )
-            {
-                case text:
-                    profileData.setTextValue( aPerson.getStringProperty( personKey ) );
-                    break;
-                case number:
-                    Long value;
-                    if ( personKey.equalsIgnoreCase( PersonKey.PERSON_GENDER.getKeyName() ) )
-                    {
-                        value = myGenderMap.get( aPerson.getProperty( personKey,
-                                                                      ConverterGender.Gender.class ) )
-                                                                      .longValue();
-                    }
-                    else
-                    {
-                        value = aPerson.getNumberProperty( personKey ).longValue();
-                    }
-                    profileData.setIntValue( value );
-                    break;
-                case date:
-                    profileData.setDateValue( aPerson.getDateProperty( personKey ) );
-                    break;
-            }
-
+            question.fillValues( profileData, aPerson );
             saveEntity( dbEntities, profileData );
         }
-
 
         ReportMsg msg = new ReportMsg( ReportType.SQL_TARGET,
                                        aPerson.getEMail(),
@@ -189,8 +163,17 @@ public class OxSqlJob implements SqlJob
     @Override
     public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException
     {
-        myQueryEMail.setParameter( myEMailParam, aPerson.getEMail() );
-        List<OxUser> results = myQueryEMail.getResultList();
+        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
+
+        CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
+        Root<OxUser> root = criteria.from(OxUser.class);
+        myEMailParam = cb.parameter(String.class);
+        criteria.select(root).where(cb.equal( root.get("email"), myEMailParam ));
+
+        TypedQuery<OxUser> queryEMail = myEntityManager.createQuery(criteria);
+
+        queryEMail.setParameter( myEMailParam, aPerson.getEMail() );
+        List<OxUser> results = queryEMail.getResultList();
 
         if ( results.size() > 0 )
         {
@@ -199,21 +182,6 @@ public class OxSqlJob implements SqlJob
         } // if results.size() > 0
 
         return false;
-    }
-
-    /**
-     *
-     */
-    private void initAlreadyPresentQuery()
-    {
-        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
-
-        CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
-        Root<OxUser> root = criteria.from(OxUser.class);
-        myEMailParam = cb.parameter(String.class);
-        criteria.select(root).where(cb.equal( root.get("email"), myEMailParam ));
-
-        myQueryEMail = myEntityManager.createQuery(criteria);
     }
 
     /**
@@ -232,7 +200,6 @@ public class OxSqlJob implements SqlJob
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if em == null
 
-        initAlreadyPresentQuery();
         initProfileQuestions();
         initGenderMap();
         initDefaultGroups();
@@ -266,31 +233,6 @@ public class OxSqlJob implements SqlJob
      */
     private void initGenderMap() throws SdiException
     {
-        myGenderMap = new HashMap<ConverterGender.Gender,Number>();
-
-        for ( ConverterGender.Gender gender : ConverterGender.Gender.values() )
-        {
-            String key = KEY_PREFIX_GENDER + gender;
-            String configured = myEnv.getProperty( key );
-
-            if ( !StringUtils.hasText( configured ) )
-            {
-                throw new SdiException( "Gender mapping not configured: " + key,
-                                        SdiException.EXIT_CODE_CONFIG_ERROR );
-            } // if !StringUtils.hasText( configured )
-
-            try
-            {
-                myGenderMap.put( gender, Long.parseLong( configured ) );
-            }
-            catch ( NumberFormatException t )
-            {
-                throw new SdiException( "Gender mapping " + configured + " cannot be converted to number",
-                                        t,
-                                        SdiException.EXIT_CODE_CONFIG_ERROR );
-            }
-
-        }
     }
 
     /**
@@ -298,7 +240,7 @@ public class OxSqlJob implements SqlJob
      */
     private void initProfileQuestions() throws SdiException
     {
-        myProfileQuestions = new HashMap<String,OxProfileQuestion>();
+        myProfileQuestions = new ArrayList<OxProfileQuestion>();
 
         for ( String personKey : PersonKey.getKeyNames() )
         {
@@ -314,11 +256,11 @@ public class OxSqlJob implements SqlJob
             myLog.trace( "Found profile question configuration " + configured );
 
             String[] values = configured.trim().split( ":" );
-            if ( values.length != 2 )
+            if ( values.length < 2 )
             {
                 throw new SdiException( "Profile question not configured correctly: " + configured,
                                         SdiException.EXIT_CODE_CONFIG_ERROR );
-            } // if values.length != 2
+            }
 
             OxQuestionType type;
             try
@@ -332,11 +274,30 @@ public class OxSqlJob implements SqlJob
                                         SdiException.EXIT_CODE_CONFIG_ERROR );
             }
 
-            OxProfileQuestion question = new OxProfileQuestion();
-            question.setType( type );
-            question.setValue( values[1] );
+            OxProfileQuestion question = null;
+
+            switch ( type )
+            {
+                case text:
+                    question = new OxProfileQuestionString( values[1], personKey );
+                    break;
+                case number:
+                    question = new OxProfileQuestionNumber( values[1], personKey );
+                    break;
+                case date:
+                    question = new OxProfileQuestionDate( values[1], personKey );
+                    break;
+                case custom:
+                    question = myQuestionFactory.getCustomQuestion( values, personKey );
+                    break;
+                default:
+                    throw new SdiException( "unhandled question type: " + type,
+                                            SdiException.EXIT_CODE_UNKNOWN_ERROR );
+            }
+
+            question.init( myEnv );
             myLog.debug( "Adding profile question for key '" + personKey + "': " + question );
-            myProfileQuestions.put( personKey, question );
+            myProfileQuestions.add( question );
 
         }
     }

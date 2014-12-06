@@ -36,11 +36,10 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.sdi.core.TestUtils;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
-import ch.sdi.core.impl.data.converter.ConverterGender;
-import ch.sdi.plugins.oxwall.sql.OxUser;
+import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
+import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 
 
 /**
@@ -50,7 +49,8 @@ import ch.sdi.plugins.oxwall.sql.OxUser;
  * @author  Heri
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={OxSqlJob.class })
+@ContextConfiguration(classes={OxSqlJob.class,
+                               OxQuestionFactory.class })
 public class OxSqlJobTest
 {
 
@@ -69,13 +69,13 @@ public class OxSqlJobTest
     @Before
     public void setUp() throws Exception
     {
-        int value = 1;
-        for ( ConverterGender.Gender gender : ConverterGender.Gender.values() )
-        {
-            String key = OxSqlJob.KEY_PREFIX_GENDER + gender;
-            TestUtils.addToEnvironment( myEnv, key, "" + value );
-            value++;
-        }
+//        int value = 1;
+//        for ( OxGender gender : OxGender.values() )
+//        {
+//            String key = OxSqlJob.KEY_PREFIX_GENDER + gender;
+//            TestUtils.addToEnvironment( myEnv, key, "" + value );
+//            value++;
+//        }
 
         myClassUnderTest.init();
 //        provideNewEntityManager();

@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.plugins.oxwall.sql;
+package ch.sdi.plugins.oxwall.sql.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,16 +24,18 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 
+
 /**
  * TODO
  *
- * @version 1.0 (29.11.2014)
+ * @version 1.0 (16.11.2014)
  * @author  Heri
  */
 @Entity
-@Table(name="ow_groups_group_user")
-public class OxUserGroupMembership
+@Table(name="ow_base_user")
+public class OxUser
 {
+
     /*
      * Reverse engineered from a real oxwall DB (Nena1):
      *
@@ -74,46 +76,194 @@ public class OxUserGroupMembership
                                 -> neither this makes any sense!
                 -> Source V1.7.1: the joinIp is only inserted but never read. So I think it does not really matter what to insert here.
 
-     * Profile data:
-     * ------------
-     * Values are inserted into ow_base_question_data:
-          INSERT INTO `ow_base_question_data`(`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`)
-              questionName: one of the field ow_base_question_data.questionName
-              userId:       the new userId
-              value:        depends on the type of the field (text, int, date)
-
-        ow_base_avatar
-            INSERT INTO `ow_base_avatar`(`id`, `userId`, `hash`)
-                field 'hash'
-                    e.g. "1396979170" (all have 10 digits)
-                used for filename in ow_userfiles/plugins/base/avatars:
-                    - avatar_<userId>_<hash>.jpg (1)
-                    - avatar_big_<userId>_<hash>.jpg (2)
-                    - avatar_original_<userId>_<hash>.jpg (3)
-                where:
-                    (1) 90x90 pixels, 96 dpi, 24 pixelBits
-                    (2) 190x190 pixels, 96 dpi, 24 pixelBits
-                    (3) any size (original uploaded)
-
-      Group membership:
-      ----------------
-          ow_groups_group
-              INSERT INTO `ow_groups_group`(`id`, `title`, `description`, `imageHash`, `timeStamp`, `userId`, `privacy`, `whoCanView`, `whoCanInvite`)
-                  id: used in m:n relationship in
-
-          ow_groups_group_user
-              m:n relationship between user and group
-              INSERT INTO `ow_groups_group_user`(`id`, `groupId`, `userId`, `timeStamp`, `privacy`)
-                  userId: new userId
-                  groupId: the group the new user belongs to
-                  timeStamp: join date (unix timestamp (seconds since 1970) )
-                  privacy (varchar(100)):  ??? in my installation all is 'everybody'
-                          I cannot see any corresponding functionality in GUI. There you just can join or leave a group, but not configure any privacy.
-
      */
 
     @Id
     @GeneratedValue
     private Long id;
+
+    private String email;
+    private String username;
+    private String password;
+    private Long joinStamp;
+    private Long activityStamp;
+    private String accountType;
+    private boolean emailVerify;
+    private Long joinIp;
+
+    /**
+     * @return email
+     */
+    public String getEmail()
+    {
+        return email;
+    }
+
+    /**
+     * @param  aEmail
+     *         email to set
+     */
+    public void setEmail( String aEmail )
+    {
+        email = aEmail;
+    }
+
+    /**
+     * @return username
+     */
+    public String getUsername()
+    {
+        return username;
+    }
+
+    /**
+     * @param  aUsername
+     *         username to set
+     */
+    public void setUsername( String aUsername )
+    {
+        username = aUsername;
+    }
+
+    /**
+     * @return password
+     */
+    public String getPassword()
+    {
+        return password;
+    }
+
+    /**
+     * @param  aPassword
+     *         password to set
+     */
+    public void setPassword( String aPassword )
+    {
+        password = aPassword;
+    }
+
+    /**
+     * @return joinStamp
+     */
+    public Long getJoinStamp()
+    {
+        return joinStamp;
+    }
+
+    /**
+     * @param  aJoinStamp
+     *         joinStamp to set
+     */
+    public void setJoinStamp( Long aJoinStamp )
+    {
+        joinStamp = aJoinStamp;
+    }
+
+    /**
+     * @return activityStamp
+     */
+    public Long getActivityStamp()
+    {
+        return activityStamp;
+    }
+
+    /**
+     * @param  aActivityStamp
+     *         activityStamp to set
+     */
+    public void setActivityStamp( Long aActivityStamp )
+    {
+        activityStamp = aActivityStamp;
+    }
+
+    /**
+     * @return emailVerify
+     */
+    public boolean isEmailVerify()
+    {
+        return emailVerify;
+    }
+
+    /**
+     * @param  aEmailVerify
+     *         emailVerify to set
+     */
+    public void setEmailVerify( boolean aEmailVerify )
+    {
+        emailVerify = aEmailVerify;
+    }
+
+    /**
+     * @return joinIp
+     */
+    public Long getJoinIp()
+    {
+        return joinIp;
+    }
+
+    /**
+     * @param  aJoinIp
+     *         joinIp to set
+     */
+    public void setJoinIp( Long aJoinIp )
+    {
+        joinIp = aJoinIp;
+    }
+
+    /**
+     * @return id
+     */
+    public Long getId()
+    {
+        return id;
+    }
+
+
+    /**
+     * @return accountType
+     */
+    public String getAccountType()
+    {
+        return accountType;
+    }
+
+
+    /**
+     * @param  aAccountType
+     *         accountType to set
+     */
+    public void setAccountType( String aAccountType )
+    {
+        accountType = aAccountType;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    id           : " ).append( id );
+        sb.append( "\n    email        : " ).append( email );
+        sb.append( "\n    username     : " ).append( username );
+        sb.append( "\n    password     : " ).append( password );
+        sb.append( "\n    joinStamp    : " ).append( joinStamp );
+        sb.append( "\n    activityStamp: " ).append( activityStamp );
+        sb.append( "\n    accountType  : " ).append( accountType );
+        sb.append( "\n    emailVerify  : " ).append( emailVerify );
+        sb.append( "\n    joinIp       : " ).append( joinIp );
+        return sb.toString();
+    }
+
+
+    /**
+     * @param  aId
+     *         id to set
+     */
+    public void setId( Long aId )
+    {
+        id = aId;
+    }
+
+
 
 }

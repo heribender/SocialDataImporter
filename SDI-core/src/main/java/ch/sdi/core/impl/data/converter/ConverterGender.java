@@ -31,7 +31,6 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.converter.ConverterGender.Gender;
 import ch.sdi.core.intf.FieldConverter;
 import ch.sdi.core.intf.SdiMainProperties;
 
@@ -45,33 +44,25 @@ import ch.sdi.core.intf.SdiMainProperties;
 @SdiConverter( ConverterGender.CONVERTER_NAME )
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ConverterGender implements FieldConverter<Gender>
+public class ConverterGender implements FieldConverter<OxGender>
 {
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( ConverterGender.class );
 
-    public enum Gender
-    {
-        male,
-        female,
-        unknown,
-        dontcare
-    }
-
     public static final String CONVERTER_NAME = "toGender";
 
-    private Map<String,Gender> myGenderMapping;
+    private Map<String,OxGender> myGenderMapping;
 
     /**
      * @see ch.sdi.core.intf.FieldConverter#init(org.springframework.core.env.Environment, java.lang.String)
      */
     @Override
-    public FieldConverter<Gender> init( Environment aEnv, String aFieldname ) throws SdiException
+    public FieldConverter<OxGender> init( Environment aEnv, String aFieldname ) throws SdiException
     {
-        myGenderMapping = new HashMap<String,Gender>();
+        myGenderMapping = new HashMap<String,OxGender>();
 
-        for ( Gender gender : Gender.values() )
+        for ( OxGender gender : OxGender.values() )
         {
             String pattern = aEnv.getProperty( SdiMainProperties.KEY_PREFIX_CONVERTER
                                                + CONVERTER_NAME + "." + gender );
@@ -90,9 +81,9 @@ public class ConverterGender implements FieldConverter<Gender>
      * @see ch.sdi.core.intf.FieldConverter#convert(java.lang.String)
      */
     @Override
-    public Gender convert( String aValue ) throws SdiException
+    public OxGender convert( String aValue ) throws SdiException
     {
-        Gender result = myGenderMapping.get( aValue );
+        OxGender result = myGenderMapping.get( aValue );
 
         if ( result != null )
         {
@@ -104,7 +95,7 @@ public class ConverterGender implements FieldConverter<Gender>
             myLog.warn( "Unknown gender pattern received: " + aValue );
         } // if StringUtils.hasText( aValue )
 
-        return Gender.unknown;
+        return OxGender.unknown;
     }
 
 }

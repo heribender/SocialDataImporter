@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.impl.cfg;
+package ch.sdi;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.UserPropertyOverloader;
 import ch.sdi.core.TestUtils;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
 import ch.sdi.core.intf.SdiMainProperties;
 

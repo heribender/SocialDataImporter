@@ -5,10 +5,10 @@
 
         <description>TEST Persistence Unit</description>
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <class>ch.sdi.plugins.oxwall.sql.OxUser</class>
-        <class>ch.sdi.plugins.oxwall.sql.OxAvatar</class>
-        <class>ch.sdi.plugins.oxwall.sql.OxProfileData</class>
-        <class>ch.sdi.plugins.oxwall.sql.OxUserGroupMembership</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxUser</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxAvatar</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxProfileData</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.sdi.plugins.oxwall.job.OxFtpJob;
 import ch.sdi.plugins.oxwall.job.OxMailJob;
 import ch.sdi.plugins.oxwall.job.OxSqlJob;
+import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
 import ch.sdi.plugins.oxwall.pw.OxPasswordEncryptor;
 
 
@@ -45,7 +46,8 @@ import ch.sdi.plugins.oxwall.pw.OxPasswordEncryptor;
                                 OxPasswordEncryptor.class,
                                 OxMailJob.class,
                                 OxFtpJob.class,
-                                OxSqlJob.class })
+                                OxSqlJob.class,
+                                OxQuestionFactory.class })
 public class OxTargetJobContextTest
 {
     /** logger for this class */

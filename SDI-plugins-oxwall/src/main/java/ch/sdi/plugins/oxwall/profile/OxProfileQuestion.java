@@ -16,7 +16,13 @@
  */
 
 
-package ch.sdi.plugins.oxwall;
+package ch.sdi.plugins.oxwall.profile;
+
+import org.springframework.core.env.Environment;
+
+import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.data.Person;
+import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
 
 
@@ -26,11 +32,29 @@ package ch.sdi.plugins.oxwall;
  * @version 1.0 (05.12.2014)
  * @author  Heri
  */
-public class OxProfileQuestion
+public abstract class OxProfileQuestion
 {
-    private OxQuestionType myType;
+    private OxQuestionType myType;  // TODO: still used?
     /** the question name */
-    private String myName;
+    protected String myName;
+    /** the key in the Person class to retrieve the value */
+    protected String myPersonKey;
+
+
+    /**
+     * Constructor
+     *
+     * @param aType
+     * @param aName
+     * @param aPersonKey
+     */
+    public OxProfileQuestion( OxQuestionType aType, String aName, String aPersonKey )
+    {
+        super();
+        myType = aType;
+        myName = aName;
+        myPersonKey = aPersonKey;
+    }
 
     /**
      * @return type
@@ -52,27 +76,38 @@ public class OxProfileQuestion
     /**
      * @return value
      */
-    public String getValue()
+    public String getName()
     {
         return myName;
     }
 
     /**
-     * @param  aValue
+     * @param  aName
      *         value to set
      */
-    public void setValue( String aValue )
+    public void setName( String aName )
     {
-        myName = aValue;
+        myName = aName;
     }
+
+    public void fillValues( OxProfileData aProfileDataEntity, Person<?> aPerson )
+    {
+        aProfileDataEntity.setQuestionName( myName );
+    }
+
+    public void init( Environment aEnvironment ) throws SdiException
+    {
+        // provided for overriding if necessary
+    };
 
     @Override
     public String toString()
     {
         StringBuilder sb = new StringBuilder( super.toString() );
 
-        sb.append( "\n    Type : " ).append( myType );
-        sb.append( "\n    Name : " ).append( myName );
+        sb.append( "\n    Type      : " ).append( myType );
+        sb.append( "\n    Name      : " ).append( myName );
+        sb.append( "\n    PersonKey : " ).append( myPersonKey );
         return sb.toString();
     }
 

@@ -16,18 +16,41 @@
  */
 
 
-package ch.sdi.plugins.oxwall;
+package ch.sdi.plugins.oxwall.profile;
+
+import ch.sdi.core.impl.data.Person;
+import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
 
 /**
- * Data type of a oxwall question (profile field). See ch.sdi.plugins.oxwall.sql.OxProfileData
+ * TODO
  *
- * @version 1.0 (05.12.2014)
+ * @version 1.0 (06.12.2014)
  * @author  Heri
  */
-public enum OxQuestionType
+public class OxProfileQuestionString extends OxProfileQuestion
 {
-    text,
-    number,
-    date;
+
+    /**
+     * Constructor
+     *
+     * @param aType
+     * @param aName
+     * @param aPersonKey
+     */
+    public OxProfileQuestionString( String aName, String aPersonKey )
+    {
+        super( OxQuestionType.text, aName, aPersonKey );
+    }
+
+    /**
+     * @see ch.sdi.plugins.oxwall.profile.OxProfileQuestion#fillValues(ch.sdi.plugins.oxwall.sql.entity.OxProfileData, ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public void fillValues( OxProfileData aProfileDataEntity, Person<?> aPerson )
+    {
+        super.fillValues( aProfileDataEntity, aPerson );
+        aProfileDataEntity.setTextValue( aPerson.getStringProperty( myPersonKey ) );
+    }
+
 }

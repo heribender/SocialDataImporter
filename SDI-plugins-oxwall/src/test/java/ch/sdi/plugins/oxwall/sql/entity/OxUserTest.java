@@ -15,7 +15,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.plugins.oxwall.sql;
+package ch.sdi.plugins.oxwall.sql.entity;
 
 import java.util.List;
 
@@ -31,6 +31,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 
 
 /**

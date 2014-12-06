@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.plugins.oxwall.sql;
+package ch.sdi.plugins.oxwall.sql.entity;
 
 import java.io.Serializable;
 import java.util.Date;

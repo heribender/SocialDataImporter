@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.plugins.oxwall.sql;
+package ch.sdi.plugins.oxwall.sql.entity;
 
 import java.util.Date;
 
@@ -25,6 +25,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
 
 /**
@@ -50,7 +52,7 @@ public class OxProfileDataTest extends CrudTestBase<OxProfileData>
     }
 
     /**
-     * @see ch.sdi.plugins.oxwall.sql.CrudTestBase#setUp()
+     * @see ch.sdi.plugins.oxwall.sql.entity.CrudTestBase#setUp()
      */
     @Override
     @Before
