@@ -19,9 +19,17 @@
 package ch.sdi.plugins.oxwall;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,13 +43,14 @@ import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
+import ch.sdi.core.impl.data.converter.ConverterImage;
 import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.PasswordEncryptor;
-import ch.sdi.core.intf.SqlJob;
 import ch.sdi.core.intf.TargetJob;
 import ch.sdi.plugins.oxwall.job.OxMailJob;
+import ch.sdi.plugins.oxwall.job.OxSqlJob;
 
 
 /**
@@ -60,6 +69,9 @@ public class OxTargetJobContext implements CustomTargetJobContext
     public static final String KEY_PASSWORD = "person.password";
     public static final String KEY_ENCRYPTED_PASSWORD = "person.enc_password";
     public static final String KEY_PERSON_FULLNAME = "person.fullName";
+    /** the primary key of DB entity */
+    public static final String KEY_PERSON_USER_ID = "person.userId";
+    public static final String KEY_PERSON_PREPARED_AVATAR_FILES = "person.preparedAvatarFiles";
 
 
     @Autowired
@@ -73,7 +85,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Autowired
     private FtpJob myFtpJob;
     @Autowired
-    private SqlJob mySqlJob;
+    private OxSqlJob mySqlJob;
 
 
     /**
@@ -121,7 +133,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
         } // if mySqlJob.isAlreadyPresent( aPerson )
 
         preparePassword( aPerson );
-        prepareAvatarHash( aPerson );
+        prepareAvatar( aPerson );
 
         String fullname = aPerson.getGivenname() + " "
                 + ( StringUtils.hasText( aPerson.getMiddlename() ) ? (aPerson.getMiddlename() + " ") : "" )
@@ -143,20 +155,82 @@ public class OxTargetJobContext implements CustomTargetJobContext
 
     /**
      * @param aPerson
+     * @throws SdiException
      */
-    private void prepareAvatarHash( Person<?> aPerson )
+    private void prepareAvatar( Person<?> aPerson ) throws SdiException
     {
-        BufferedImage bufferedImage = aPerson.getProperty( PersonKey.THING_IMAGE.getKeyName(),
+        BufferedImage origImage = aPerson.getProperty( PersonKey.THING_IMAGE.getKeyName(),
                                                            BufferedImage.class );
-        if ( bufferedImage == null )
+        if ( origImage == null )
         {
             myLog.debug( "No avatar available" );
             return;
         } // if bufferedImage == null
 
-        String hash = RandomStringUtils.random( 10, "0123456789" );
+        /*
+         * Oxwall knows three avatar files:
+         *      - avatar_<userId>_<hash>.jpg (1)
+         *      - avatar_big_<userId>_<hash>.jpg (2)
+         *      - avatar_original_<userId>_<hash>.jpg (3)
+         *   where:
+         *      (1) 90x90 pixels, 96 dpi, 24 pixelBits
+         *      (2) 190x190 pixels, 96 dpi, 24 pixelBits
+         *      (3) any size (original uploaded)
+         *  The hash is entered in table ow_base_avatar (see OxAvatar)
+         */
+
+        Long hash;
+        while ( true )
+        {
+            /* Note: the hash field is defined as int(11), existing hashes all have 10 digits, but start
+             * with '1'. Inserting a value which exceeds the Integer.MAX_VALUE is not possible. So we
+             * only randomize 9 digits and prefix it with '1', so it is for sure below the limit.
+             */
+            hash = Long.valueOf( "1" + RandomStringUtils.random( 9, "0123456789" ) );
+            if ( !mySqlJob.isAvatarHashPresent( hash ) )
+            {
+                break;
+            }
+        }
         myLog.debug( "Generated hash for avatar " + hash );
         aPerson.setProperty( KEY_AVATAR_HASH, hash );
+
+        // since the userId is part of the full filename, we prepare here only the input streams
+        // associate with the file name prefix. The full file name is then composed in FtpJob
+        Map<String, InputStream> filesToUpload = new HashMap<String, InputStream>();
+
+        filesToUpload.put( "avatar_",
+                           toInputStream( ConverterImage.resizeImage( origImage, 90, 90 ) ) );
+        filesToUpload.put( "avatar_big_",
+                           toInputStream( ConverterImage.resizeImage( origImage, 190, 190 ) ) );
+        filesToUpload.put( "avatar_original_",
+                           toInputStream( origImage ) );
+
+        aPerson.setProperty( KEY_PERSON_PREPARED_AVATAR_FILES, filesToUpload );
+    }
+
+    /**
+     * @param aImage
+     * @return
+     * @throws SdiException
+     */
+    protected InputStream toInputStream( BufferedImage aImage ) throws SdiException
+    {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        try
+        {
+            ImageIO.write( aImage, "JPG", os );
+        }
+        catch ( IOException t )
+        {
+
+            throw new SdiException( "Problems writing image to stream",
+                                    t,
+                                    SdiException.EXIT_CODE_UNKNOWN_ERROR );
+        }
+
+        return new ByteArrayInputStream( os.toByteArray() );
     }
 
     /**
@@ -165,6 +239,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     private void preparePassword( Person<?> aPerson )
     {
         String password = RandomStringUtils.random( 8, true, true );
+        myLog.trace( "Generated password for user " + aPerson.getEMail() + ": " + password );
         String encrypted = myPasswordEncryptor.encrypt( password );
         aPerson.setProperty( KEY_PASSWORD, password );
         aPerson.setProperty( KEY_ENCRYPTED_PASSWORD, encrypted );

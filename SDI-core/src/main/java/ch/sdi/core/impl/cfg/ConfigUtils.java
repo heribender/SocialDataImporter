@@ -17,8 +17,10 @@
 
 package ch.sdi.core.impl.cfg;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -172,10 +174,26 @@ public class ConfigUtils
         }
     }
 
+    private static final Set<String> trueValues = new HashSet<String>(4);
+
+    private static final Set<String> falseValues = new HashSet<String>(4);
+
+    static {
+        trueValues.add("true");
+        trueValues.add("on");
+        trueValues.add("yes");
+        trueValues.add("1");
+
+        falseValues.add("false");
+        falseValues.add("off");
+        falseValues.add("no");
+        falseValues.add("0");
+    }
+
     /**
      * Tries to read the value from the given environment and to convert it to a boolean.
      * <p>
-     * If the converstion fails, an excption is thrown.
+     * If the conversion fails, an excption is thrown.
      * <p>
      *
      * @param aEnv
@@ -188,10 +206,29 @@ public class ConfigUtils
     {
         try
         {
-            //TODO: use Springs StringToBooleanConverter
-            return Boolean.valueOf( aEnv.getProperty( aKey ) ).booleanValue();
+            String value = aEnv.getProperty( aKey );
+
+            if ( !StringUtils.hasText( value ) )
+            {
+                throw new Exception();
+            } // if value == null
+
+            value = value.trim().toLowerCase();
+
+            if (trueValues.contains(value))
+            {
+                return Boolean.TRUE;
+            }
+            else if (falseValues.contains(value))
+            {
+                return Boolean.FALSE;
+            }
+            else {
+                throw new IllegalArgumentException("Invalid boolean value '" + value + "'");
+            }
+
         }
-        catch ( Exception t )
+        catch ( Throwable t )
         {
             throw new SdiException( "No boolean value found for property "+ aKey,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
@@ -215,7 +252,7 @@ public class ConfigUtils
     {
         try
         {
-            return Boolean.valueOf( aEnv.getProperty( aKey ) ).booleanValue();
+            return getBooleanProperty( aEnv, aKey );
         }
         catch ( Exception t )
         {

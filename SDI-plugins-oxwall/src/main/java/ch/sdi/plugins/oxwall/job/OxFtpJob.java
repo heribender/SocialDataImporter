@@ -18,15 +18,27 @@
 
 package ch.sdi.plugins.oxwall.job;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.ftp.FtpExecutor;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.intf.FtpJob;
+import ch.sdi.core.intf.SdiMainProperties;
+import ch.sdi.plugins.oxwall.OxTargetJobContext;
+import ch.sdi.report.ReportMsg;
+import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
@@ -42,6 +54,11 @@ public class OxFtpJob implements FtpJob
     private Logger myLog = LogManager.getLogger( OxFtpJob.class );
     @Autowired
     private Environment myEnv;
+    @Autowired
+    private FtpExecutor myFtpExecutor;
+    private boolean myDryRun;
+    private String myTargetDir;
+    private String[] myCmdLineArgs;
 
     /**
      * Constructor
@@ -58,8 +75,54 @@ public class OxFtpJob implements FtpJob
     @Override
     public void execute( Person<?> aPerson ) throws SdiException
     {
-        // TODO Auto-generated method stub
+        Long avatarHash = aPerson.getProperty( OxTargetJobContext.KEY_AVATAR_HASH, Long.class );
+        if ( avatarHash == null )
+        {
+            myLog.debug( "person has no avatar hash. No FTP file upload" );
+            return;
+        }
 
+        Long userId = aPerson.getProperty( OxTargetJobContext.KEY_PERSON_USER_ID, Long.class );
+        if ( userId == null )
+        {
+            throw new SdiException( "There is no userId in given person",
+                                    SdiException.EXIT_CODE_UNKNOWN_ERROR );
+        } // if condition
+
+        Object o = aPerson.getProperty( OxTargetJobContext.KEY_PERSON_PREPARED_AVATAR_FILES );
+        if ( o == null )
+        {
+            throw new SdiException( "There are no prepared avatar images in given person",
+                                    SdiException.EXIT_CODE_UNKNOWN_ERROR );
+        } // if condition
+
+        @SuppressWarnings( "unchecked" )
+        Map<String, InputStream> preparedImageStreams = (Map<String, InputStream>) o;
+
+        String suffix = "" + userId + "_" + avatarHash + ".jpg";
+        Map<String, InputStream> filesToUpload = new HashMap<String, InputStream>();
+        String targetDir = myTargetDir + "ow_userfiles/plugins/base/avatars/";
+
+        for ( String prefix : preparedImageStreams.keySet() )
+        {
+            String filename = targetDir + prefix + suffix;
+            filesToUpload.put( filename, preparedImageStreams.get( prefix ) );
+        }
+
+        if ( myDryRun )
+        {
+            // TODO: save local in output dir
+
+        }
+        else
+        {
+            myFtpExecutor.uploadFiles( filesToUpload );
+        } // if..else myDryRun
+
+        ReportMsg msg = new ReportMsg( ReportType.FTP_TARGET,
+                                       aPerson.getEMail(),
+                                       filesToUpload.keySet().toArray() );
+        myLog.info( msg );
     }
 
     /**
@@ -68,8 +131,48 @@ public class OxFtpJob implements FtpJob
     @Override
     public void init() throws SdiException
     {
-        // TODO Auto-generated method stub
+        myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
 
+        myTargetDir = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_DEST_DIR );
+        if ( !StringUtils.hasText( myTargetDir ) )
+        {
+            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_DEST_DIR + " not configured",
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if !StringUtils.hasText( targetDir )
+        myTargetDir = myTargetDir.trim();
+
+        String commandLine = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_CMD_LINE );
+        if ( !StringUtils.hasText( commandLine ) )
+        {
+            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_CMD_LINE + " not configured",
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if !StringUtils.hasText( commandLine )
+        myCmdLineArgs = StringUtils.delimitedListToStringArray( commandLine, " " );
+
+//        myUsername = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_USER );
+//        if ( !StringUtils.hasText( myUsername ) )
+//        {
+//            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_USER + " not configured",
+//                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+//        } // if !StringUtils.hasText( username )
+//
+//        myPassword = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_PASSWORD );
+//        if ( !StringUtils.hasText( myPassword ) )
+//        {
+//            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_PASSWORD + " not configured",
+//                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+//        } // if !StringUtils.hasText( password )
+
+        myFtpExecutor.init( myCmdLineArgs );
+        try
+        {
+            myFtpExecutor.connectAndLogin();
+        }
+        catch ( IOException t )
+        {
+            throw new SdiException( "Problems connecting to FTP server",
+                                    SdiException.EXIT_CODE_FTP_ERROR );
+        }
     }
 
     /**
@@ -78,8 +181,7 @@ public class OxFtpJob implements FtpJob
     @Override
     public void close() throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        myFtpExecutor.logoutAndDisconnect();
     }
 
 }

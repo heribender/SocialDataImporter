@@ -68,6 +68,7 @@ public class TargetExecutor
     private boolean mySkipFailedPersons;
     private Map<Person<?>,Throwable> myFailedPersons;
     private Collection<Person<?>> myDuplicatePersons;
+    private Collection<Person<?>> myProcessedPersons;
     private File myOutputDir;
 
 
@@ -78,6 +79,7 @@ public class TargetExecutor
 
         myFailedPersons = new LinkedHashMap<Person<?>,Throwable>();
         myDuplicatePersons = new ArrayList<Person<?>>();
+        myProcessedPersons = new ArrayList<Person<?>>();
 
         myOutputDir = prepareOutputDir();
         ConfigUtils.addToEnvironment( myEnv, ConfigUtils.KEY_PROP_OUTPUT_DIR, myOutputDir );
@@ -109,6 +111,7 @@ public class TargetExecutor
                 for ( Person<?> person : aPersons )
                 {
                     processPerson( person );
+                    myProcessedPersons.add( person );
                 }
 
                 if ( myFailedPersons.isEmpty() )
@@ -133,6 +136,11 @@ public class TargetExecutor
         }
         finally
         {
+            if ( !myProcessedPersons.isEmpty() )
+            {
+                myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET, "ProcessedPersons", myProcessedPersons ) );
+            } // if failedPersons.isEmpty()
+
             if ( !myFailedPersons.isEmpty() )
             {
                 myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET_PROBLEM, "FailedPersons", myFailedPersons ) );

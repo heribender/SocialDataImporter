@@ -448,17 +448,29 @@ public class FtpExecutor
      */
     public void logoutAndDisconnect() throws SdiException
     {
+        if ( myFtp == null )
+        {
+            myLog.debug( "FTP not yet initilized. No logout" );
+            return;
+        } // if myFtp == null
+
+        if ( !myFtp.isConnected() )
+        {
+            myLog.debug( "FTP not connected. No logout" );
+            return;
+        }
+
         try
         {
             myFtp.logout();
         }
         catch ( FTPConnectionClosedException e )
         {
-            throw createFtpException( "Server closed connection.", e );
+            myLog.warn( "Problems FTP logout: " + e.getMessage() );
         }
         catch ( IOException e )
         {
-            throw createFtpException( "IOException caught", e );
+            myLog.warn( "Problems FTP logout: " + e.getMessage() );
         }
         finally
         {
@@ -471,7 +483,7 @@ public class FtpExecutor
                 }
                 catch ( IOException f )
                 {
-                    // do nothing
+                    myLog.warn( "Problems FTP disconnect: " + f.getMessage() );
                 }
             }
         }

@@ -55,7 +55,7 @@ public class OxAvatar
     private Long id;
 
     private Long userId;
-    private String hash;
+    private Long hash;
 
     /**
      * @return id
@@ -94,7 +94,7 @@ public class OxAvatar
     /**
      * @return hash
      */
-    public String getHash()
+    public Long getHash()
     {
         return hash;
     }
@@ -103,7 +103,7 @@ public class OxAvatar
      * @param  aHash
      *         hash to set
      */
-    public void setHash( String aHash )
+    public void setHash( Long aHash )
     {
         hash = aHash;
     }

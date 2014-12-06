@@ -38,6 +38,6 @@ public class OxUtils
             return 0L;
         } // if aDate = null
 
-        return aDate.getTime() * 1000;
+        return aDate.getTime() / 1000;
     }
 }

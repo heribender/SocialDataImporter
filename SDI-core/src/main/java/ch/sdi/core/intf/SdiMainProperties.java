@@ -62,6 +62,8 @@ public interface SdiMainProperties extends SdiProperties
 
     public static final String KEY_FTP_DEST_DIR = KEY_FTP_JOB + ".destinationDir";
     public static final String KEY_FTP_CMD_LINE = KEY_FTP_JOB + ".cmdLine";
+    public static final String KEY_FTP_USER = KEY_FTP_JOB + ".user";
+    public static final String KEY_FTP_PASSWORD = KEY_FTP_JOB + ".password";
 
 
 }

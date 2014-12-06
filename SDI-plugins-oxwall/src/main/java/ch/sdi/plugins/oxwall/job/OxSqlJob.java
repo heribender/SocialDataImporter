@@ -87,9 +87,11 @@ public class OxSqlJob implements SqlJob
     private boolean myDryRun;
     private long myDummyId = 1;
     private List<OxProfileQuestion> myProfileQuestions;
-    private ParameterExpression<String> myEMailParam;
     private List<Long> myDefaultGroups;
     private String myGroupPrivacy;
+    private String myUserAccountType;
+    private Integer myJoinIp;
+    private boolean myEmailVerify;
 
     /**
      * Constructor
@@ -111,13 +113,16 @@ public class OxSqlJob implements SqlJob
         myLog.debug( "creating new user entity" );
         OxUser user = new OxUser();
         user.setUsername( aPerson.getStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() ) );
-        user.setAccountType( myEnv.getProperty( OxTargetConfiguration.KEY_USER_ACCOUNT_TYPE ) );
+        user.setAccountType( myUserAccountType );
         user.setActivityStamp( OxUtils.dateToLong( new Date() ) );
         user.setEmail( aPerson.getEMail() );
-        user.setJoinIp( 1234L ); // see comment in OxUser
+        user.setJoinIp( myJoinIp.longValue() );
         user.setJoinStamp( OxUtils.dateToLong( new Date() ) );
         user.setPassword( aPerson.getStringProperty( OxTargetJobContext.KEY_ENCRYPTED_PASSWORD ));
+        user.setEmailVerify( myEmailVerify );
         saveEntity( dbEntities, user );
+
+        aPerson.setProperty( OxTargetJobContext.KEY_PERSON_USER_ID, user.getId() );;
 
         myLog.debug( "creating profile question entities" );
         for ( OxProfileQuestion question : myProfileQuestions )
@@ -128,8 +133,8 @@ public class OxSqlJob implements SqlJob
             saveEntity( dbEntities, profileData );
         }
 
-        String avatarHash = aPerson.getStringProperty( OxTargetJobContext.KEY_AVATAR_HASH );
-        if ( StringUtils.hasText( avatarHash ) )
+        Long avatarHash = aPerson.getProperty( OxTargetJobContext.KEY_AVATAR_HASH, Long.class );
+        if ( avatarHash != null )
         {
             myLog.debug( "creating avatar entities" );
             OxAvatar avatar = new OxAvatar();
@@ -176,16 +181,16 @@ public class OxSqlJob implements SqlJob
 
     /**
      * @param dbEntities
-     * @param user
+     * @param aEntity
      * @throws SdiException
      */
-    private void saveEntity( List<Object> dbEntities, Object user ) throws SdiException
+    private void saveEntity( List<Object> dbEntities, Object aEntity ) throws SdiException
     {
         if ( myDryRun )
         {
             try
             {
-                MethodUtils.invokeExactMethod( user, "setId", new Object[] { Long.valueOf( myDummyId ) } );
+                MethodUtils.invokeExactMethod( aEntity, "setId", new Object[] { Long.valueOf( myDummyId ) } );
             }
             catch ( Throwable t )
             {
@@ -196,10 +201,11 @@ public class OxSqlJob implements SqlJob
         }
         else
         {
-            myEntityManager.persist( user );
+            myLog.trace( "Going to save entity: " + aEntity );
+            myEntityManager.persist( aEntity );
         } // if..else myDryRun
 
-        dbEntities.add( user );
+        dbEntities.add( aEntity );
     }
 
     /**
@@ -218,17 +224,49 @@ public class OxSqlJob implements SqlJob
 
         CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
         Root<OxUser> root = criteria.from(OxUser.class);
-        myEMailParam = cb.parameter(String.class);
-        criteria.select(root).where(cb.equal( root.get("email"), myEMailParam ));
+        ParameterExpression<String> mailParam = cb.parameter(String.class);
+        criteria.select(root).where(cb.equal( root.get("email"), mailParam ));
 
         TypedQuery<OxUser> queryEMail = myEntityManager.createQuery(criteria);
 
-        queryEMail.setParameter( myEMailParam, aPerson.getEMail() );
+        queryEMail.setParameter( mailParam, aPerson.getEMail() );
         List<OxUser> results = queryEMail.getResultList();
 
         if ( results.size() > 0 )
         {
             myLog.debug( "given Person is already present: " + results.get( 0 ) );
+            return true;
+        } // if results.size() > 0
+
+        return false;
+    }
+
+    /**
+     * @param aHash
+     * @return
+     */
+    public boolean isAvatarHashPresent( Long aHash )
+    {
+        if ( myDryRun )
+        {
+            myLog.debug( "DryRun is active. Not checking for duplicate avatar hash" );
+            return false;
+        } // if myDryRun
+
+        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
+
+        CriteriaQuery<OxAvatar> criteria = cb.createQuery(OxAvatar.class);
+        Root<OxAvatar> root = criteria.from(OxAvatar.class);
+        ParameterExpression<Long> avatarParam = cb.parameter(Long.class);
+        avatarParam = cb.parameter(Long.class);
+        criteria.select(root).where(cb.equal( root.get("hash"), avatarParam ));
+        TypedQuery<OxAvatar> query = myEntityManager.createQuery(criteria);
+        query.setParameter( avatarParam, aHash );
+        List<OxAvatar> results = query.getResultList();
+
+        if ( results.size() > 0 )
+        {
+            myLog.debug( "given avatar hash is already present: " + aHash );
             return true;
         } // if results.size() > 0
 
@@ -243,6 +281,10 @@ public class OxSqlJob implements SqlJob
     {
         myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
         myGroupPrivacy = myEnv.getProperty( KEY_GROUP_PRIVACY, "everybody" );
+        myUserAccountType = myEnv.getProperty( OxTargetConfiguration.KEY_USER_ACCOUNT_TYPE );
+        myJoinIp = ConfigUtils.getIntProperty( myEnv, OxTargetConfiguration.KEY_USER_JOINIP, 12345 );
+        myEmailVerify = ConfigUtils.getBooleanProperty( myEnv, OxTargetConfiguration.KEY_USER_EMAIL_VERIFY );
+
 
         myEntityManager = EntityManagerProvider.getEntityManager( "oxwall" );
 

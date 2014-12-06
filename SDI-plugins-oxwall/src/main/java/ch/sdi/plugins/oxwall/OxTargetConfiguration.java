@@ -37,5 +37,7 @@ public class OxTargetConfiguration
 {
     public static final String KEY_PW_SALT = "ox.passwordsalt";
     public static final String KEY_USER_ACCOUNT_TYPE = "ox.ow_base_user.accounttype";
+    public static final String KEY_USER_EMAIL_VERIFY = "ox.ow_base_user.emailVerify";
+    public static final String KEY_USER_JOINIP = "ox.ow_base_user.joinIp";
 
 }
