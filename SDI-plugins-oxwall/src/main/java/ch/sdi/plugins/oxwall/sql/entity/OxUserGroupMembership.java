@@ -116,4 +116,107 @@ public class OxUserGroupMembership
     @GeneratedValue
     private Long id;
 
+    private Long groupId;
+    private Long userId;
+    private Long timeStamp;
+    private String privacy;
+
+    /**
+     * @return id
+     */
+    public Long getId()
+    {
+        return id;
+    }
+
+    /**
+     * @param  aId
+     *         id to set
+     */
+    public void setId( Long aId )
+    {
+        id = aId;
+    }
+
+    /**
+     * @return groupId
+     */
+    public Long getGroupId()
+    {
+        return groupId;
+    }
+
+    /**
+     * @param  aGroupId
+     *         groupId to set
+     */
+    public void setGroupId( Long aGroupId )
+    {
+        groupId = aGroupId;
+    }
+
+    /**
+     * @return userId
+     */
+    public Long getUserId()
+    {
+        return userId;
+    }
+
+    /**
+     * @param  aUserId
+     *         userId to set
+     */
+    public void setUserId( Long aUserId )
+    {
+        userId = aUserId;
+    }
+
+    /**
+     * @return timeStamp
+     */
+    public Long getTimeStamp()
+    {
+        return timeStamp;
+    }
+
+    /**
+     * @param  aTimeStamp
+     *         timeStamp to set
+     */
+    public void setTimeStamp( Long aTimeStamp )
+    {
+        timeStamp = aTimeStamp;
+    }
+
+    /**
+     * @return privacy
+     */
+    public String getPrivacy()
+    {
+        return privacy;
+    }
+
+    /**
+     * @param  aPrivacy
+     *         privacy to set
+     */
+    public void setPrivacy( String aPrivacy )
+    {
+        privacy = aPrivacy;
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    id        : " ).append( id );
+        sb.append( "\n    groupId   : " ).append( groupId );
+        sb.append( "\n    userId    : " ).append( userId );
+        sb.append( "\n    timeStamp : " ).append( timeStamp );
+        sb.append( "\n    privacy   : " ).append( privacy );
+        return sb.toString();
+    }
+
 }

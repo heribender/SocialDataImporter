@@ -107,4 +107,16 @@ public class OxAvatar
     {
         hash = aHash;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    id     : " ).append( id );
+        sb.append( "\n    userId : " ).append( userId );
+        sb.append( "\n    hash   : " ).append( hash );
+        return sb.toString();
+    }
+
 }

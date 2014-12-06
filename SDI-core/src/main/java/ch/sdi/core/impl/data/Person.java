@@ -17,7 +17,9 @@
 
 package ch.sdi.core.impl.data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -181,6 +183,15 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
     {
         return getProperty( aKey, Date.class );
     }
+
+    public List<Long> getLongListProperty( String aKey )
+    {
+        List<Long> result = new ArrayList<Long>();
+        List<?> list = getProperty( aKey, List.class );
+        list.forEach( item -> result.add( (Long) item ) );
+        return result;
+    }
+
 
     @SuppressWarnings( "unchecked" )
     public <R> R getProperty( String aKey, Class<R> aClass )

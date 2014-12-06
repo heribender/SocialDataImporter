@@ -21,7 +21,6 @@ package ch.sdi.plugins.oxwall.job;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -42,6 +41,7 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
+import ch.sdi.core.impl.data.converter.ConverterNumberList;
 import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.core.intf.SqlJob;
 import ch.sdi.plugins.oxwall.OxTargetConfiguration;
@@ -53,8 +53,10 @@ import ch.sdi.plugins.oxwall.profile.OxProfileQuestionNumber;
 import ch.sdi.plugins.oxwall.profile.OxProfileQuestionString;
 import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
 import ch.sdi.plugins.oxwall.profile.OxQuestionType;
+import ch.sdi.plugins.oxwall.sql.entity.OxAvatar;
 import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 import ch.sdi.plugins.oxwall.sql.entity.OxUser;
+import ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership;
 import ch.sdi.report.ReportMsg;
 import ch.sdi.report.ReportMsg.ReportType;
 
@@ -72,6 +74,8 @@ public class OxSqlJob implements SqlJob
     private Logger myLog = LogManager.getLogger( OxSqlJob.class );
     public static final String KEY_PREFIX_PROFILE_QUESTION = "ox.target.qn.";
     public static final String KEY_DEFAULT_GROUPS = "ox.target.defaultGroups";
+    public static final String KEY_GROUP_PRIVACY = "ox.target.groups.privacy";
+
 
     @Autowired
     private Environment myEnv;
@@ -83,8 +87,9 @@ public class OxSqlJob implements SqlJob
     private boolean myDryRun;
     private long myDummyId = 1;
     private List<OxProfileQuestion> myProfileQuestions;
-    private Optional<Long> myDefaultGroup = Optional.empty();
     private ParameterExpression<String> myEMailParam;
+    private List<Long> myDefaultGroups;
+    private String myGroupPrivacy;
 
     /**
      * Constructor
@@ -103,6 +108,7 @@ public class OxSqlJob implements SqlJob
     {
         List<Object> dbEntities = new ArrayList<Object>();
 
+        myLog.debug( "creating new user entity" );
         OxUser user = new OxUser();
         user.setUsername( aPerson.getStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() ) );
         user.setAccountType( myEnv.getProperty( OxTargetConfiguration.KEY_USER_ACCOUNT_TYPE ) );
@@ -113,6 +119,7 @@ public class OxSqlJob implements SqlJob
         user.setPassword( aPerson.getStringProperty( OxTargetJobContext.KEY_ENCRYPTED_PASSWORD ));
         saveEntity( dbEntities, user );
 
+        myLog.debug( "creating profile question entities" );
         for ( OxProfileQuestion question : myProfileQuestions )
         {
             OxProfileData profileData = new OxProfileData();
@@ -121,12 +128,50 @@ public class OxSqlJob implements SqlJob
             saveEntity( dbEntities, profileData );
         }
 
+        String avatarHash = aPerson.getStringProperty( OxTargetJobContext.KEY_AVATAR_HASH );
+        if ( StringUtils.hasText( avatarHash ) )
+        {
+            myLog.debug( "creating avatar entities" );
+            OxAvatar avatar = new OxAvatar();
+            avatar.setUserId( user.getId() );
+            avatar.setHash( avatarHash );
+            saveEntity( dbEntities, avatar );
+        } // if StringUtils.hasText( avatarHash )
+
+        List<Long> groups = resolveMembership( aPerson );
+        if ( groups.size() > 0 )
+        {
+            myLog.debug( "creating group membership entities" );
+            for ( Long group : groups )
+            {
+                OxUserGroupMembership groupEntity = new OxUserGroupMembership();
+                groupEntity.setGroupId( group );
+                groupEntity.setUserId( user.getId() );
+                groupEntity.setTimeStamp( OxUtils.dateToLong( new Date() ) );
+                groupEntity.setPrivacy( myGroupPrivacy );
+                saveEntity( dbEntities, groupEntity );
+            }
+        } // if groups.size() > 0
+
         ReportMsg msg = new ReportMsg( ReportType.SQL_TARGET,
                                        aPerson.getEMail(),
                                        dbEntities.toArray() );
         myLog.info( msg );
 //        throw new SdiException( "TODO: remove: ",
 //                                SdiException.EXIT_CODE_CONFIG_ERROR );
+    }
+
+    /**
+     * @param aPerson
+     * @return
+     * @throws SdiException
+     */
+    private List<Long> resolveMembership( Person<?> aPerson ) throws SdiException
+    {
+        List<Long> result = aPerson.getLongListProperty( PersonKey.PERSON_MEMBEROF.getKeyName() );
+        myLog.debug( "collected groups of person: " + result );
+        result.addAll( myDefaultGroups );
+        return result;
     }
 
     /**
@@ -163,6 +208,12 @@ public class OxSqlJob implements SqlJob
     @Override
     public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException
     {
+        if ( myDryRun )
+        {
+            myLog.debug( "DryRun is active. Not checking for duplicate person" );
+            return false;
+        } // if myDryRun
+
         CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
 
         CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
@@ -191,6 +242,7 @@ public class OxSqlJob implements SqlJob
     public void init() throws SdiException
     {
         myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
+        myGroupPrivacy = myEnv.getProperty( KEY_GROUP_PRIVACY, "everybody" );
 
         myEntityManager = EntityManagerProvider.getEntityManager( "oxwall" );
 
@@ -211,21 +263,9 @@ public class OxSqlJob implements SqlJob
      */
     private void initDefaultGroups() throws SdiException
     {
-        String configured = myEnv.getProperty( KEY_DEFAULT_GROUPS );
-        if ( StringUtils.hasText( configured ) )
-        {
-            try
-            {
-                myDefaultGroup = Optional.of( Long.parseLong( configured ) );
-            }
-            catch ( NumberFormatException t )
-            {
-                throw new SdiException( "DefaultGroup configuration " + configured + " cannot be converted to number",
-                                        t,
-                                        SdiException.EXIT_CODE_CONFIG_ERROR );
-            }
-
-        } // if !StringUtils.hasText( configured )
+        String configured = myEnv.getProperty( KEY_DEFAULT_GROUPS, "" );
+        myDefaultGroups = ConverterNumberList.toLongList( configured, "," );
+        myLog.debug( "Configured default groups: " + myDefaultGroups );
     }
 
     /**
@@ -331,7 +371,10 @@ public class OxSqlJob implements SqlJob
     {
         if ( myEntityManager != null )
         {
-            myEntityManager.getTransaction().commit();
+            if ( myEntityManager.getTransaction().isActive() )
+            {
+                myEntityManager.getTransaction().commit();
+            } // if myEntityManager.getTransaction().isActive()
         } // if em != null
     }
 
@@ -343,7 +386,10 @@ public class OxSqlJob implements SqlJob
     {
         if ( myEntityManager != null )
         {
-            myEntityManager.getTransaction().rollback();
+            if ( myEntityManager.getTransaction().isActive() )
+            {
+                myEntityManager.getTransaction().rollback();
+            } // if myEntityManager.getTransaction().isActive()
         } // if em != null
     }
 

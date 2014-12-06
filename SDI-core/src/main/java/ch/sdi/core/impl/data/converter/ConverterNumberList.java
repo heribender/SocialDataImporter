@@ -91,14 +91,35 @@ public class ConverterNumberList implements FieldConverter<List<Number>>
     @Override
     public List<Number> convert( String aValue ) throws SdiException
     {
+        return toList( aValue, myDelimiter );
+    }
+
+    public static List<Long> toLongList( String aStringArray,
+                                         String aDelimiter ) throws SdiException
+    {
+        List<Long> result = new ArrayList<Long>();
+
+        List<Number> list = toList( aStringArray, aDelimiter );
+        list.stream().forEach( n -> result.add( n.longValue() ) );
+
+        return result;
+    }
+
+    /**
+     * @param aStringArray
+     * @return
+     * @throws SdiException
+     */
+    public static List<Number> toList( String aStringArray, String aDelimiter ) throws SdiException
+    {
         List<Number> result = new ArrayList<Number>();
 
-        if ( !StringUtils.hasText( aValue ) )
+        if ( !StringUtils.hasText( aStringArray ) )
         {
             return result;
         }
 
-        String[] items = aValue.trim().split( myDelimiter );
+        String[] items = aStringArray.trim().split( aDelimiter );
 
         for ( String item : items )
         {
@@ -113,7 +134,6 @@ public class ConverterNumberList implements FieldConverter<List<Number>>
                                         SdiException.EXIT_CODE_PARSE_ERROR );
             }
         }
-
         return result;
     }
 
