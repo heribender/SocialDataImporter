@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiProps;
+import ch.sdi.core.impl.data.converter.ConverterFactory;
 
 
 /**
@@ -66,6 +67,29 @@ public class ClassUtilTest
         Assert.assertNotNull( received );
         Assert.assertTrue( received.size() > 0 );
         received.forEach( c -> myLog.debug( "Found class with annotation @SdiProps: " + c.getName() ) );
+
+    }
+
+    /**
+     * Test method for {@link ch.sdi.core.util.ClassUtil#findCandidatesByAnnotation(java.lang.Class, java.lang.String)}.
+     */
+    @Test
+    public void testFindCandidatesByAnnotationAndType()
+    {
+        myLog.debug( "we parse all classes which are below the top level package" );
+        String pack = this.getClass().getPackage().getName();
+        myLog.debug( "found package: " + pack );
+        pack = pack.replace( '.', '/' );
+        String root = pack.split( "/" )[0];
+
+        Collection<? extends Class<?>> received = ClassUtil.findCandidatesByAnnotation( ConverterFactory.class,
+                                                                                        Component.class,
+                                                                                        root );
+
+        Assert.assertNotNull( received );
+        Assert.assertEquals( 1, received.size() );
+        received.forEach( c -> myLog.debug( "Found class with annotation @Component and type 'ConverterFactory': "
+                    + c.getName() ) );
 
     }
 

@@ -125,7 +125,7 @@ public class ConverterNumberList implements FieldConverter<List<Number>>
         {
             try
             {
-                result.add( Long.parseLong( item ) );
+                result.add( Long.parseLong( item.trim() ) );
             }
             catch ( NumberFormatException t )
             {
