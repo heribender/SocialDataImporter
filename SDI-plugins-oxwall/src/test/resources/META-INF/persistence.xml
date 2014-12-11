@@ -9,6 +9,7 @@
         <class>ch.sdi.plugins.oxwall.sql.entity.OxAvatar</class>
         <class>ch.sdi.plugins.oxwall.sql.entity.OxProfileData</class>
         <class>ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxUserRole</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

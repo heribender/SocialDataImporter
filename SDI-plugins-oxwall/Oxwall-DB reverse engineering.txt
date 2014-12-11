@@ -109,13 +109,17 @@ ow_base_question_account_type
 ow_base_authorization_moderator
     -> all moderators / administrators
 
-ow_base_authorization_user_role
-    default role: 12
-	special role: 31
-	
 ow_base_authorization_role
-    12   wqewq
-	31   nena1_mitglieder
+    INSERT INTO `ow_base_authorization_role`(`id`, `name`, `sortOrder`, `displayLabel`, `custom`) VALUES ([value-1],[value-2],[value-3],[value-4],[value-5])
+		12   wqewq
+		31   nena1_mitglieder
+	
+ow_base_authorization_user_role
+    INSERT INTO `ow_base_authorization_user_role`(`id`, `userId`, `roleId`) VALUES ([value-1],[value-2],[value-3])
+		default role: 12
+		special role: 31
+	-> all existing members have default role	
+	
 	
 ow_base_avatar
 	INSERT INTO `ow_base_avatar`(`id`, `userId`, `hash`)

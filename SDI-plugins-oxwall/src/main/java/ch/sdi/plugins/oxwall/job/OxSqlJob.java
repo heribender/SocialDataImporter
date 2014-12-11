@@ -57,6 +57,7 @@ import ch.sdi.plugins.oxwall.sql.entity.OxAvatar;
 import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 import ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership;
+import ch.sdi.plugins.oxwall.sql.entity.OxUserRole;
 import ch.sdi.report.ReportMsg;
 import ch.sdi.report.ReportMsg.ReportType;
 
@@ -74,6 +75,7 @@ public class OxSqlJob implements SqlJob
     private Logger myLog = LogManager.getLogger( OxSqlJob.class );
     public static final String KEY_PREFIX_PROFILE_QUESTION = "ox.target.qn.";
     public static final String KEY_DEFAULT_GROUPS = "ox.target.defaultGroups";
+    public static final String KEY_DEFAULT_ROLES = "ox.target.defaultRoles";
     public static final String KEY_GROUP_PRIVACY = "ox.target.groups.privacy";
 
 
@@ -88,6 +90,7 @@ public class OxSqlJob implements SqlJob
     private long myDummyId = 1;
     private List<OxProfileQuestion> myProfileQuestions;
     private List<Long> myDefaultGroups;
+    private List<Long> myDefaultRoles;
     private String myGroupPrivacy;
     private String myUserAccountType;
     private Integer myJoinIp;
@@ -123,6 +126,19 @@ public class OxSqlJob implements SqlJob
         saveEntity( dbEntities, user );
 
         aPerson.setProperty( OxTargetJobContext.KEY_PERSON_USER_ID, user.getId() );;
+
+        List<Long> roles = resolveRoles( aPerson );
+        if ( roles.size() > 0 )
+        {
+            myLog.debug( "creating group membership entities" );
+            for ( Long role : roles )
+            {
+                OxUserRole roleEntity = new OxUserRole();
+                roleEntity.setUserId( user.getId() );
+                roleEntity.setRoleId( role );
+                saveEntity( dbEntities, roleEntity );
+            }
+        } // if groups.size() > 0
 
         myLog.debug( "creating profile question entities" );
         for ( OxProfileQuestion question : myProfileQuestions )
@@ -164,6 +180,18 @@ public class OxSqlJob implements SqlJob
         myLog.info( msg );
 //        throw new SdiException( "TODO: remove: ",
 //                                SdiException.EXIT_CODE_CONFIG_ERROR );
+    }
+
+    /**
+     * @param aPerson
+     * @return
+     */
+    private List<Long> resolveRoles( Person<?> aPerson )
+    {
+        List<Long> result = new ArrayList<Long>();  // TODO: add roles per user, as with group membership
+        myLog.debug( "collected roles of person: " + result );
+        result.addAll( myDefaultRoles );
+        return result;
     }
 
     /**
@@ -297,6 +325,18 @@ public class OxSqlJob implements SqlJob
         initProfileQuestions();
         initGenderMap();
         initDefaultGroups();
+        initDefaultRoles();
+
+    }
+
+    /**
+     *
+     */
+    private void initDefaultRoles() throws SdiException
+    {
+        String configured = myEnv.getProperty( KEY_DEFAULT_ROLES, "" );
+        myDefaultRoles = ConverterNumberList.toLongList( configured, "," );
+        myLog.debug( "Configured default roles: " + myDefaultRoles );
 
     }
 
