@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.impl.data.converter;
+package ch.sdi.plugins.oxwall.converter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +95,7 @@ public class ConverterGender implements FieldConverter<OxGender>
             myLog.warn( "Unknown gender pattern received: " + aValue );
         } // if StringUtils.hasText( aValue )
 
-        return OxGender.unknown;
+        return OxGender.dontcare;
     }
 
 }

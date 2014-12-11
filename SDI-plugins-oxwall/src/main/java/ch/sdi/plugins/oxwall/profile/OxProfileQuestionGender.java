@@ -28,7 +28,7 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
-import ch.sdi.core.impl.data.converter.OxGender;
+import ch.sdi.plugins.oxwall.converter.OxGender;
 
 
 /**

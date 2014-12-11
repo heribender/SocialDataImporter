@@ -16,15 +16,14 @@
  */
 
 
-package ch.sdi.core.impl.data.converter;
+package ch.sdi.plugins.oxwall.converter;
 
 public enum OxGender
 {
     male( 1 ),
     female( 2 ),
-    unknown( 3 ),
     dontcare( 4 );
-    
+
     private int myDefaultValue;
 
     /**
@@ -37,7 +36,7 @@ public enum OxGender
         myDefaultValue = aDefaultValue;
     }
 
-    
+
     /**
      * @return defaultValue
      */
@@ -45,6 +44,6 @@ public enum OxGender
     {
         return myDefaultValue;
     }
-    
-    
+
+
 }
