@@ -17,14 +17,13 @@
 
 package ch.sdi.core.impl.cfg;
 
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
@@ -52,6 +51,9 @@ public class ConfigUtils
     public static final String PROP_SOURCE_NAME_CMD_LINE = "CommandLineArguments";
     private static final String PROP_SOURCE_NAME_DYNAMIC = "DynamicProperties";
     public static final String KEY_PROP_OUTPUT_DIR = "dynamic.outputDir.file";
+
+    // must be manually injected since static!
+    private static ConversionService  myConversionService;
 
     /**
      * Converts the given classname into a properties file name according following rules:
@@ -114,14 +116,15 @@ public class ConfigUtils
      */
     public static int getIntProperty( Environment aEnv, String aKey ) throws SdiException
     {
+
         try
         {
-            //TODO: use Springs StringToNumberConverterFactory
-            return Integer.valueOf( aEnv.getProperty( aKey ) ).intValue();
+            return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Integer.class );
         }
-        catch ( Exception t )
+        catch ( Throwable t )
         {
             throw new SdiException( "No integer value found for property "+ aKey,
+                                    t,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         }
     }
@@ -141,9 +144,9 @@ public class ConfigUtils
     {
         try
         {
-            return Integer.valueOf( aEnv.getProperty( aKey ) ).intValue();
+            return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Integer.class );
         }
-        catch ( Exception t )
+        catch ( Throwable t )
         {
             return aDefault;
         }
@@ -167,27 +170,12 @@ public class ConfigUtils
         {
             return aEnv.getRequiredProperty( aKey );
         }
-        catch ( Exception t )
+        catch ( Throwable t )
         {
             throw new SdiException( "No value found for property "+ aKey,
+                                    t,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         }
-    }
-
-    private static final Set<String> trueValues = new HashSet<String>(4);
-
-    private static final Set<String> falseValues = new HashSet<String>(4);
-
-    static {
-        trueValues.add("true");
-        trueValues.add("on");
-        trueValues.add("yes");
-        trueValues.add("1");
-
-        falseValues.add("false");
-        falseValues.add("off");
-        falseValues.add("no");
-        falseValues.add("0");
     }
 
     /**
@@ -206,27 +194,7 @@ public class ConfigUtils
     {
         try
         {
-            String value = aEnv.getProperty( aKey );
-
-            if ( !StringUtils.hasText( value ) )
-            {
-                throw new Exception();
-            } // if value == null
-
-            value = value.trim().toLowerCase();
-
-            if (trueValues.contains(value))
-            {
-                return Boolean.TRUE;
-            }
-            else if (falseValues.contains(value))
-            {
-                return Boolean.FALSE;
-            }
-            else {
-                throw new IllegalArgumentException("Invalid boolean value '" + value + "'");
-            }
-
+            return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Boolean.class );
         }
         catch ( Throwable t )
         {
@@ -254,7 +222,7 @@ public class ConfigUtils
         {
             return getBooleanProperty( aEnv, aKey );
         }
-        catch ( Exception t )
+        catch ( Throwable t )
         {
             return aDefault;
         }
@@ -300,6 +268,16 @@ public class ConfigUtils
 
         Map<String,Object> map = pps.getSource();
         return map;
+    }
+
+
+    /**
+     * @param  aMyConversionService
+     *         myConversionService to set
+     */
+    public static void setMyConversionService( ConversionService aMyConversionService )
+    {
+        myConversionService = aMyConversionService;
     }
 
 

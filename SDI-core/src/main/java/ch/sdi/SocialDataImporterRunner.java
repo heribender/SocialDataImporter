@@ -23,6 +23,7 @@ import java.util.Collection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
@@ -64,6 +65,8 @@ public class SocialDataImporterRunner
     private TargetExecutor  myTargetExecutor;
     @Autowired
     private SdiReporter  mySdiReporter;
+    @Autowired
+    private ConversionService  myConversionService;
 
 
 
@@ -78,6 +81,14 @@ public class SocialDataImporterRunner
 
     public void run( String[] args ) throws SdiException
     {
+        if ( myConversionService == null )
+        {
+            throw new SdiException( "ConversionService not injected",
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if myConversionService == null
+
+        ConfigUtils.setMyConversionService( myConversionService );
+
         myUserPropertyOverloader.overrideByUserProperties();
 
         myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
