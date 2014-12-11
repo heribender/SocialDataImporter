@@ -51,7 +51,7 @@ public class MailCreator
     {
         Email email = new SimpleEmail();
         email.addTo( aPerson.getEMail() );
-        email.setSubject( myEnv.getProperty( MailProperties.SUBJECT ) );
+        email.setSubject( myEnv.getProperty( MailProperties.KEY_SUBJECT ) );
         email.setMsg( createMailBody( aPerson ) );
 
         return email;

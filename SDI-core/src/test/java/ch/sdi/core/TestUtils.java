@@ -17,6 +17,8 @@
 
 package ch.sdi.core;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,6 +44,19 @@ public class TestUtils
     private static Logger myLog = LogManager.getLogger( TestUtils.class );
 
     private static final String TEST_PROPERTY_SOURCE_NAME = "PropertySourceForTest";
+
+    /**
+     * @param aEnv
+     * @param aKey
+     * @param aValue
+     */
+    public static void removeAllFromEnvironment( ConfigurableEnvironment aEnv )
+    {
+        MutablePropertySources propertySources = aEnv.getPropertySources();
+        List<PropertySource<?>> toRemove = new ArrayList<PropertySource<?>>( );
+        propertySources.forEach( p -> toRemove.add( p ) );
+        toRemove.forEach( p -> propertySources.remove( p.getName() ) );
+    }
 
     /**
      * @param aEnv

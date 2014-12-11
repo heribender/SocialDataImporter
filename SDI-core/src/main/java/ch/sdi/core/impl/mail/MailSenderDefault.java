@@ -51,14 +51,14 @@ public class MailSenderDefault implements MailSender<Email>
     @Override
     public void sendMail( Email aMail ) throws EmailException
     {
-        aMail.setHostName( env.getRequiredProperty( MailProperties.HOST ) );
-        aMail.setSmtpPort( ConfigUtils.getIntProperty( env, MailProperties.PORT, 25 ) );
-        aMail.setSslSmtpPort( env.getProperty( MailProperties.HOST ) );
-        aMail.setAuthenticator(new DefaultAuthenticator( env.getProperty( MailProperties.SMTP_USER ),
-                                                         env.getProperty( MailProperties.SMTP_PASSWORD ) ) );
-        aMail.setSSLOnConnect( ConfigUtils.getBooleanProperty( env, MailProperties.SSL_ON_CONNECT, false ) );
-        aMail.setStartTLSRequired( ConfigUtils.getBooleanProperty( env, MailProperties.START_TLS_REQUIRED, false ) );
-        aMail.setFrom( env.getRequiredProperty( MailProperties.SENDER_ADDRESS ) );
+        aMail.setHostName( env.getRequiredProperty( MailProperties.KEY_HOST ) );
+        aMail.setSmtpPort( ConfigUtils.getIntProperty( env, MailProperties.KEY_PORT, 25 ) );
+        aMail.setSslSmtpPort( env.getProperty( MailProperties.KEY_HOST ) );
+        aMail.setAuthenticator(new DefaultAuthenticator( env.getProperty( MailProperties.KEY_SMTP_USER ),
+                                                         env.getProperty( MailProperties.KEY_SMTP_PASSWORD ) ) );
+        aMail.setSSLOnConnect( ConfigUtils.getBooleanProperty( env, MailProperties.KEY_SSL_ON_CONNECT, false ) );
+        aMail.setStartTLSRequired( ConfigUtils.getBooleanProperty( env, MailProperties.KEY_START_TLS_REQUIRED, false ) );
+        aMail.setFrom( env.getRequiredProperty( MailProperties.KEY_SENDER_ADDRESS ) );
         aMail.send();
         myLog.debug( "mail successfully sent" );
     }
