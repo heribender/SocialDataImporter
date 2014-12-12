@@ -36,10 +36,10 @@ import ch.sdi.core.intf.MailJob;
  * @author  Heri
  */
 @Component
-public class OxMailJob implements MailJob
+public class MailJobDefault implements MailJob
 {
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( OxMailJob.class );
+    private Logger myLog = LogManager.getLogger( MailJobDefault.class );
     @Autowired
     private Environment myEnv;
 
@@ -47,7 +47,7 @@ public class OxMailJob implements MailJob
      * Constructor
      *
      */
-    public OxMailJob()
+    public MailJobDefault()
     {
         super();
     }

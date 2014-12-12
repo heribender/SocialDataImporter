@@ -44,7 +44,7 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.converter.ConverterImage;
-import ch.sdi.core.impl.mail.OxMailJob;
+import ch.sdi.core.impl.mail.MailJobDefault;
 import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
@@ -81,7 +81,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Autowired
     private PasswordEncryptor myPasswordEncryptor;
     @Autowired
-    private OxMailJob myMailJob;
+    private MailJobDefault myMailJob;
     @Autowired
     private FtpJob myFtpJob;
     @Autowired
