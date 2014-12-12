@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.plugins.oxwall.job;
+package ch.sdi.core.impl.mail;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

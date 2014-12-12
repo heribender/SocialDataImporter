@@ -44,12 +44,12 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.converter.ConverterImage;
+import ch.sdi.core.impl.mail.OxMailJob;
 import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.PasswordEncryptor;
 import ch.sdi.core.intf.TargetJob;
-import ch.sdi.plugins.oxwall.job.OxMailJob;
 import ch.sdi.plugins.oxwall.job.OxSqlJob;
 
 

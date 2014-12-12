@@ -28,8 +28,8 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.sdi.core.impl.mail.OxMailJob;
 import ch.sdi.plugins.oxwall.job.OxFtpJob;
-import ch.sdi.plugins.oxwall.job.OxMailJob;
 import ch.sdi.plugins.oxwall.job.OxSqlJob;
 import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
 import ch.sdi.plugins.oxwall.pw.OxPasswordEncryptor;
