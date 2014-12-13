@@ -40,21 +40,18 @@ public interface MailProperties extends SdiProperties
             ConfigUtils.makePropertyResourceName( MailProperties.class );
 
 
-    public static final String KEY_SENDER_NAME = "mail.sender.name";
-    public static final String KEY_SENDER_ADDRESS = "mail.sender.address";
-    public static final String KEY_SUBJECT = "mail.subject";
-    public static final String KEY_BODY = "mail.body";
-    public static final String KEY_BODY_TEMPLATE = "mail.body.template";
-    public static final String KEY_BODY_TEMPLATE_CHARSET = "mail.body.template.charset";
-    public static final String KEY_CONTENT_TYPE = "mail.contenttype";
-    public static final String KEY_HOST = "mail.smtp.host";
-    public static final String KEY_PORT = "mail.smtp.port";
-    public static final String KEY_PORT_SSL = "mail.smtp.port.ssl";
-    public static final String KEY_SMTP_USER = "mail.smtp.user";
-    public static final String KEY_SMTP_PASSWORD = "mail.smtp.password";
-    public static final String KEY_SSL = "mail.ssl";
-    public static final String KEY_SSL_ON_CONNECT = "mail.ssl.onconnect";
-    public static final String KEY_START_TLS_REQUIRED = "mail.start.tls.required";
-    public static final String KEY_START_TLS_ENABLED = "mail.start.tls.enabled";
+    public static final String KEY_SENDER_NAME = "sdi.mail.sender.name";
+    public static final String KEY_SENDER_ADDRESS = "sdi.mail.sender.address";
+    public static final String KEY_SUBJECT = "sdi.mail.subject";
+    public static final String KEY_BODY = "sdi.mail.body";
+    public static final String KEY_BODY_TEMPLATE = "sdi.mail.body.template";
+    public static final String KEY_BODY_TEMPLATE_CHARSET = "sdi.mail.body.template.charset";
+    public static final String KEY_HOST = "sdi.mail.smtp.host";
+    public static final String KEY_PORT = "sdi.mail.smtp.port";
+    public static final String KEY_SMTP_USER = "sdi.mail.smtp.user";
+    public static final String KEY_SMTP_PASSWORD = "sdi.mail.smtp.password";
+    public static final String KEY_SSL_ON_CONNECT = "sdi.mail.ssl.onconnect";
+    public static final String KEY_START_TLS_REQUIRED = "sdi.mail.start.tls.required";
+    public static final String KEY_START_TLS_ENABLED = "sdi.mail.start.tls.enabled";
 
 }

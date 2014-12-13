@@ -58,7 +58,7 @@ public class UserPropertyOverloader
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( UserPropertyOverloader.class );
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment myEnv;
 
     /**
      * Constructor
@@ -97,20 +97,13 @@ public class UserPropertyOverloader
                 myLog.error( "Problems loading property file " + fileName );
             }
 
-            props.stringPropertyNames().stream()
-//                .filter(key ->
-//                {
-//                    if ( key instanceof String )
-//                    {
-//                        return true;
-//                    }
-//
-//                    myLog.warn( "key is not instance of String, but " + key.getClass().getName() );
-//                    return false;
-//                })
+            myEnv.setIgnoreUnresolvableNestedPlaceholders( true );
+            try
+            {
+                props.stringPropertyNames().stream()
                 .map( key ->
                 {
-                    String origValue = env.getProperty( key );
+                    String origValue = myEnv.getProperty( key );
                     String result = "Key " + key + ": ";
                     return ( origValue == null || origValue.isEmpty() )
                             ? result + "No default value found. Adding new value to environment: \""
@@ -119,9 +112,14 @@ public class UserPropertyOverloader
                                      + props.getProperty( key ) + "\"";
                 })
                 .forEach( msg -> myLog.debug( msg ) ) ;
+            }
+            finally
+            {
+                myEnv.setIgnoreUnresolvableNestedPlaceholders( false );
+            }
 
             PropertySource<?> ps = new PropertiesPropertySource( fileName, props );
-            MutablePropertySources mps = env.getPropertySources();
+            MutablePropertySources mps = myEnv.getPropertySources();
             if ( mps.get( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE ) != null )
             {
                 mps.addAfter( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE, ps );
@@ -150,7 +148,7 @@ public class UserPropertyOverloader
 
         result.addAll( ClassUtil.findCandidatesByAnnotation( SdiProps.class, defaultRoot ) );
 
-        String newRoot = env.getProperty( SdiMainProperties.KEY_PROPERTIESOVERRIDE_INCLUDEROOT );
+        String newRoot = myEnv.getProperty( SdiMainProperties.KEY_PROPERTIESOVERRIDE_INCLUDEROOT );
         if ( StringUtils.hasText( newRoot ) )
         {
             String[] newRoots = newRoot.split( "," );

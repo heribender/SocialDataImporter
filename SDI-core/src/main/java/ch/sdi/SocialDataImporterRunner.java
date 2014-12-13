@@ -87,7 +87,7 @@ public class SocialDataImporterRunner
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if myConversionService == null
 
-        ConfigUtils.setMyConversionService( myConversionService );
+        ConfigUtils.setConversionService( myConversionService );
 
         myUserPropertyOverloader.overrideByUserProperties();
 

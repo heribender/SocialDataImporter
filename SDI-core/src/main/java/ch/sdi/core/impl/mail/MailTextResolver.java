@@ -40,13 +40,13 @@ import ch.sdi.core.intf.MailProperties;
 /**
  * Resolves the mail subject and the mail body.
  * <p>
- * Configure the subject with key mail.subject.
+ * Configure the subject with key sdi.mail.subject.
  * <p>
- * The body can be configured directly by key mail.body or - if you want to use a template file - by the
- * key mail.body.template. If latter is the case, also the charset must be configured by key
- * mail.body.template.charset.
+ * The body can be configured directly by key sdi.mail.body or - if you want to use a template file - by the
+ * key sdi.mail.body.template. If latter is the case, also the charset must be configured by key
+ * sdi.mail.body.template.charset.
  * <p>
- * A configured body template file takes precedence over the key mail.body.
+ * A configured body template file takes precedence over the key sdi.mail.body.
  *
  * @version 1.0 (11.12.2014)
  * @author  Heri
@@ -70,7 +70,7 @@ public class MailTextResolver
     {
         myBodyKey = MailProperties.KEY_BODY;
 
-        // a configured body template file takes precedence over the key mail.body
+        // a configured body template file takes precedence over the key sdi.mail.body
         if ( myEnv.containsProperty( MailProperties.KEY_BODY_TEMPLATE ) )
         {
             String charsetName;

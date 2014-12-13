@@ -176,6 +176,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
          *      (1) 90x90 pixels, 96 dpi, 24 pixelBits
          *      (2) 190x190 pixels, 96 dpi, 24 pixelBits
          *      (3) any size (original uploaded)
+         *   Linux-Access-Rights: -rw-r--r--
          *  The hash is entered in table ow_base_avatar (see OxAvatar)
          */
 

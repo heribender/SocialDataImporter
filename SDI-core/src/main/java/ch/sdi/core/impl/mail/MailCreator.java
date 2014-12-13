@@ -23,11 +23,11 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.stereotype.Component;
 
+import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
-import ch.sdi.core.intf.MailProperties;
 
 
 /**
@@ -36,7 +36,7 @@ import ch.sdi.core.intf.MailProperties;
  * @version 1.0 (02.11.2014)
  * @author Heri
  */
-@Configuration
+@Component
 public class MailCreator
 {
 
@@ -46,25 +46,37 @@ public class MailCreator
 
     @Autowired
     private ConfigurableEnvironment  myEnv;
+    @Autowired
+    private MailTextResolver myMailTextResolver;
 
-    public Email createMailFor( Person<?> aPerson ) throws EmailException
+    public Email createMailFor( Person<?> aPerson ) throws SdiException
     {
         Email email = new SimpleEmail();
-        email.addTo( aPerson.getEMail() );
-        email.setSubject( myEnv.getProperty( MailProperties.KEY_SUBJECT ) );
-        email.setMsg( createMailBody( aPerson ) );
+
+        try
+        {
+            email.addTo( aPerson.getEMail() );
+            String subject = myMailTextResolver.getResolvedSubject( aPerson );
+            myLog.debug( "resolved subject: " + subject);
+            email.setSubject( subject );
+            String body = myMailTextResolver.getResolvedBody( aPerson );
+            myLog.debug( "resolved body: " + body );
+            email.setMsg( body );
+        }
+        catch ( EmailException t )
+        {
+            throw new SdiException( "Problems setting up mail for " + aPerson.getEMail(),
+                                    t,
+                                    SdiException.EXIT_CODE_MAIL_ERROR );
+        }
 
         return email;
-
-
     }
 
-    /**
-     * @param aPerson
-     * @return
-     */
-    private String createMailBody( Person<?> aPerson )
+    public void init() throws SdiException
     {
-        return "TODO";
+        myMailTextResolver.init();
     }
+
+
 }

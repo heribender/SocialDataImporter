@@ -18,6 +18,7 @@
 
 package ch.sdi.core.impl.mail;
 
+import org.apache.commons.mail.Email;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Component;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.intf.MailJob;
+import ch.sdi.report.ReportMsg;
+import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
@@ -42,6 +45,10 @@ public class MailJobDefault implements MailJob
     private Logger myLog = LogManager.getLogger( MailJobDefault.class );
     @Autowired
     private Environment myEnv;
+    @Autowired
+    private MailCreator myMailCreator;
+    @Autowired
+    private MailSenderDefault myMailSender;
 
     /**
      * Constructor
@@ -58,8 +65,13 @@ public class MailJobDefault implements MailJob
     @Override
     public void execute( Person<?> aPerson ) throws SdiException
     {
-        // TODO Auto-generated method stub
+        Email email = myMailCreator.createMailFor( aPerson );
+        myMailSender.sendMail( email );
 
+        ReportMsg msg = new ReportMsg( ReportType.FTP_TARGET,
+                                       aPerson.getEMail(),
+                                       new MailWrap( email ) );
+        myLog.info( msg );
     }
 
     /**
@@ -68,8 +80,8 @@ public class MailJobDefault implements MailJob
     @Override
     public void init() throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        myMailCreator.init();
+        myMailSender.init();
     }
 
     /**
@@ -82,4 +94,29 @@ public class MailJobDefault implements MailJob
 
     }
 
+    class MailWrap
+    {
+        Email myMail;
+
+        /**
+         * Constructor
+         *
+         * @param aMail
+         */
+        public MailWrap( Email aMail )
+        {
+            super();
+            myMail = aMail;
+        }
+
+        @Override
+        public String toString()
+        {
+            StringBuilder sb = new StringBuilder( super.toString() );
+            sb.append( "\n    Receiver     : " ).append( myMail.getToAddresses() );
+            sb.append( "\n    Subject : " ).append( myMail.getSubject() );
+            return sb.toString();
+
+        }
+    }
 }

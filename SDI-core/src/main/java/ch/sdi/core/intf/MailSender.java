@@ -17,7 +17,7 @@
 
 package ch.sdi.core.intf;
 
-import org.apache.commons.mail.EmailException;
+import ch.sdi.core.exc.SdiException;
 
 
 /**
@@ -37,9 +37,9 @@ public interface MailSender<T>
      * @param aMail
      *        the mail to be sent. All content which is not transport specific (receipient(s), subject,
      *        body, etc.) are expected to be already set correctyl.
-     * @throws EmailException
+     * @throws SdiException
      *         on any problem. The original exception is embedded.
      */
-    public void sendMail( T aMail ) throws EmailException;
+    public void sendMail( T aMail ) throws SdiException;
 
 }

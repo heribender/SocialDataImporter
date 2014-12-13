@@ -119,6 +119,7 @@ public class ConfigUtils
 
         try
         {
+            checkConversionServiceInitialized();
             return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Integer.class );
         }
         catch ( Throwable t )
@@ -127,6 +128,21 @@ public class ConfigUtils
                                     t,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         }
+    }
+
+    /**
+     * @throws SdiException
+     *
+     */
+    private static void checkConversionServiceInitialized() throws SdiException
+    {
+        if ( myConversionService == null )
+        {
+            // Maybe forgotten in a unit test? Note: Without this check a forgotten injection in a unit
+            // test would hardly be noticed if you get - e.g. - a int property with a default value
+            throw new SdiException( "ConversionService not initialized", SdiException.EXIT_CODE_CONFIG_ERROR );
+        } // if myConversionService == null
+
     }
 
     /**
@@ -144,6 +160,7 @@ public class ConfigUtils
     {
         try
         {
+            checkConversionServiceInitialized();
             return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Integer.class );
         }
         catch ( Throwable t )
@@ -194,6 +211,7 @@ public class ConfigUtils
     {
         try
         {
+            checkConversionServiceInitialized();
             return myConversionService.convert( aEnv.getRequiredProperty( aKey ), Boolean.class );
         }
         catch ( Throwable t )
@@ -272,12 +290,12 @@ public class ConfigUtils
 
 
     /**
-     * @param  aMyConversionService
+     * @param  aConversionService
      *         myConversionService to set
      */
-    public static void setMyConversionService( ConversionService aMyConversionService )
+    public static void setConversionService( ConversionService aConversionService )
     {
-        myConversionService = aMyConversionService;
+        myConversionService = aConversionService;
     }
 
 

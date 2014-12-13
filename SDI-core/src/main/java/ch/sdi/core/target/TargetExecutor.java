@@ -96,7 +96,7 @@ public class TargetExecutor
             myTargetJobContext = myCustomTargetJobContext;
         } // if myCustomTargetJobContext != null
 
-
+        myLog.info( "Going to prepare the target job context" );
         myTargetJobContext.prepare();
 
         try
@@ -105,6 +105,7 @@ public class TargetExecutor
             {
                 for ( TargetJob job : myTargetJobContext.getJobs() )
                 {
+                    myLog.info( "Going to prepare the target job " + job.getClass().getSimpleName() );
                     job.init();
                 }
 
@@ -124,6 +125,7 @@ public class TargetExecutor
             {
                 for ( TargetJob job : myTargetJobContext.getJobs() )
                 {
+                    myLog.info( "Going to close the target job " + job.getClass().getSimpleName() );
                     job.close();
                 }
             }
@@ -131,7 +133,6 @@ public class TargetExecutor
         catch ( Throwable t )
         {
             SdiException newEx = SdiException.toSdiException( t );
-            myTargetJobContext.release( newEx );
             throw newEx;
         }
         finally
@@ -151,6 +152,7 @@ public class TargetExecutor
                 myLog.info( new ReportMsg( ReportMsg.ReportType.TARGET, "DuplicatePersons", myDuplicatePersons ) );
             } // if failedPersons.isEmpty()
 
+            myLog.info( "Going to release the target job context" );
             myTargetJobContext.release( null );
         }
 
@@ -163,7 +165,7 @@ public class TargetExecutor
      */
     private void processPerson( Person<?> aPerson ) throws SdiException
     {
-        myLog.debug( "processing person " + aPerson.getEMail() );  // TODO: make primary key configurable
+        myLog.info( "processing person " + aPerson.getEMail() );  // TODO: make primary key configurable
 
         try
         {

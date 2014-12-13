@@ -51,7 +51,7 @@ public class MailCreatorTest
     private Logger myLog = LogManager.getLogger( MailCreatorTest.class );
 
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment myEnv;
     @Autowired
     private MailCreator myClassUnderTest;
     public static final String MAIL_WEB_DE = "sdi-test@web.de";
@@ -64,7 +64,7 @@ public class MailCreatorTest
     @Before
     public void setUp() throws Exception
     {
-        TestUtils.debugPropertySources( env );
+        TestUtils.debugPropertySources(  myEnv );
 
 //        myImportItemProps = new MockPropertySource( "ImportItem" )
 //                .withProperty( PersonKey.THING_ALTERNATENAME.getKeyName(), "Bobby" )

@@ -111,8 +111,8 @@ public class OxFtpJob implements FtpJob
 
         if ( myDryRun )
         {
+            myLog.debug( "DryRun is set. No FTP action is performed" );
             // TODO: save local in output dir
-
         }
         else
         {
