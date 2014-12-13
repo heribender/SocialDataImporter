@@ -34,6 +34,11 @@
     
     <dependencies>
         <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.51</version>
+        </dependency>
+        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
         </dependency>
@@ -77,10 +82,25 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <!--Ganymed-SSH2 logs to java.util.logger-->
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <!-- redirecting slf4j to log4j2 (HIBERNATE-SPRING and Ganymed-SSH2) -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.ftpserver</groupId>
             <artifactId>ftpserver-core</artifactId>
             <version>1.0.6</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.hudson</groupId>
+            <artifactId>ganymed-ssh-2</artifactId>
+            <version>build260</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
