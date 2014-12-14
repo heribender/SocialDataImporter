@@ -183,6 +183,7 @@ public class SshExecutor
         {
             mySession = null;
             throw new SdiException( "Problems connecting to SSH server",
+                                    t,
                                     SdiException.EXIT_CODE_FTP_ERROR );
         }
     }

@@ -36,6 +36,7 @@ import ch.sdi.core.intf.SdiMainProperties;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
+// TODO: still used?
 @Component
 @PropertySource("classpath:/CustomInputCollectorMapping.properties")
 public class CustomInputCollectorMappingProperties implements InputCollectorMappingProperties

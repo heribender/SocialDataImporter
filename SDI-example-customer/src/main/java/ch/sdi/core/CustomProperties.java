@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
+//TODO: still used?
 @Component
 @PropertySource("classpath:/custom.properties")
 public class CustomProperties

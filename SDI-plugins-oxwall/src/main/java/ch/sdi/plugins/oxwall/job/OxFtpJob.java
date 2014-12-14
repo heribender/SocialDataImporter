@@ -33,6 +33,7 @@ import org.springframework.util.StringUtils;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.ftp.FtpExecutor;
 import ch.sdi.core.impl.cfg.ConfigUtils;
+import ch.sdi.core.impl.cfg.ssh.SshExecutor;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.SdiMainProperties;
@@ -56,6 +57,8 @@ public class OxFtpJob implements FtpJob
     private Environment myEnv;
     @Autowired
     private FtpExecutor myFtpExecutor;
+    @Autowired
+    private SshExecutor mySshExecutor;
     private boolean myDryRun;
     private String myTargetDir;
     private String[] myCmdLineArgs;
@@ -117,6 +120,14 @@ public class OxFtpJob implements FtpJob
         else
         {
             myFtpExecutor.uploadFiles( filesToUpload );
+
+            for ( String filename : filesToUpload.keySet() )
+            {
+                String command = "chmod 644 " + filename ;
+                mySshExecutor.executeCmd( command );
+
+            }
+
         } // if..else myDryRun
 
         ReportMsg msg = new ReportMsg( ReportType.FTP_TARGET,
@@ -159,6 +170,8 @@ public class OxFtpJob implements FtpJob
             throw new SdiException( "Problems connecting to FTP server",
                                     SdiException.EXIT_CODE_FTP_ERROR );
         }
+
+        mySshExecutor.init();
     }
 
     /**
@@ -168,6 +181,7 @@ public class OxFtpJob implements FtpJob
     public void close() throws SdiException
     {
         myFtpExecutor.logoutAndDisconnect();
+        mySshExecutor.close();
     }
 
 }

@@ -17,7 +17,6 @@
 
 package ch.sdi.core.impl.cfg;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
@@ -27,6 +26,7 @@ import ch.sdi.core.intf.InputCollectorMappingProperties;
 /**
  * Configuration class for loading the default InputCollectorMapping.properties file.<p>
  *
+ * TODO: review this comment!
  * If you implement your own configuration class which implements {@link InputCollectorMappingProperties} and
  * provide it on the classpath defaults are not loaded. In this case you have to define all needed
  * properties for this configuration artifact.<p>
@@ -38,7 +38,7 @@ import ch.sdi.core.intf.InputCollectorMappingProperties;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
-@ConditionalOnMissingClass(name="ch.sdi.core.intf.SdiProperties.InputCollectorMappingProperties" )
+// @ConditionalOnMissingClass(name="ch.sdi.core.intf.SdiProperties.InputCollectorMappingProperties" )
 @Configuration
 @PropertySource("classpath:/" + "InputCollectorMapping.properties" )
 // more than one @PropertySources(value = {@PropertySource("classpath:/datasource.properties")})

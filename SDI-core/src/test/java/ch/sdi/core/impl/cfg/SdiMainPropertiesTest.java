@@ -18,9 +18,6 @@
 
 package ch.sdi.core.impl.cfg;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-
 import ch.sdi.core.intf.SdiMainProperties;
 
 
@@ -39,8 +36,9 @@ import ch.sdi.core.intf.SdiMainProperties;
  * @version 1.0 (07.11.2014)
  * @author  Heri
  */
-@Configuration
-@PropertySource("classpath:/sdimain_test.properties" )
+// TODO: still used?
+//@Configuration
+//@PropertySource("classpath:/sdimain_test.properties" )
 public class SdiMainPropertiesTest implements SdiMainProperties
 {
 }

@@ -404,7 +404,7 @@ public class FtpExecutorTest implements ApplicationContextAware
         Map<String,InputStream> filesToUpload = new TreeMap<String,InputStream>();
 
         filesToUpload.put( aTargetDir + "sdimain_test.properties",
-                           ClassLoader.getSystemResourceAsStream( "sdimain_test.properties" ) );
+                           ClassLoader.getSystemResourceAsStream( "sdimain.properties" ) );
         filesToUpload.put( aTargetDir + "log4j2.xml",
                            ClassLoader.getSystemResourceAsStream( "log4j2.xml" ) );
         return filesToUpload;

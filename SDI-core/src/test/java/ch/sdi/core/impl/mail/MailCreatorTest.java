@@ -33,7 +33,6 @@ import org.junit.runner.RunWith;
 import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -42,7 +41,6 @@ import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
-import ch.sdi.core.impl.mail.MailCreatorTest.MailTextResolverDummy;
 import ch.sdi.core.intf.MailProperties;
 
 
@@ -54,7 +52,7 @@ import ch.sdi.core.intf.MailProperties;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={MailCreator.class,
-                               MailTextResolverDummy.class })
+                               MailTextResolver.class })
 public class MailCreatorTest
 {
 
@@ -81,16 +79,6 @@ public class MailCreatorTest
     @Before
     public void setUp() throws Exception
     {
-        TestUtils.debugPropertySources(  myEnv );
-
-//        myImportItemProps = new MockPropertySource( "ImportItem" )
-//                .withProperty( PersonKey.THING_ALTERNATENAME.getKeyName(), "Bobby" )
-//                .withProperty( PersonKey.PERSON_GIVENNAME.getKeyName(), "Robert" )
-//                .withProperty( PersonKey.PERSON_ADDITIONALNAME.getKeyName(), "S." )
-//                .withProperty( PersonKey.PERSON_FAMILYNAME.getKeyName(), "Smith" )
-//                .withProperty( PersonKey.PERSON_EMAIL.getKeyName(), MAIL_WEB_DE );
-//        env.getPropertySources().addLast( myImportItemProps );
-
         myPersonProps = new Properties();
         myPersonProps.setProperty( PersonKey.THING_ALTERNATENAME.getKeyName(), "Bobby" );
         myPersonProps.setProperty( PersonKey.PERSON_GIVENNAME.getKeyName(), "Robert" );
@@ -101,6 +89,12 @@ public class MailCreatorTest
         myPersonProps.put( PersonKey.PERSON_BIRTHDATE.getKeyName(), new SimpleDateFormat( "yyyy-MM-dd" ).parse( "1998-12-09" ) );
 
         TestUtils.addToEnvironment( myEnv, MailProperties.KEY_SUBJECT, "Test-Subject" );
+
+        MailTextResolverDummy dummy = new MailTextResolverDummy();
+        Whitebox.setInternalState( myClassUnderTest, "myMailTextResolver", dummy );
+
+        TestUtils.debugPropertySources(  myEnv );
+
     }
 
     @Test
@@ -120,7 +114,6 @@ public class MailCreatorTest
 
     }
 
-    @Component
     static class MailTextResolverDummy extends MailTextResolver
     {
 
