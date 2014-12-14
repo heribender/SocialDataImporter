@@ -138,6 +138,7 @@ public class ConfigUtils
     {
         if ( myConversionService == null )
         {
+            myLog.warn( "ConversionService not initialized" );
             // Maybe forgotten in a unit test? Note: Without this check a forgotten injection in a unit
             // test would hardly be noticed if you get - e.g. - a int property with a default value
             throw new SdiException( "ConversionService not initialized", SdiException.EXIT_CODE_CONFIG_ERROR );

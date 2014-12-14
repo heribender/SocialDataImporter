@@ -149,20 +149,6 @@ public class OxFtpJob implements FtpJob
         } // if !StringUtils.hasText( commandLine )
         myCmdLineArgs = StringUtils.delimitedListToStringArray( commandLine, " " );
 
-//        myUsername = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_USER );
-//        if ( !StringUtils.hasText( myUsername ) )
-//        {
-//            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_USER + " not configured",
-//                                    SdiException.EXIT_CODE_CONFIG_ERROR );
-//        } // if !StringUtils.hasText( username )
-//
-//        myPassword = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_FTP_PASSWORD );
-//        if ( !StringUtils.hasText( myPassword ) )
-//        {
-//            throw new SdiException( "Property " + SdiMainProperties.KEY_FTP_PASSWORD + " not configured",
-//                                    SdiException.EXIT_CODE_CONFIG_ERROR );
-//        } // if !StringUtils.hasText( password )
-
         myFtpExecutor.init( myCmdLineArgs );
         try
         {

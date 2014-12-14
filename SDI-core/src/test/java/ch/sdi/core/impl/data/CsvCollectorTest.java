@@ -29,12 +29,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.cfg.ConfigUtils;
+import ch.sdi.core.impl.cfg.ConversionServiceProvider;
 import ch.sdi.core.impl.data.converter.ConverterDate;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.data.converter.ConverterJpgFromHexDump;
@@ -55,7 +58,8 @@ import ch.sdi.core.intf.SdiMainProperties;
                                InputCollectorFactory.class,
                                ConverterFactory.class,
                                ConverterDate.class,
-                               ConverterJpgFromHexDump.class })
+                               ConverterJpgFromHexDump.class,
+                               ConversionServiceProvider.class })
 public class CsvCollectorTest
 {
 
@@ -65,6 +69,8 @@ public class CsvCollectorTest
     private ConfigurableEnvironment myEnv;
     @Autowired
     private CsvCollector myClassUnderTest;
+    @Autowired
+    private ConversionService  myConversionService;
 
 
 
@@ -74,6 +80,8 @@ public class CsvCollectorTest
     @Before
     public void setUp() throws Exception
     {
+        ConfigUtils.setConversionService( myConversionService );
+
         TestUtils.addToEnvironment( myEnv, "sdi.converter.avatar", ConverterJpgFromHexDump.CONVERTER_NAME  );
         TestUtils.addToEnvironment( myEnv, "sdi.converter.birthday", ConverterDate.CONVERTER_NAME  );
         TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME

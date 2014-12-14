@@ -36,6 +36,7 @@ public class SdiException extends Exception
     public static final int EXIT_CODE_MAIL_ERROR = 4;
     public static final int EXIT_CODE_IMPORT_ERROR = 5;
     public static final int EXIT_CODE_FTP_ERROR = 6;
+    public static final int EXIT_CODE_SSH_ERROR = 7;
 
     private int myExitCode;
 

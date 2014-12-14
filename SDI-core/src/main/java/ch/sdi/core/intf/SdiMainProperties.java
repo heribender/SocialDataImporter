@@ -60,10 +60,17 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_SQL_USER = KEY_SQL_JOB + ".user";
     public static final String KEY_SQL_PASSWORD = KEY_SQL_JOB + ".password";
 
+    public static final String KEY_TARGET_HOST = "sdi.target.host";
+
     public static final String KEY_FTP_DEST_DIR = KEY_FTP_JOB + ".destinationDir";
     public static final String KEY_FTP_CMD_LINE = KEY_FTP_JOB + ".cmdLine";
     public static final String KEY_FTP_USER = KEY_FTP_JOB + ".user";
     public static final String KEY_FTP_PASSWORD = KEY_FTP_JOB + ".password";
+
+    public static final String KEY_SSH_USER = "sdi.ssh.user";
+    public static final String KEY_SSH_PASSWORD = "sdi.ssh.password";
+    public static final String KEY_SSH_PORT = "sdi.ssh.port";
+    public static final String KEY_SSH_CHECK_CERTIFICATE = "sdi.ssh.checkcertificate";
 
     public static final String KEY_TARGET_NAME = "sdi.target.name";
 

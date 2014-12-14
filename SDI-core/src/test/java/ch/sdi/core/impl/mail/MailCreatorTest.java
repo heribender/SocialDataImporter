@@ -18,22 +18,32 @@
 package ch.sdi.core.impl.mail;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Properties;
+
+import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.mail.Email;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
+import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
+import ch.sdi.core.impl.mail.MailCreatorTest.MailTextResolverDummy;
+import ch.sdi.core.intf.MailProperties;
 
 
 /**
@@ -43,12 +53,19 @@ import ch.sdi.core.impl.data.PropertiesPerson;
  * @author  Heri
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={MailCreator.class})
+@ContextConfiguration(classes={MailCreator.class,
+                               MailTextResolverDummy.class })
 public class MailCreatorTest
 {
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( MailCreatorTest.class );
+
+    /** */
+    static final String THIS_IS_THE_SUBJECT = "This is the subject";
+    /** */
+    static final String THIS_IS_THE_BODY = "This is the body";
+
 
     @Autowired
     private ConfigurableEnvironment myEnv;
@@ -82,6 +99,8 @@ public class MailCreatorTest
         myPersonProps.setProperty( PersonKey.PERSON_EMAIL.getKeyName(), MAIL_WEB_DE );
         myPersonProps.setProperty( PersonKey.PERSON_GENDER.getKeyName(), "m" );
         myPersonProps.put( PersonKey.PERSON_BIRTHDATE.getKeyName(), new SimpleDateFormat( "yyyy-MM-dd" ).parse( "1998-12-09" ) );
+
+        TestUtils.addToEnvironment( myEnv, MailProperties.KEY_SUBJECT, "Test-Subject" );
     }
 
     @Test
@@ -90,8 +109,50 @@ public class MailCreatorTest
         PropertiesPerson person = new PropertiesPerson( "person", myPersonProps );
         Email email = myClassUnderTest.createMailFor( person );
         myLog.debug( "Created Mail: " + email );
+        Assert.assertNotNull( email );
+        Assert.assertEquals( THIS_IS_THE_SUBJECT, email.getSubject() );
+        Object content = Whitebox.getInternalState( email, "content" );
+        Assert.assertNotNull( content );
+        Assert.assertEquals( THIS_IS_THE_BODY, content );
+        List<InternetAddress> addresses = email.getToAddresses();
+        Assert.assertNotNull( addresses );
+        Assert.assertEquals( 1, addresses.size() );
 
-//        fail( "Not yet implemented" );
     }
 
+    @Component
+    static class MailTextResolverDummy extends MailTextResolver
+    {
+
+        /** logger for this class */
+        private Logger myLog = LogManager.getLogger( MailCreatorTest.MailTextResolverDummy.class );
+        /**
+         * @see ch.sdi.core.impl.mail.MailTextResolver#init()
+         */
+        @Override
+        public void init() throws SdiException
+        {
+            myLog.debug( "init, doing nothing" );
+        }
+
+        /**
+         * @see ch.sdi.core.impl.mail.MailTextResolver#getResolvedBody(ch.sdi.core.impl.data.Person)
+         */
+        @Override
+        public String getResolvedBody( Person<?> aPerson ) throws SdiException
+        {
+            return THIS_IS_THE_BODY;
+        }
+
+        /**
+         * @see ch.sdi.core.impl.mail.MailTextResolver#getResolvedSubject(ch.sdi.core.impl.data.Person)
+         */
+        @Override
+        public String getResolvedSubject( Person<?> aPerson ) throws SdiException
+        {
+            return THIS_IS_THE_SUBJECT;
+        }
+
+
+    }
 }

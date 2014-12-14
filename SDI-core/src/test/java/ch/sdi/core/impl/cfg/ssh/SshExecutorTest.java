@@ -17,25 +17,23 @@
 
 package ch.sdi.core.impl.cfg.ssh;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelExec;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.UIKeyboardInteractive;
-import com.jcraft.jsch.UserInfo;
-
-import ch.ethz.ssh2.Connection;
-import ch.ethz.ssh2.Session;
-import ch.ethz.ssh2.StreamGobbler;
+import ch.sdi.core.TestUtils;
+import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.cfg.ConfigUtils;
+import ch.sdi.core.impl.cfg.ConversionServiceProvider;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
@@ -44,15 +42,21 @@ import ch.ethz.ssh2.StreamGobbler;
  * @version 1.0 (13.12.2014)
  * @author Heri
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes={SshExecutor.class,
+                               ConversionServiceProvider.class })
 public class SshExecutorTest
 {
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( SshExecutorTest.class );
 
-    private String myHostname;
-    private String myUsername;
-    private String myPassword;
+    @Autowired
+    private ConfigurableEnvironment  myEnv;
+    @Autowired
+    private SshExecutor myClassUnderTest;
+    @Autowired
+    private ConversionService  myConversionService;
 
     /**
      * @throws java.lang.Exception
@@ -60,247 +64,35 @@ public class SshExecutorTest
     @Before
     public void setUp() throws Exception
     {
-        myHostname = "192.168.99.1";
-        myUsername = "heri";
-        myPassword = "heri";
+        ConfigUtils.setConversionService( myConversionService );
+
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_TARGET_HOST, "192.168.99.1" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_SSH_USER, "heri" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_SSH_PASSWORD, "heri" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_SSH_PORT, "22" );
+        TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_SSH_CHECK_CERTIFICATE, "false" );
+
+        myClassUnderTest.init();
     }
 
-// @Test
-    public void testGanymed()
+    @After
+    public void tearDown() throws Throwable
     {
-
-        try
-        {
-            /* Create a connection instance */
-
-            Connection conn = new Connection( myHostname );
-
-            /* Now connect */
-
-            conn.connect();
-
-            /*
-             * Authenticate.
-             * If you get an IOException saying something like
-             * "Authentication method password not supported by the server at this stage."
-             * then please check the FAQ.
-             */
-
-            boolean isAuthenticated = conn.authenticateWithPassword( myUsername, myPassword );
-
-            if ( isAuthenticated == false )
-                throw new IOException( "Authentication failed." );
-
-            /* Create a session */
-
-            Session sess = conn.openSession();
-
-            sess.execCommand( "uname -a && date && uptime && who" );
-
-            System.out.println( "Here is some information about the remote host:" );
-
-            /*
-             * This basic example does not handle stderr, which is sometimes dangerous
-             * (please read the FAQ).
-             */
-
-            InputStream stdout = new StreamGobbler( sess.getStdout() );
-
-            BufferedReader br = new BufferedReader( new InputStreamReader( stdout ) );
-
-            while ( true )
-            {
-                String line = br.readLine();
-                if ( line == null )
-                    break;
-                System.out.println( line );
-            }
-            br.close();
-
-            /* Show exit status, if available (otherwise "null") */
-
-            System.out.println( "ExitCode: " + sess.getExitStatus() );
-
-            /* Close this session */
-
-            sess.close();
-
-            /* Close the connection */
-
-            conn.close();
-
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace( System.err );
-            System.exit( 2 );
-        }
+        myClassUnderTest.close();
     }
 
     @Test
-    public void testSchj()
+    public void testChmod() throws Throwable
     {
-        try
-        {
-            JSch jsch = new JSch();
-
-            com.jcraft.jsch.Session session = jsch.getSession( myUsername, myHostname, 22 );
-            session.setPassword( myPassword );
-
-            UserInfo ui = new MyUserInfo()
-            {
-
-                @Override
-                public void showMessage( String message )
-                {
-                    myLog.debug( "showMessage: " + message );
-                }
-
-                @Override
-                public boolean promptYesNo( String message )
-                {
-                    myLog.debug( "promptYesNo: " + message );
-                    return true;
-                }
-
-            };
-
-            session.setUserInfo( ui );
-
-            // It must not be recommended, but if you want to skip host-key check,
-            // invoke following,
-            // session.setConfig("StrictHostKeyChecking", "no");
-
-            // session.connect();
-            session.connect( 30000 ); // making a connection with timeout.
-
-// Channel channel = session.openChannel( "shell" );
-//
-// // Enable agent-forwarding.
-// // ((ChannelShell)channel).setAgentForwarding(true);
-//
-// channel.setInputStream( System.in );
-// /*
-// * // a hack for MS-DOS prompt on Windows.
-// * channel.setInputStream(new FilterInputStream(System.in){
-// * public int read(byte[] b, int off, int len)throws IOException{
-// * return in.read(b, off, (len>1024?1024:len));
-// * }
-// * });
-// */
-//
-// channel.setOutputStream( System.out );
-//
-// /*
-// * // Choose the pty-type "vt102".
-// * ((ChannelShell)channel).setPtyType("vt102");
-// */
-//
-// /*
-// * // Set environment variable "LANG" as "ja_JP.eucJP".
-// * ((ChannelShell)channel).setEnv("LANG", "ja_JP.eucJP");
-// */
-//
-// // channel.connect();
-// channel.connect( 3 * 1000 );
-// channel.disconnect();
-
-            String command = "chmod 664 /var/www/oxwall/.gitignore";
-            Channel channel = session.openChannel( "exec" );
-            ( (ChannelExec) channel ).setCommand( command );
-            // channel.setInputStream(System.in);
-            channel.setInputStream( null );
-
-            // channel.setOutputStream(System.out);
-
-            // FileOutputStream fos=new FileOutputStream("/tmp/stderr");
-            // ((ChannelExec)channel).setErrStream(fos);
-            ( (ChannelExec) channel ).setErrStream( System.err );
-
-            InputStream in = channel.getInputStream();
-
-            channel.connect();
-
-            byte[] tmp = new byte[1024];
-            while ( true )
-            {
-                while ( in.available() > 0 )
-                {
-                    int i = in.read( tmp, 0, 1024 );
-                    if ( i < 0 )
-                        break;
-                    System.out.print( new String( tmp, 0, i ) );
-                }
-                if ( channel.isClosed() )
-                {
-                    if ( in.available() > 0 )
-                        continue;
-                    System.out.println( "exit-status: " + channel.getExitStatus() );
-                    break;
-                }
-                try
-                {
-                    Thread.sleep( 1000 );
-                }
-                catch ( Exception ee )
-                {
-                }
-            }
-            channel.disconnect();
-        }
-        catch ( Exception e )
-        {
-            System.out.println( e );
-        }
-
+        String command1 = "chmod 644 /var/www/oxwall/ow_userfiles/plugins/base/avatars/avatar_*_38*";
+        myClassUnderTest.executeCmd( command1 );
     }
 
-    public static abstract class MyUserInfo implements UserInfo, UIKeyboardInteractive
+    @Test( expected=SdiException.class )
+    public void testChown() throws Throwable
     {
-
-        @Override
-        public String getPassword()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean promptYesNo( String str )
-        {
-            return false;
-        }
-
-        @Override
-        public String getPassphrase()
-        {
-            return null;
-        }
-
-        @Override
-        public boolean promptPassphrase( String message )
-        {
-            return false;
-        }
-
-        @Override
-        public boolean promptPassword( String message )
-        {
-            return false;
-        }
-
-        @Override
-        public void showMessage( String message )
-        {
-        }
-
-        @Override
-        public String[] promptKeyboardInteractive( String destination,
-                                                   String name,
-                                                   String instruction,
-                                                   String[] prompt,
-                                                   boolean[] echo )
-        {
-            return null;
-        }
+        String command1 = "chown www-data:www-data /var/www/oxwall/ow_userfiles/plugins/base/avatars/avatar_*_38*";
+        myClassUnderTest.executeCmd( command1 );
     }
+
 }

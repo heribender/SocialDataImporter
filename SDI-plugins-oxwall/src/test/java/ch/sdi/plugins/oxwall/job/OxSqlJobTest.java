@@ -32,12 +32,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.reflect.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import ch.sdi.core.TestUtils;
+import ch.sdi.core.impl.cfg.ConfigUtils;
+import ch.sdi.core.impl.cfg.ConversionServiceProvider;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.PropertiesPerson;
+import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 import ch.sdi.plugins.oxwall.profile.OxQuestionFactory;
 import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 
@@ -50,7 +55,8 @@ import ch.sdi.plugins.oxwall.sql.entity.OxUser;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes={OxSqlJob.class,
-                               OxQuestionFactory.class })
+                               OxQuestionFactory.class,
+                               ConversionServiceProvider.class })
 public class OxSqlJobTest
 {
 
@@ -62,6 +68,8 @@ public class OxSqlJobTest
     private OxSqlJob myClassUnderTest;
     @Autowired
     private ConfigurableEnvironment  myEnv;
+    @Autowired
+    private ConversionService  myConversionService;
 
     /**
      * @throws java.lang.Exception
@@ -77,6 +85,9 @@ public class OxSqlJobTest
 //            value++;
 //        }
 
+        ConfigUtils.setConversionService( myConversionService );
+
+        TestUtils.addToEnvironment( myEnv, OxTargetConfiguration.KEY_USER_EMAIL_VERIFY, "false" );
         myClassUnderTest.init();
 //        provideNewEntityManager();
 
