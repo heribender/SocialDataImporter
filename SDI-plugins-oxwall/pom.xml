@@ -6,7 +6,7 @@
     <parent>
         <groupId>social-data-importer-parent</groupId>
         <artifactId>parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.9-RC1</version>
     </parent>
 
     <groupId>social-data-importer</groupId>

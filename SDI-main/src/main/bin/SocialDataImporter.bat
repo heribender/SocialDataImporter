@@ -7,10 +7,10 @@
 set LIB_DIR=../lib
 
 set CLASSPATH=../cfg
-set CLASSPATH=%CLASSPATH%;%LIB_DIR%/core-0.0.1-SNAPSHOT.jar
-set CLASSPATH=%CLASSPATH%;%LIB_DIR%/main-0.0.1-SNAPSHOT.jar
-set CLASSPATH=%CLASSPATH%;%LIB_DIR%/oxwall-importer-0.0.1-SNAPSHOT.jar
-set CLASSPATH=%CLASSPATH%;%LIB_DIR%/oxwall-plugins-0.0.1-SNAPSHOT.jar
+set CLASSPATH=%CLASSPATH%;%LIB_DIR%/core-0.9-RC1.jar
+set CLASSPATH=%CLASSPATH%;%LIB_DIR%/main-0.9-RC1.jar
+set CLASSPATH=%CLASSPATH%;%LIB_DIR%/oxwall-importer-0.9-RC1.jar
+set CLASSPATH=%CLASSPATH%;%LIB_DIR%/oxwall-plugins-0.9-RC1.jar
 set CLASSPATH=%CLASSPATH%;%LIB_DIR%/activation-1.1.jar
 set CLASSPATH=%CLASSPATH%;%LIB_DIR%/aopalliance-1.0.jar
 set CLASSPATH=%CLASSPATH%;%LIB_DIR%/commons-codec-1.9.jar

@@ -74,7 +74,10 @@ public class ConverterJpgFromHexDumpTest
         Assert.assertNotNull( actual );
 
         File out = new File( "resized.jpg" );
-        ImageIO.write( actual, "JPG", out );
+        Assert.assertTrue( ImageIO.write( actual, "JPG", out ) );
+        Assert.assertTrue( out.exists() );
+        Assert.assertTrue( out.delete() );
+
     }
 
 

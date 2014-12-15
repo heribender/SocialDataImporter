@@ -163,7 +163,8 @@ public class MailTextResolver
         }
         catch ( Throwable t )
         {
-            throw new SdiException( "Problems loading property " + aKey,
+            throw new SdiException( "Problems loading property " + aKey + ". Original exception message:\n"
+                                    + t.getMessage(),
                                     t,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
 

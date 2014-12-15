@@ -160,18 +160,21 @@ public class OxFtpJob implements FtpJob
         } // if !StringUtils.hasText( commandLine )
         myCmdLineArgs = StringUtils.delimitedListToStringArray( commandLine, " " );
 
-        myFtpExecutor.init( myCmdLineArgs );
-        try
+        if ( !myDryRun )
         {
-            myFtpExecutor.connectAndLogin();
-        }
-        catch ( IOException t )
-        {
-            throw new SdiException( "Problems connecting to FTP server",
-                                    SdiException.EXIT_CODE_FTP_ERROR );
-        }
+            myFtpExecutor.init( myCmdLineArgs );
+            try
+            {
+                myFtpExecutor.connectAndLogin();
+            }
+            catch ( IOException t )
+            {
+                throw new SdiException( "Problems connecting to FTP server",
+                                        SdiException.EXIT_CODE_FTP_ERROR );
+            }
 
-        mySshExecutor.init();
+            mySshExecutor.init();
+        } // if !myDryRun
     }
 
     /**

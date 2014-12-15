@@ -1,0 +1,26 @@
+Hallo ${person.givenName}
+
+Welcome to our forum ${sdi.target.name}.
+
+We have updoaded following data of you:
+
+Name       : ${person.familyName}
+Prename    : ${person.givenName}
+Middlename : ${person.additionalName}
+Gender     : ${person.gender}
+Birthday   : ${person.birthDate}
+Phone      : ${person.telephone}
+email      : ${person.email}
+Screenname : ${thing.alternateName}
+
+Here you can login to our forum: ${sdi.target.weblink}
+
+User-Name : ${person.email}
+Passwort  : ${person.password}
+
+Please change your password in your user profile. 
+
+Best regards
+Your ${sdi.target.name} team
+
+
