@@ -66,6 +66,7 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <!-- Note: hibernate 4.3 uses JPA 2.1 which is not yet part of java SE 
+            TODO: still valid?
             <version>4.3.7.Final</version>
             -->
             <version>4.2.8.Final</version>
