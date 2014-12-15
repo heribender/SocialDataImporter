@@ -425,7 +425,13 @@ public class FtpExecutor
             try
             {
                 myLog.debug( "Uploading a file to " + target );
-                myFtp.storeFile( target, aFilesToUpload.get( target ) );
+                InputStream is = aFilesToUpload.get( target );
+                if ( is == null )
+                {
+                    throw new SdiException( "InputStream for target file " + target + " is null",
+                                            SdiException.EXIT_CODE_UNKNOWN_ERROR );
+                } // if is == null
+                myFtp.storeFile( target, is );
                 myFtp.noop(); // check that control connection is working OK
             }
             catch ( FTPConnectionClosedException e )
