@@ -1,0 +1,99 @@
+The task of importing new user data to a target platform is basically done in four steps:  
+
+1. Collect each users data  
+2. Normalize the data for further processing  
+3. Import the normalized data to the target platform  
+4. Notify each new user by a personalized email  
+
+### 1. Collect user data
+
+Currently only a CSV collector is implemented. But it is highly configurable and capable of collect
+  - date values (configurable date patterns for each date field)
+  - JPG-image data (in hexadecimal format)
+  - number lists
+  - any custom data format by pluggable custom data converters (example: the gender converter in the oxwall plugin)
+
+  
+### 2. Normalize collected data
+
+The collected data of each new user (in SDI called "Person") is normalized to an internal representation which is 
+inspired by the attempts of google and co. for establishing a standard schema for objects etc. (see http://schema.org/Person)
+
+The implemented Person class is a wrapper around springs PropertySource base class which integrates seamlessly into springs 
+environment framework. This allows later - when executing the mail job - to personalize the email to each new user by simply
+relying on springs embedded text resolving capabilities (i.e. replacing all ${xyz}-tokens in the mail template by real values found
+in the persons PropertySource).
+
+
+### 3. Import to the target platform
+
+The particular target platform plugin defines the different jobs which have to be done for importing the new users data to the
+platform server. The application runner in the core module executes these tasks for each collected person.
+
+The actual oxwall plugin uses the following standard jobs:
+  - SQL job for entering data into the database
+  - FTP job for uploading files (incl. SSH access for executing remote shell commands)
+  - a mail job which personlizes a configurable mail template and sends it to an SMTP server
+
+The implementation of these jobs is splitted into the SDI-core module and the oxwall-plugin:
+  - common tasks (as SSH and FTP clients) are implemented in the core whereas the business rules (which files, etc.) are implemented in 
+    the oxwall plugin
+  - the mail processor is fully implemented in core because there is nothing oxwall specific. The oxwall implementation only provides 
+    prepared data content (e.g. the generated password) for using it later when personalizing the mail template.
+  - the SQL job is fully implemented in oxwall (by JPA annotated entities), by using some core factories e.g. for retrieving an EntityManager, 
+    because this job basically consists only in setting up the desired entity instances and save them through the JPA EntityManager in a 
+    one liner call. All common SQL services are already provided by hibernates ORM framework.
+
+
+Of course it is possible to implement and provide any custom job if a particular platform needs it (annotation driven, picked up by the 
+spring-context framework).
+
+
+### 4. Personalized email
+
+The default implementation of the email processor is capable of producing a personalized mail in text/plain format. You define a mail template using 
+placeholders (with the ${xyz} format) which are resolved against the corresponding property found in the spring environment, regardeless
+if the particular property was configured in a properties file, a command line argument, a system property, or added dynamically during
+runtime (as the personal data of each new user).
+
+The SMTP client is able to deliver the mail to any standard SMTP server as all usual mail clients can do (SSL, StartTLS, anonymous or with
+login, proxied, etc.).
+
+  
+# Architecture  
+
+## SDI-core  
+
+provides the application runner, including features like:  
+  - sophisticated configuration concept
+  - collecting data on each step for compiling a final report
+  - custom annotations (for pluggable components)
+ 
+provides some core technologies which can be used for all target platforms:
+  - fully featured FTP client (incl. redirecting its console output to the log4j2 framework)
+  - simple SSH client (for executing shell commands on the target platform)
+  - generic data converters for collecting data from CSV files (date, image, number list), including the possibility to plug in custom converters by annotation
+  - mail client: Full featured for all SMTP connection kinds (SSL, StartTLS), but currently only capable of plain text mails
+  - a configurable CSV parser
+  - a report engine which collects the report data by a custom log4j2 appender
+  - 
+
+## SDI-plugins-oxwall
+
+Implements all business rules how to interact with the oxwall community software platform:
+  - password generation
+  - DB inserts (including joins to avatar table, custom profile answers, group and role membership)
+  - FTP upload of avatar picture files
+  - SSH access to change the access rights of these uploaded files
+
+  
+## SDI-parent
+
+Tbd
+  
+  
+## SDI-example-customer
+
+Tbd
+  
+    
