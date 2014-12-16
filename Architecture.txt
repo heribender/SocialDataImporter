@@ -1,0 +1,63 @@
+# Architecture  
+
+The application is based on the spring core with its spring-context framework. This allows the dependency injection only based on 
+java annotations. Another big advantage is the easy configuration of the application, also only performed by annotated configuration beans. All 
+configuration values are held in the spring Environment bean, including commandline and system parameters. During runtime the 
+spring Environment is even used for providing dynamic values to other modules. The spring Environment has a simple but powerful
+retrieve mechanisme with its various overloaded getProperty methods, even type safe return values. Another goodie of the spring
+Environment is the fact that it automatically resolves placeholders just in time when getting a property value by looking up all 
+other managed properties for the placeholder string.
+
+The spring core offers also a lot of other useful utilites which are partly used by our application:
+  - generic ConversionService
+  - powerful classpath crawler (used e.g. for finding classes and beans annotated by our custom annotations)
+
+The application is highly modularized. The core runner is built with the goal that it does not contain any buisness rules but 
+only provides a consistent run through and that it is able to collect information on each executed step in a generic manner. At the end
+of the run these information can be composed to a nice report. All real business tasks are performed by pluggable components.
+
+Following modules are modelled as eclipse projects:
+
+
+## SDI-core  
+
+provides the application runner, including features like:  
+  - sophisticated configuration concept
+  - collecting data on each step for compiling a final report
+  - custom interfaces and annotations (for pluggable components)
+ 
+provides some core technologies and default implementations which can be used by all target plugins:
+  - fully featured FTP client (incl. redirecting its console output to the log4j2 framework)
+  - simple SSH client (for executing shell commands on the target platform)
+  - generic data converters for collecting data from CSV files (date, image, number list), including the possibility to plug in custom converters by annotation
+  - mail client: Fully featured for all SMTP connection kinds (SSL, StartTLS), but currently only capable of producing emails in plain text format
+  - a configurable CSV parser
+  - a report engine which collects the report data by a custom log4j2 appender
+
+
+## SDI-plugins-oxwall
+
+Implements all business rules on how to interact with the oxwall community software platform:
+  - password generation
+  - DB insertions (including joins to avatar table, custom profile answers, group and role membership)
+  - FTP upload of avatar picture files
+  - SSH access to change the access rights of these uploaded files
+
+  
+## SDI-parent
+
+A maven parent project for managing the core and the plugin modules.
+  - Dependency management
+  - assembly descriptor
+  
+  
+## SDI-example-customer
+
+This project serves two goals:
+  - blueprint with example configuration how to configure a concrete target project
+  - Running the application within eclipse for test purpose (see ch.sdi.SocialDataImporterLauncher)
+  
+  
+  
+  
+    
