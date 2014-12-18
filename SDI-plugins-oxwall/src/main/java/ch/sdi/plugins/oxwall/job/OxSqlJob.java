@@ -410,7 +410,13 @@ public class OxSqlJob implements SqlJob
                     question = new OxProfileQuestionDate( values[1], personKey );
                     break;
                 case custom:
-                    question = myQuestionFactory.getCustomQuestion( values, personKey );
+                    if ( values.length < 3 )
+                    {
+                        throw new SdiException( "Profile question not configured correctly: " + values,
+                                                SdiException.EXIT_CODE_CONFIG_ERROR );
+                    }
+
+                    question = myQuestionFactory.getCustomQuestion( values[1], values[2], personKey );
                     break;
                 default:
                     throw new SdiException( "unhandled question type: " + type,

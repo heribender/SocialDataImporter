@@ -37,7 +37,8 @@ import ch.sdi.core.exc.SdiException;
 
 
 /**
- * TODO
+ * Provides some static methods for dealing with the configuration.
+ * <p>
  *
  * @version 1.0 (04.11.2014)
  * @author Heri
@@ -251,8 +252,10 @@ public class ConfigUtils
      * @param aEnv
      * @param aKey
      * @param aValue
+     * @throws SdiException
      */
     public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, Object aValue )
+            throws SdiException
     {
         Map<String, Object> map = getOrCreatePropertySource( aEnv, PROP_SOURCE_NAME_DYNAMIC );
 
@@ -262,12 +265,17 @@ public class ConfigUtils
     }
 
     /**
+     * Tries to retrieve the named PropertySource from the environment. If not found it creates a
+     * new one.
+     * <p>
+     *
      * @param aEnv
      * @param aPropertySourceName
-     * @return
+     * @return the embedded property map
+     * @throws SdiException if the found property source is not instance of PropertiesPropertySource
      */
     public static Map<String, Object> getOrCreatePropertySource( ConfigurableEnvironment aEnv,
-                                                                 String aPropertySourceName )
+                                                                 String aPropertySourceName ) throws SdiException
     {
         MutablePropertySources mps = aEnv.getPropertySources();
         PropertySource<?> ps = mps.get( aPropertySourceName );
@@ -281,6 +289,12 @@ public class ConfigUtils
         }
         else
         {
+            if ( !( ps instanceof PropertiesPropertySource ) )
+            {
+                throw new SdiException( "Found property source is not instance of PropertiesPropertySource "
+                                        + " but: " + ps.getClass().getName(),
+                                        SdiException.EXIT_CODE_CONFIG_ERROR );
+            } // if !( ps instanceof PropertiesPropertySource )
             Assert.assertTrue( ps instanceof PropertiesPropertySource );
             pps = (PropertiesPropertySource) ps;
         }

@@ -32,9 +32,14 @@ import ch.sdi.plugins.oxwall.converter.OxGender;
 
 
 /**
- * TODO
+ * A very specialized derivation of the number ProfileQuestion.
+ * <p>
+ * See example in ox.target.qn.person.gender in target.properties
+ * <p>
+ * The value which is inserted into the profile data entity is either the default value (see
+ * OxGender) or the configured one (see property ox.target.sex.xxx in target.properties)
  *
- * @version 1.0 (06.12.2014)
+ * @version 1.0 (18.12.2014)
  * @author  Heri
  */
 @OxCustomQuestion( OxProfileQuestionGender.QUESTION_BEAN_NAME )
@@ -52,7 +57,9 @@ public class OxProfileQuestionGender extends OxProfileQuestionNumber
      * Constructor
      *
      * @param aName
+     *        the name of the question (as configured in a ox.target.qn.xxxx property)
      * @param aPersonKey
+     *        the normalized person key as it is used later in the target phase
      */
     public OxProfileQuestionGender( String aName, String aPersonKey )
     {

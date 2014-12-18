@@ -15,7 +15,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package ch.sdi.core.impl.cfg;
 
 import java.util.HashSet;
@@ -29,29 +28,31 @@ import org.springframework.core.convert.converter.Converter;
 
 
 /**
- * TODO
+ * Provides access to springs conversion service.
+ * <p>
  *
  * @version 1.0 (10.12.2014)
- * @author  Heri
+ * @author Heri
  */
 @Configuration
 public class ConversionServiceProvider
 {
 
-    @Bean( name="ConversionService" )
-    public ConversionService getConversionService() {
+    @Bean( name = "ConversionService" )
+    public ConversionService getConversionService()
+    {
         ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();
-        bean.setConverters(getConverters());
+        bean.setConverters( getConverters() );
         bean.afterPropertiesSet();
         ConversionService object = bean.getObject();
         return object;
     }
 
-    private Set<Converter<?,?>> getConverters() {
-        Set<Converter<?,?>> converters = new HashSet<Converter<?,?>>();
+    private Set<Converter<?, ?>> getConverters()
+    {
+        Set<Converter<?, ?>> converters = new HashSet<Converter<?, ?>>();
 
-//        converters.add(new AddressToStringConverter());
-//        converters.add(new StringToAddressConverter());
+        // here is the place to register custom converters
 
         return converters;
     }

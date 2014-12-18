@@ -32,11 +32,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sdi.plugins.oxwall.sql.entity.OxUser;
-
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (16.11.2014)
  * @author Heri

@@ -25,7 +25,12 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Basic interface for target job implementations.
+ * <p>
+ * Note that the custom target job must be inherited from CustomTargetJobContext in order that spring
+ * can identify it uniquely and does not confuse it with the DefaultTargetJobContext.
+ * (see AutoWired members in TargetExecutor).
+ * <p>
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri

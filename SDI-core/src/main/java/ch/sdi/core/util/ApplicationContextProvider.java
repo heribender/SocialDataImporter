@@ -24,7 +24,8 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * TODO
+ * Provides access to the spring application context for classes which cannot be managed by spring.
+ * <p>
  *
  * @version 1.0 (20.11.2014)
  * @author Heri

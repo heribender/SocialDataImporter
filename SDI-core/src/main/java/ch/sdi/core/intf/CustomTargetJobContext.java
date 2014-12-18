@@ -20,7 +20,9 @@ package ch.sdi.core.intf;
 
 
 /**
- * TODO
+ * This interface
+ * See remarks in ch.sdi.core.target.TargetExecutor.execute(Collection<? extends Person<?>>)
+ * <p>
  *
  * @version 1.0 (25.11.2014)
  * @author  Heri

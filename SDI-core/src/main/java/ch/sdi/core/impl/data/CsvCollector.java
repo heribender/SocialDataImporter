@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -84,13 +85,17 @@ public class CsvCollector implements InputCollector
     }
 
     /**
-     * @throws SdiException
+     * Executes the CSV parsing.
+     *
      * @see ch.sdi.core.intf.InputCollector#execute()
      */
     @Override
     public CollectorResult execute() throws SdiException
     {
         String delimiter = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
+        String encoding = Charset.defaultCharset().name();
+        encoding = myEnv.getProperty( SdiMainProperties.KEY_COLLECT_CSV_ENCODING, encoding );
+
         boolean headerRow = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
         int skip = ConfigUtils.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
         String fileName =  ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
@@ -135,15 +140,7 @@ public class CsvCollector implements InputCollector
 
         List<List<String>> parsed = null;
 
-        try
-        {
-            parsed = myParser.parse( is, delimiter );
-        }
-        catch ( IOException t )
-        {
-            throw new SdiException( "File not found "+ fileName, t,
-                                    SdiException.EXIT_CODE_PARSE_ERROR );
-        }
+        parsed = myParser.parse( is, delimiter, encoding );
 
         myFieldnames = evaluateFieldNames( parsed, headerRow );
         myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Fieldnames", myFieldnames ) );
@@ -237,6 +234,11 @@ public class CsvCollector implements InputCollector
     }
 
     /**
+     * Evaluates the field names. If the CSV provides the field names by a header row (see configuration)
+     * the values found in the first item of the given list are interpreted as fieldnames.
+     * Otherwise the configured fieldnames are looked up (sdi.collect.csv.fieldnames)
+     *
+     *
      * @param aParsed
      * @param aHeaderRow
      * @return

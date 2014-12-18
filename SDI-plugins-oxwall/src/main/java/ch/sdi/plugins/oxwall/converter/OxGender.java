@@ -18,6 +18,14 @@
 
 package ch.sdi.plugins.oxwall.converter;
 
+/**
+ * The oxwall specific gender enumeration, mapped to the default value used in the oxwall DB.
+ * <p>
+ * The default value can be overridden by configuring it in target.properties
+ *
+ * @version 1.0 (18.12.2014)
+ * @author  Heri
+ */
 public enum OxGender
 {
     male( 1 ),
@@ -36,9 +44,9 @@ public enum OxGender
         myDefaultValue = aDefaultValue;
     }
 
-
     /**
-     * @return defaultValue
+     * The default value as it is used in the oxwall DB
+     * @return
      */
     public int getDefaultValue()
     {

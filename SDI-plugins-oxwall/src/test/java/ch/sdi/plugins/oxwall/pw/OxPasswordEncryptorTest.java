@@ -36,7 +36,7 @@ import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (01.11.2014)
  * @author Heri

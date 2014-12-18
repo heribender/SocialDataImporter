@@ -24,14 +24,32 @@ import ch.sdi.core.exc.SdiException;
 
 
 /**
- * TODO
+ * Generic interface for field converters.
+ * <p>
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri
  */
 public interface FieldConverter<T>
 {
+    /**
+     * Each concrete converter is responsible for initializing itself
+     * <p>
+     *
+     * @param aEnv
+     * @param aFieldname the field for which the converter is responsible
+     * @return the initialized converter (fluent API)
+     * @throws SdiException if the initialization fails
+     */
     public FieldConverter<T> init( Environment aEnv, String aFieldname ) throws SdiException;
+
+    /**
+     * Converts the given value to the desired target type.
+     * <p>
+     * @param aValue
+     * @return
+     * @throws SdiException if the conversion fails.
+     */
     public T convert( String aValue ) throws SdiException;
 
 }

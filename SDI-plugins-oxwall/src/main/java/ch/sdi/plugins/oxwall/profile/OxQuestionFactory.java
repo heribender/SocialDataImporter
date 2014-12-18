@@ -32,7 +32,11 @@ import ch.sdi.core.util.ClassUtil;
 
 
 /**
- * TODO
+ * Factory for instatiating custom ProfileQuestion implementations.
+ * <p>
+ * These are the configured ox.target.qn.xxxx properties of type "custom" which must have three
+ * parameters in the value part.
+ * <p>
  *
  * @version 1.0 (06.12.2014)
  * @author  Heri
@@ -48,22 +52,26 @@ public class OxQuestionFactory
     private Environment myEnv;
 
     /**
-     * @param aValues
+     * Instantiates a custom oxwall ProfileQuestion type.
+     * <p>
+     * see properties ox.target.qn.xxxx). For example:
+     * <pre>
+     *     ox.target.qn.person.gender=custom:gendermap:sex
+     * </pre>
+     * <p>
+     * @param aBeanName
+     *        the name of the implementing bean (in fact its the name parameter of the OxCustomQuestion
+     *        annotation). This corresponds to the second parameter of the property value.
+     * @param aQuestionName
+     *        the name of the question. This corresponds to the third parameter of the property value.
      * @param aPersonKey
+     *        The key in the person PropertySource under which the corresponding value will be stored.
      * @return
+     * @throws SdiException
      */
-    public OxProfileQuestion getCustomQuestion( String[] aValues, String aPersonKey )
+    public OxProfileQuestion getCustomQuestion( String aBeanName, String aQuestionName, String aPersonKey )
             throws SdiException
     {
-        if ( aValues.length < 3 )
-        {
-            throw new SdiException( "Profile question not configured correctly: " + aValues,
-                                    SdiException.EXIT_CODE_CONFIG_ERROR );
-        }
-
-        String beanName = aValues[1];
-        String questionName = aValues[2];
-
         Collection<Class<OxProfileQuestion>> candidates
             = ClassUtil.findCandidatesByAnnotation( OxProfileQuestion.class,
                                                     OxCustomQuestion.class,
@@ -74,33 +82,33 @@ public class OxQuestionFactory
             myLog.trace( "found candidate for custom question: " + clazz.getName() );
             OxCustomQuestion ann = clazz.getAnnotation( OxCustomQuestion.class );
 
-            if ( !ann.value().endsWith( beanName ) )
+            if ( !ann.value().endsWith( aBeanName ) )
             {
-                myLog.trace( "candidate has not the desired bean name (" + beanName
+                myLog.trace( "candidate has not the desired bean name (" + aBeanName
                              + ") but: " + ann.value() );
                 continue;
             } // if !ann.value().endsWith( "beanName" )
 
-            myLog.trace( "found custom question class with beanName(" + beanName
+            myLog.trace( "found custom question class with beanName(" + aBeanName
                              + "): " + clazz.getName() );
 
             try
             {
                 Constructor<OxProfileQuestion> constructor =
                         clazz.getConstructor( new Class<?>[] { String.class, String.class } );
-                return constructor.newInstance( new Object[] { questionName, aPersonKey } );
+                return constructor.newInstance( new Object[] { aQuestionName, aPersonKey } );
 
             }
             catch ( Throwable t )
             {
                 throw new SdiException( "missing desired constructor found custom question class with"
-                        + " beanName(" + beanName + "): " + clazz.getName(),
+                        + " beanName(" + aBeanName + "): " + clazz.getName(),
                         SdiException.EXIT_CODE_CONFIG_ERROR );
             }
 
         }
 
-        throw new SdiException( "No suitable custom question found. BeanName: " + beanName,
+        throw new SdiException( "No suitable custom question found. BeanName: " + aBeanName,
                                 SdiException.EXIT_CODE_CONFIG_ERROR );
     }
 

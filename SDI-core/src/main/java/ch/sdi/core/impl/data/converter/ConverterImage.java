@@ -34,7 +34,7 @@ import ch.sdi.core.intf.FieldConverter;
 
 
 /**
- * TODO
+ * Abstract base class for converters which can convert to a BufferedImage
  *
  * @version 1.0 (16.11.2014)
  * @author Heri
@@ -46,6 +46,7 @@ public abstract class ConverterImage implements FieldConverter<BufferedImage>
     private Logger myLog = LogManager.getLogger( ConverterImage.class );
 
     /**
+     * Converts the content of the given input stream to a BufferedImage.
      * @param aInputStream
      * @return
      * @throws SdiException
@@ -62,6 +63,14 @@ public abstract class ConverterImage implements FieldConverter<BufferedImage>
         }
     }
 
+    /**
+     * Resizes the given image to the given width and height.
+     *
+     * @param originalImage
+     * @param aWidth
+     * @param aHeight
+     * @return
+     */
     public static BufferedImage resizeImage( BufferedImage originalImage,
                                              int aWidth,
                                              int aHeight )

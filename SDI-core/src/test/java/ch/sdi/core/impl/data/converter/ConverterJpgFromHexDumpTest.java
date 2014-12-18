@@ -31,7 +31,7 @@ import org.junit.Test;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (16.11.2014)
  * @author  Heri

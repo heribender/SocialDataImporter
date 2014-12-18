@@ -45,7 +45,6 @@ import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.converter.ConverterImage;
 import ch.sdi.core.impl.mail.MailJobDefault;
-import ch.sdi.core.intf.CustomPreparePersonJob;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.PasswordEncryptor;
@@ -54,7 +53,16 @@ import ch.sdi.plugins.oxwall.job.OxSqlJob;
 
 
 /**
- * TODO
+ * Implements the global business know how on the oxwall target platform.
+ * <p>
+ * It provides the target executor with the needed jobs.
+ * <p>
+ * In preparePerson which is called before a person is processed the needed data is prepared (like
+ * password generation, formatting the avatar pictures) and a DB transaction is started. In finalizePerson
+ * the DB transaction is committed or rollbacked (depending on the presence of an exception).
+ * <p>
+ * If Spring finds a implementation of CustomPreparePersonJob its execute() method is called in
+ * preparePerson().
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri
@@ -76,8 +84,6 @@ public class OxTargetJobContext implements CustomTargetJobContext
 
     @Autowired
     private Environment myEnv;
-    @Autowired( required = false )
-    private CustomPreparePersonJob myCustomPreparePersonJob;
     @Autowired
     private PasswordEncryptor myPasswordEncryptor;
     @Autowired
@@ -139,15 +145,6 @@ public class OxTargetJobContext implements CustomTargetJobContext
                 + ( StringUtils.hasText( aPerson.getMiddlename() ) ? (aPerson.getMiddlename() + " ") : "" )
                 + aPerson.getFamilyName();
         aPerson.setProperty( KEY_PERSON_FULLNAME, fullname );
-
-        if ( myCustomPreparePersonJob != null )
-        {
-            myCustomPreparePersonJob.execute( aPerson );
-        }
-        else
-        {
-            myLog.debug( "Skipping custom prepare job (not configured)" );
-        }
 
         mySqlJob.startTransaction();
 

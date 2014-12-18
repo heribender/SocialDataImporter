@@ -23,7 +23,7 @@ import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
 
 /**
- * TODO
+ * Specialized ProfileQuestion class for number values
  *
  * @version 1.0 (06.12.2014)
  * @author  Heri
@@ -34,13 +34,14 @@ public class OxProfileQuestionNumber extends OxProfileQuestion
     /**
      * Constructor
      *
-     * @param aType
      * @param aName
+     *        the name of the question (as configured in a ox.target.qn.xxxx property)
      * @param aPersonKey
+     *        the normalized person key as it is used later in the target phase
      */
     public OxProfileQuestionNumber( String aName, String aPersonKey )
     {
-        super( OxQuestionType.number, aName, aPersonKey );
+        super( aName, aPersonKey );
     }
 
     /**

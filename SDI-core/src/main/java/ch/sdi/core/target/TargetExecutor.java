@@ -47,7 +47,13 @@ import ch.sdi.report.ReportMsg;
 
 
 /**
- * TODO
+ * The target executor executes all jobs on each person. It has no knowledge on the business rules of
+ * the target platform but provides a consistent walk through each needed step, collecting information
+ * on each step etc.
+ * <p>
+ * It also prepares the configured output directory where reports etc. are written to. The name of the
+ * output directory is also put to the environment (key dynamic.outputDir.file).
+ * <p>
  *
  * @version 1.0 (15.11.2014)
  * @author  Heri
@@ -72,6 +78,15 @@ public class TargetExecutor
     private File myOutputDir;
 
 
+    /**
+     * Executes the whole target phase.
+     * <p>
+     * The real work is done within the jobs which are fetched from the custom target platform
+     * implementation.
+     *
+     * @param aPersons
+     * @throws SdiException
+     */
     public void execute( Collection<? extends Person<?>> aPersons) throws SdiException
     {
         boolean dryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );

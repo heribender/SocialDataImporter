@@ -33,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 /**
- * TODO
+ * Testcase for ConverterDate
  *
  * @version 1.0 (11.11.2014)
  * @author  Heri

@@ -30,7 +30,10 @@ import ch.sdi.plugins.oxwall.OxTargetConfiguration;
 
 
 /**
- * TODO
+ * A component which implements oxwalls password encryption strategy.
+ * <p>
+ * The configuration of the ox.passwordsalt property in target.properties is mandatory.
+ * <p>
  *
  * @version 1.0 (01.11.2014)
  * @author  Heri
@@ -50,7 +53,7 @@ public class OxPasswordEncryptor implements ch.sdi.core.intf.PasswordEncryptor
     @Override
     public String encrypt( String aPassword )
     {
-        String salt = myEnv.getProperty( OxTargetConfiguration.KEY_PW_SALT );
+        String salt = myEnv.getRequiredProperty( OxTargetConfiguration.KEY_PW_SALT );
         String hash = DigestUtils.sha256Hex( salt + aPassword );
         myLog.debug( "hashed password: " + hash );
         return new String( hash );

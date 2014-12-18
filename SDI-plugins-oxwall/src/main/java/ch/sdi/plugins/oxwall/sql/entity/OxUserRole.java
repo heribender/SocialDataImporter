@@ -25,7 +25,7 @@ import javax.persistence.Table;
 
 
 /**
- * TODO
+ * Entity class for the oxwall DB table ow_base_authorization_user_role
  *
  * @version 1.0 (08.12.2014)
  * @author  Heri

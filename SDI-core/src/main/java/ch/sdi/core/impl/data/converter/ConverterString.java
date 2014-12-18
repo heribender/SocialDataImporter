@@ -27,7 +27,10 @@ import ch.sdi.core.intf.FieldConverter;
 
 
 /**
- * TODO
+ * Default converter for all collected values which do not have a special converter configured. In fact
+ * this converter only convertes given null values into an empty string. It mainly is provided for
+ * convenience (in order not to have null checks in iterations over the collected fields)
+ * <p>
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri

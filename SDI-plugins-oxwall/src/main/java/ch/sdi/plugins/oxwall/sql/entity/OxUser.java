@@ -26,7 +26,7 @@ import javax.persistence.Table;
 
 
 /**
- * TODO
+ * Entity class for the oxwall DB table ow_base_user
  *
  * @version 1.0 (16.11.2014)
  * @author  Heri

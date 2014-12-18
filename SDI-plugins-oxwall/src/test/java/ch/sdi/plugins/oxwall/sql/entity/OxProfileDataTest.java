@@ -26,11 +26,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
-
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (30.11.2014)
  * @author  Heri

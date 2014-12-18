@@ -40,7 +40,7 @@ import ch.sdi.core.intf.FieldConverter;
 
 
 /**
- * TODO
+ * Testcase for the ConverterFactory class
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri

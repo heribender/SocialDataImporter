@@ -27,6 +27,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
+import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 
 
@@ -64,6 +65,7 @@ public class TestUtils
      * @param aValue
      */
     public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
+            throws SdiException
     {
         Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
@@ -73,6 +75,7 @@ public class TestUtils
     }
 
     public static void removeFromEnvironment( ConfigurableEnvironment aEnv, String aKey )
+            throws SdiException
     {
         Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 
@@ -81,6 +84,7 @@ public class TestUtils
     }
 
     public static void replaceInEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
+            throws SdiException
     {
         Map<String, Object> map = ConfigUtils.getOrCreatePropertySource( aEnv, TEST_PROPERTY_SOURCE_NAME );
 

@@ -29,17 +29,17 @@ import ch.sdi.core.intf.SdiProperties;
 
 
 /**
- * TODO
+ * Testcase for
  *
  * @version 1.0 (04.11.2014)
  * @author  Heri
  */
-public class ConfigHelperTest
+public class ConfigUtilsTest
 {
 
 
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( ConfigHelperTest.class );
+    private Logger myLog = LogManager.getLogger( ConfigUtilsTest.class );
 //    private ConfigHelper myClassUnderTest;
 
     /**

@@ -36,7 +36,10 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * FieldConverter derivation which can convert string number lists to a List of Number instances.
+ * <p>
+ * The delimiter of the string number list can be configured. If not configured, the delimiter defaults
+ * to '/'.
  *
  * @version 1.0 (29.11.2014)
  * @author  Heri

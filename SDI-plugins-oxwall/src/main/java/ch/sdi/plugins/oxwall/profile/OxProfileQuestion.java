@@ -27,14 +27,24 @@ import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
 
 /**
- * Entity for holding oxwalls profile question names (which can be customized)
+ * Entity for holding oxwalls profile question names (which can be customized).
+ * <p>
+ * Oxwall stores the answers of custom profile questions in a DB table which holds the value in one of
+ * three columns, depending on the data type of the profile question: text, number or date (see entity
+ * OxProfileData).
+ * <p>
+ * The question names and its types can be configured in target.properties (see
+ * property ox.target.qn.xxxx)
+ * <p>
+ * Custom type implementations must be implemented within or under the package ch.sdi.plugins.oxwall in
+ * order to be found by the generic instantiatin mechanisme (see OxQuestionFactory).
+ * <p>
  *
  * @version 1.0 (05.12.2014)
  * @author  Heri
  */
 public abstract class OxProfileQuestion
 {
-    private OxQuestionType myType;  // TODO: still used?
     /** the question name */
     protected String myName;
     /** the key in the Person class to retrieve the value */
@@ -44,37 +54,21 @@ public abstract class OxProfileQuestion
     /**
      * Constructor
      *
-     * @param aType
      * @param aName
+     *        the name of the question (as configured in a ox.target.qn.xxxx property)
      * @param aPersonKey
+     *        the normalized person key as it is used later in the target phase
      */
-    public OxProfileQuestion( OxQuestionType aType, String aName, String aPersonKey )
+    public OxProfileQuestion( String aName, String aPersonKey )
     {
         super();
-        myType = aType;
         myName = aName;
         myPersonKey = aPersonKey;
     }
 
     /**
-     * @return type
-     */
-    public OxQuestionType getType()
-    {
-        return myType;
-    }
-
-    /**
-     * @param  aType
-     *         type to set
-     */
-    public void setType( OxQuestionType aType )
-    {
-        myType = aType;
-    }
-
-    /**
      * @return value
+     *         the name of the question (as configured in a ox.target.qn.xxxx property)
      */
     public String getName()
     {
@@ -83,18 +77,36 @@ public abstract class OxProfileQuestion
 
     /**
      * @param  aName
-     *         value to set
+     *         the name of the question (as configured in a ox.target.qn.xxxx property)
      */
     public void setName( String aName )
     {
         myName = aName;
     }
 
+    /**
+     * Updates the ProfileDataEntity with our profile data information.
+     * <p>
+     * This base implementation assigns the QuestionName field. For assigning the type dependant
+     * value this method must be overridden by type specialized classes.
+     * <p>
+     *
+     * @param aProfileDataEntity
+     *        the entity to be updated
+     * @param aPerson
+     *        the person entity where the value can be retrieved from
+     */
     public void fillValues( OxProfileData aProfileDataEntity, Person<?> aPerson )
     {
         aProfileDataEntity.setQuestionName( myName );
     }
 
+    /**
+     * Can be overridden to perform initialization work
+     * <p>
+     * @param aEnvironment
+     * @throws SdiException
+     */
     public void init( Environment aEnvironment ) throws SdiException
     {
         // provided for overriding if necessary
@@ -105,7 +117,6 @@ public abstract class OxProfileQuestion
     {
         StringBuilder sb = new StringBuilder( super.toString() );
 
-        sb.append( "\n    Type      : " ).append( myType );
         sb.append( "\n    Name      : " ).append( myName );
         sb.append( "\n    PersonKey : " ).append( myPersonKey );
         return sb.toString();

@@ -22,7 +22,8 @@ import java.util.Collection;
 
 
 /**
- * TODO
+ * Interface for a generic collector result.
+ * <p>
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri

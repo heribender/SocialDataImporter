@@ -43,7 +43,14 @@ import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
- * TODO
+ * The FTP job of oxwall can upload files to the target platform.
+ * <p>
+ * On each uploaded file a chmod 666 is executed (using the SSHExecutor)
+ * TODO: This works only if target platform runs on linux systems and is a hack: the FTP upload grants
+ * only read/write access to the owner, and the owner is the remote FTP user which is hardly the user
+ * under which the target platform runs. Without this hack the target platform would not be able to read
+ * the file.
+ * <p>
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri
@@ -115,7 +122,7 @@ public class OxFtpJob implements FtpJob
         if ( myDryRun )
         {
             myLog.debug( "DryRun is set. No FTP action is performed" );
-            // TODO: save local in output dir
+            // TODO: save locally in output dir
         }
         else
         {
@@ -123,7 +130,7 @@ public class OxFtpJob implements FtpJob
 
             for ( String filename : filesToUpload.keySet() )
             {
-                String command = "chmod 644 " + filename ;
+                String command = "chmod 666 " + filename ;
                 mySshExecutor.executeCmd( command );
 
             }

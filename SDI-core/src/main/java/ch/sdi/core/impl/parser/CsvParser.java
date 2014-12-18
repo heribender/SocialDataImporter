@@ -18,7 +18,6 @@
 package ch.sdi.core.impl.parser;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -28,96 +27,99 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
-import ch.sdi.core.intf.InputParser;
+import ch.sdi.core.exc.SdiException;
 
 
 /**
- * TODO
+ * A Parser for CSV files.
  *
  * @version 1.0 (01.11.2014)
  * @author  Heri
  */
 @Component
-public class CsvParser implements InputParser
+public class CsvParser
 {
 
 
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( CsvParser.class );
 
-//    public static final String HEADING_KEY = "heading";
-    public static final String TAB = "\u0009";
-
-    private String myCharset;
-
     /**
-     * @see ch.sdi.core.impl.parser.Test#parse(java.io.InputStream, java.lang.String)
+     * Parses the given input stream.
+     * <p>
+     *
+     * @param aInputStream
+     *        must not be null
+     * @param aDelimiter
+     *        must not be null
+     * @param aEncoding
+     *        The encoding to be used. If null or empty, the systems default encoding is used.
+     * @return a list which contains a list for each found person. The inner list contains the found
+     *         values for this person. The number and the order must correspond to the configured field
+     *         name list (see
+     *         in each line.
+     * @throws SdiException
      */
-    @Override
-    public List<List<String>> parse( InputStream aInputStream, String aDelimiter ) throws IOException
+    public List<List<String>> parse( InputStream aInputStream,
+                                     String aDelimiter,
+                                     String aEncoding ) throws SdiException
     {
-        if ( aDelimiter == null )
+        if ( !StringUtils.hasLength( aDelimiter ) )
         {
-            throw new NullPointerException( "Delimiter not set" );
+            throw new SdiException( "Delimiter not set", SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if myDelimiter == null
 
-        BufferedReader br = new BufferedReader( myCharset == null
-                                                ? new InputStreamReader( aInputStream )
-                                                : new InputStreamReader( aInputStream, myCharset ) );
-
-        List<List<String>> result = new ArrayList<List<String>>();
-
-        int lineNo = 0;
-        String line;
-        while ( ( line = br.readLine() ) != null )
+        try
         {
-            lineNo++;
-            myLog.debug( "Parsing line " + lineNo + ": " + line );
+            myLog.debug( "Using encoding " + aEncoding );
 
-            List<String> list = new ArrayList<String>();
-            Scanner sc = new Scanner( line );
-            try
+            BufferedReader br = new BufferedReader( !StringUtils.hasText( aEncoding )
+                                                    ? new InputStreamReader( aInputStream )
+                                                    : new InputStreamReader( aInputStream, aEncoding ) );
+            List<List<String>> result = new ArrayList<List<String>>();
+
+            int lineNo = 0;
+            String line;
+            while ( ( line = br.readLine() ) != null )
             {
-                sc.useDelimiter( aDelimiter );
-                while ( sc.hasNext() )
+                lineNo++;
+                myLog.debug( "Parsing line " + lineNo + ": " + line );
+
+                List<String> list = new ArrayList<String>();
+                Scanner sc = new Scanner( line );
+                try
                 {
-                    list.add( sc.next() );
+                    sc.useDelimiter( aDelimiter );
+                    while ( sc.hasNext() )
+                    {
+                        list.add( sc.next() );
+                    }
+
+                    // Note: if the line is terminated by the delimiter (last entry not present, the last entry
+                    // will not appear in the scanned enumeration. Check for this special case:
+                    if ( line.endsWith( aDelimiter ) )
+                    {
+                        list.add( "" );
+                    } // if line.endsWith( aDelimiter )
+
+                    result.add( list );
                 }
-
-                // Note: if the line is terminated by the delimiter (last entry not present, the last entry
-                // will not appear in the scanned enumeration. Check for this special case:
-                if ( line.endsWith( aDelimiter ) )
+                finally
                 {
-                    list.add( "" );
-                } // if line.endsWith( aDelimiter )
+                    sc.close();
+                }
+            }
 
-                result.add( list );
-            }
-            finally
-            {
-                sc.close();
-            }
+            return result;
         }
-
-        return result;
-    }
-
-    /**
-     * @return charset
-     */
-    public String getCharset()
-    {
-        return myCharset;
-    }
-
-    /**
-     * @param  aCharset
-     *         charset to set
-     */
-    public void setCharset( String aCharset )
-    {
-        myCharset = aCharset;
+        catch ( Throwable t )
+        {
+            throw new SdiException( "Problems while parsing CSV file",
+                                    t,
+                                    SdiException.EXIT_CODE_PARSE_ERROR );
+        }
     }
 
 }

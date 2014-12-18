@@ -36,19 +36,19 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Converter for converting collected values to the oxwall specific gender enumeration.
  *
  * @version 1.0 (29.11.2014)
  * @author  Heri
  */
-@SdiConverter( ConverterGender.CONVERTER_NAME )
+@SdiConverter( OxConverterGender.CONVERTER_NAME )
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class ConverterGender implements FieldConverter<OxGender>
+public class OxConverterGender implements FieldConverter<OxGender>
 {
 
     /** logger for this class */
-    private Logger myLog = LogManager.getLogger( ConverterGender.class );
+    private Logger myLog = LogManager.getLogger( OxConverterGender.class );
 
     public static final String CONVERTER_NAME = "toGender";
 

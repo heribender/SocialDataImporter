@@ -26,7 +26,7 @@ import org.hibernate.ejb.HibernateEntityManager;
 
 
 /**
- * TODO
+ * Provides access to the hibernate EntityManager.
  *
  * @version 1.0 (30.11.2014)
  * @author  Heri
@@ -36,6 +36,12 @@ public class EntityManagerProvider
 
     private static EntityManagerFactory myFactory;
 
+    /**
+     * Retrieves the EntityManager with the given unit name.
+     * <p>
+     * @param aPersistenceUnit
+     * @return
+     */
     public static HibernateEntityManager getEntityManager( String aPersistenceUnit )
     {
         if ( myFactory == null )

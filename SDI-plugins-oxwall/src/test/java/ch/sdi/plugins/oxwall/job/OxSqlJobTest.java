@@ -48,7 +48,7 @@ import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (30.11.2014)
  * @author  Heri

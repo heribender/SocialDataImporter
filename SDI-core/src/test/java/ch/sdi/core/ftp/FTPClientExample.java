@@ -475,14 +475,12 @@ public final class FTPClientExample
 
                 for ( FTPFile f : myFtp.listFiles( myRemote ) )
                 {
-                    // TODO:
                     myLog.debug( f.getRawListing() );
                     myLog.debug( f.toFormattedString() );
                 }
             }
             else if ( myMlsd )
             {
-                // TODO
                 for ( FTPFile f : myFtp.mlistDir( myRemote ) )
                 {
                     myLog.debug( f.getRawListing() );
@@ -494,7 +492,6 @@ public final class FTPClientExample
                 FTPFile f = myFtp.mlistFile( myRemote );
                 if ( f != null )
                 {
-                    // TODO
                     myLog.debug( f.toFormattedString() );
                 }
             }
@@ -502,7 +499,6 @@ public final class FTPClientExample
             {
                 for ( String s : myFtp.listNames( myRemote ) )
                 {
-                    // TODO:
                     myLog.debug( s );
                 }
             }
@@ -513,14 +509,12 @@ public final class FTPClientExample
                 { // See if the command is present
                     if ( myFtp.hasFeature( myRemote ) )
                     {
-                        // TODO
                         myLog.debug( "Has feature: " + myRemote );
                     }
                     else
                     {
                         if ( FTPReply.isPositiveCompletion( myFtp.getReplyCode() ) )
                         {
-                            // TODO
                             myLog.debug( "FEAT " + myRemote + " was not detected" );
                         }
                         else
@@ -535,7 +529,6 @@ public final class FTPClientExample
                     {
                         for ( String f : features )
                         {
-                            // TODO
                             myLog.debug( "FEAT " + myRemote + "=" + f + "." );
                         }
                     }
@@ -543,7 +536,6 @@ public final class FTPClientExample
                     {
                         if ( FTPReply.isPositiveCompletion( myFtp.getReplyCode() ) )
                         {
-                            // TODO
                             myLog.warn( "FEAT " + myRemote + " is not present" );
                         }
                         else

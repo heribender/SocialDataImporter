@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
@@ -39,7 +38,11 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Retrieves the converters which are responsible to convert collected field values in the desired
+ * data type. Collector converters are derived from ch.sdi.core.intf.FieldConverter<T> and have the
+ * annotation ch.sdi.core.annotations.SdiConverter. The configuration determines which converter
+ * is responsible for which field during the collection phase (see SdiMainProperties.properties)
+ * <p>
  *
  * @version 1.0 (09.11.2014)
  * @author  Heri
@@ -55,9 +58,15 @@ public class ConverterFactory
     private ApplicationContext myAppCtxt;
 
     /**
+     * Looks up the configured converters for the given collector fieldnames.
+     * <p>
+     * If for a particular field no configured is configured the standard ConverterString() (which
+     * does nothing) is returned.
+     * <p>
+     *
      * @param aFieldnames
-     * @return
-     * @throws SdiException
+     * @return a list of appropriate converters
+     * @throws SdiException if one of the configured converters cannot be found
      */
     public List<FieldConverter<?>> getFieldConverters( Collection<String> aFieldnames ) throws SdiException
     {
@@ -73,9 +82,25 @@ public class ConverterFactory
         return result;
     }
 
+    /**
+     * Looks up the configured converter for a collector fieldname.
+     * <p>
+     * If the fieldname has no configured converter the standard ConverterString() (which does nothing) is
+     * returned.
+     * <p>
+     *
+     * @param aFieldname must not be empty
+     * @return the appropriate converter
+     * @throws SdiException if the configured converter cannot be found
+     */
     public FieldConverter<?> getConverterFor( String aFieldname ) throws SdiException
     {
-        Assert.hasLength( aFieldname, "Parameter fieldname is empty" );
+        if ( !StringUtils.hasText( aFieldname ) )
+        {
+            throw new SdiException( "Given fieldname is empty!",
+                                    SdiException.EXIT_CODE_UNKNOWN_ERROR );
+
+        } // if !StringUtils.hasText( aFieldname )
 
         myLog.debug( "Looking up converter for field " + aFieldname );
 

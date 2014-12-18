@@ -34,7 +34,8 @@ import org.springframework.util.StringUtils;
 
 
 /**
- * TODO
+ * Provides some static methods for dealing with classes
+ * <p>
  *
  * @version 1.0 (07.11.2014)
  * @author  Heri

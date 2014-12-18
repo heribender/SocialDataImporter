@@ -31,7 +31,7 @@ import ch.sdi.plugins.oxwall.job.EntityManagerProvider;
 
 
 /**
- * TODO
+ * Abstract base for testcases for the standard CRUD operations on an JPA entity
  *
  * @version 1.0 (29.11.2014)
  * @author  Heri
