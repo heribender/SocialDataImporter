@@ -1,0 +1,5 @@
+Remember the three main steps:
+
+collect data  ->  normalize data  ->  target import
+
+

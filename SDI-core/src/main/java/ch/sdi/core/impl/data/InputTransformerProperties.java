@@ -39,9 +39,7 @@ import ch.sdi.core.intf.CollectorResult;
  * @version 1.0 (08.11.2014)
  * @author  Heri
  */
-//@ConditionalOnMissingClass(name="ch.sdi.core.impl.data.InputTransformer" )
 @Component
-//@Configuration
 public class InputTransformerProperties implements InputTransformer
 {
 

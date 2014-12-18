@@ -38,7 +38,6 @@ import ch.sdi.core.intf.InputCollectorMappingProperties;
  * @version 1.0 (02.11.2014)
  * @author  Heri
  */
-// @ConditionalOnMissingClass(name="ch.sdi.core.intf.SdiProperties.InputCollectorMappingProperties" )
 @Configuration
 @PropertySource("classpath:/" + "InputCollectorMapping.properties" )
 // more than one @PropertySources(value = {@PropertySource("classpath:/datasource.properties")})
