@@ -84,14 +84,14 @@ public class SshExecutorTest
     @Test
     public void testChmod() throws Throwable
     {
-        String command1 = "chmod 644 /var/www/oxwall/ow_userfiles/plugins/base/avatars/avatar_*_38*";
-        myClassUnderTest.executeCmd( command1 );
+        String command1 = "chmod 666 /var/www/oxwall-1.6.0.zip";
+//        myClassUnderTest.executeCmd( command1 );
     }
 
     @Test( expected=SdiException.class )
     public void testChown() throws Throwable
     {
-        String command1 = "chown www-data:www-data /var/www/oxwall/ow_userfiles/plugins/base/avatars/avatar_*_38*";
+        String command1 = "chown www-data:www-data /var/www/oxwall-1.6.0.zip";
         myClassUnderTest.executeCmd( command1 );
     }
 

@@ -130,6 +130,7 @@ public class SshExecutor
         catch ( Throwable t )
         {
             throw new SdiException( "SSH session not connected.",
+                                    t,
                                     SdiException.EXIT_CODE_SSH_ERROR );
         }
         finally
@@ -144,7 +145,7 @@ public class SshExecutor
 
                 if ( exitStatus != 0 )
                 {
-                    throw new SdiException( "SSH not successful. Exitstatus: " + exitStatus,
+                    throw new SdiException( "SSH not successful. SSH-Exitstatus: " + exitStatus,
                                             SdiException.EXIT_CODE_SSH_ERROR );
                 } // if exitStatus
             } // if channel != null

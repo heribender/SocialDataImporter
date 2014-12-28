@@ -109,7 +109,7 @@ public class ConverterFactory
 
         if ( !StringUtils.hasText( converterName ) )
         {
-            return new ConverterString();
+            return new ConverterString().init( env, aFieldname );
         } // if !StringUtils.hasText( converterName )
 
         myLog.debug( "Looking up converter with name " + converterName );

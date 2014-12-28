@@ -54,8 +54,7 @@ public class ConverterString implements FieldConverter<String>
     @Override
     public FieldConverter<String> init( Environment aEnv, String aFieldname ) throws SdiException
     {
-        // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 
 }
