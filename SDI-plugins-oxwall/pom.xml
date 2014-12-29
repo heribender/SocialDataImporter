@@ -75,10 +75,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.0-api</artifactId>
-        </dependency>
-        <dependency>
             <!--HIBERNATE-SPRING - LOGGER (log4j)-->
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
