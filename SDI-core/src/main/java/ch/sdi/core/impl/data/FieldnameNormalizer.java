@@ -35,7 +35,8 @@ import ch.sdi.core.intf.InputCollectorMappingProperties;
 
 
 /**
- * TODO
+ * Normalizes person fieldnames (of collecting phase ) to the internal representation
+ * <p>
  *
  * @version 1.0 (13.11.2014)
  * @author  Heri
@@ -50,15 +51,24 @@ public class FieldnameNormalizer
     private Environment  myEnv;
 
     /**
-     * @param aFieldnames
-     * @return
-     * @throws SdiException
+     * Normalizes person fieldnames (of collecting phase ) to the internal representation by looking
+     * up the respective configuration.
+     * <p>
+     * Example: During collection phase the username field is called "Screenname" (e.g. in CSV file). In
+     * order to map this key name to the internal representation "thing.alternateName" there must be a
+     * configured key/value pair "inputcollector.thing.alternateName=Screenname".
+     * <p>
+     * If the used field name has already the normalized form no configuration is necessary and it is
+     * returned as is.
+     * <p>
+     *
+     * @param aFieldnames the fieldnames used in collection phase. Must not be <code>null</code>
+     * @return the normalized representation of the input field names
+     * @throws SdiException on any problem
      */
     public Collection<String> normalize( Collection<String> aFieldnames ) throws SdiException
     {
-
-        // TODO: write testcase!
-        Map<String,String> replaceMap = new HashMap<String,String>();
+        Map<String,String> configuredReplaceMap = new HashMap<String,String>();
 
         for ( String key : PersonKey.getKeyNames() )
         {
@@ -75,7 +85,7 @@ public class FieldnameNormalizer
 
             myLog.debug( "Found input collector mapping: " + keyName + " -> " + configuredMapping );
 
-            replaceMap.put( configuredMapping, key );
+            configuredReplaceMap.put( configuredMapping, key );
 
         }
 
@@ -83,22 +93,35 @@ public class FieldnameNormalizer
 
         for ( String collectedFieldName : aFieldnames )
         {
-            String normalized = collectedFieldName;
+            String normalized = null;
 
-            if ( replaceMap.containsKey( collectedFieldName ) )
+            if ( configuredReplaceMap.containsKey( collectedFieldName ) )
             {
-                normalized = replaceMap.remove( collectedFieldName );
+                normalized = configuredReplaceMap.remove( collectedFieldName );
                 myLog.debug( "Normalizing collected fieldname " + collectedFieldName
                              + " by " + normalized );
+            }
+            else
+            {
+                if ( !PersonKey.getKeyNames().contains( collectedFieldName ) )
+                {
+                    throw new SdiException( "Given fieldname " + collectedFieldName + " not configured for "
+                            + "normalizing",
+                            SdiException.EXIT_CODE_CONFIG_ERROR );
+                } // if condition
+
+                myLog.debug( "Given fieldname " + collectedFieldName + " already normalized" );
+                normalized = collectedFieldName;
             }
 
             result.add( normalized );
         }
 
-        if ( !replaceMap.isEmpty() )
+        if ( !configuredReplaceMap.isEmpty() )
         {
-            throw new SdiException( "configured input collector mapping not known: "
-                                    + replaceMap.values(),
+            throw new SdiException( "At least one configured input collector mapping not contained in"
+                                    + " given input list: "
+                                    + configuredReplaceMap.values(),
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
 
         } // if !replaceMap.isEmpty()

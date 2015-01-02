@@ -32,7 +32,7 @@ import ch.sdi.core.impl.cfg.ConfigUtils;
 
 
 /**
- * TODO
+ * Utilites for tests
  *
  * @version 1.0 (06.11.2014)
  * @author  Heri
@@ -47,9 +47,8 @@ public class TestUtils
     private static final String TEST_PROPERTY_SOURCE_NAME = "PropertySourceForTest";
 
     /**
+     * Removes all key/value pairs from environment
      * @param aEnv
-     * @param aKey
-     * @param aValue
      */
     public static void removeAllFromEnvironment( ConfigurableEnvironment aEnv )
     {
@@ -60,9 +59,11 @@ public class TestUtils
     }
 
     /**
-     * @param aEnv
-     * @param aKey
-     * @param aValue
+     * Adds the given key/value pair to the environment into the PropertySourceForTest collection
+     *
+     * @param aEnv the environment
+     * @param aKey the key
+     * @param aValue the value
      */
     public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
             throws SdiException
@@ -74,6 +75,12 @@ public class TestUtils
         map.put( aKey, aValue );
     }
 
+    /**
+     * Removes the given key from the environments collection PropertySourceForTest
+     *
+     * @param aEnv the environment
+     * @param aKey the key
+     */
     public static void removeFromEnvironment( ConfigurableEnvironment aEnv, String aKey )
             throws SdiException
     {
@@ -83,6 +90,13 @@ public class TestUtils
         map.remove( aKey );
     }
 
+    /**
+     * Replaces the value of given key in the environments collection PropertySourceForTest
+     *
+     * @param aEnv the environment
+     * @param aKey the key
+     * @param aValue the new value
+     */
     public static void replaceInEnvironment( ConfigurableEnvironment aEnv, String aKey, String aValue )
             throws SdiException
     {
@@ -94,8 +108,8 @@ public class TestUtils
     }
 
     /**
+     * Outputs the environment to log output
      * @param aEnv
-     * @return
      */
     public static void debugPropertySources( ConfigurableEnvironment aEnv )
     {

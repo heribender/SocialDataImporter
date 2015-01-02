@@ -31,7 +31,9 @@ import ch.sdi.core.intf.TargetJobContext;
 
 
 /**
- * TODO
+ * Default implementation of TargetJobContext.
+ * <p>
+ * This class does nothing except logging all method calls.
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri
