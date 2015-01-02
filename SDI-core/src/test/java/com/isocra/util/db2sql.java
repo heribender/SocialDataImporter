@@ -23,8 +23,6 @@
 
 package com.isocra.util;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -34,6 +32,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 /**
  * This class connects to a database and dumps all the tables and contents out to stdout in the form of
@@ -41,6 +42,9 @@ import java.util.Properties;
  */
 public class db2sql
 {
+
+    /** logger for this class */
+    private static Logger myLog = LogManager.getLogger( db2sql.class );
 
     /** Dump the whole database to an SQL string */
     public static String dumpDB( Properties props )
@@ -59,7 +63,7 @@ public class db2sql
         }
         catch ( Exception e )
         {
-            System.err.println( "Unable to connect to database: " + e );
+            myLog.error( "Unable to connect to database: ", e );
             return null;
         }
 
@@ -72,7 +76,7 @@ public class db2sql
             ResultSet rs = dbMetaData.getTables( catalog, schema, tables, null );
             if ( !rs.next() )
             {
-                System.err.println( "Unable to find any tables matching: catalog=" + catalog + " schema=" + schema
+                myLog.warn( "Unable to find any tables matching: catalog=" + catalog + " schema=" + schema
                         + " tables=" + tables );
                 rs.close();
             }
@@ -191,7 +195,7 @@ public class db2sql
                         {
                             // NB you will get this exception with the JDBC-ODBC link because it says
                             // [Microsoft][ODBC Driver Manager] Driver does not support this function
-                            System.err.println( "Unable to get primary keys for table " + tableName + " because " + e );
+                            myLog.warn( "Unable to get primary keys for table " + tableName + " because ", e );
                         }
 
                         result.append( "\n);\n" );
@@ -207,7 +211,7 @@ public class db2sql
         }
         catch ( SQLException e )
         {
-            e.printStackTrace(); // To change body of catch statement use Options | File Templates.
+            myLog.warn( e.getMessage(), e );
         }
         return null;
     }
@@ -253,7 +257,7 @@ public class db2sql
         }
         catch ( SQLException e )
         {
-            System.err.println( "Unable to dump table " + tableName + " because: " + e );
+            myLog.error( "Unable to dump table " + tableName + " because: ", e );
         }
     }
 
@@ -261,21 +265,40 @@ public class db2sql
     public static void main( String[] args )
     {
 
-        if ( args.length != 1 )
-        {
-            System.err.println( "usage: db2sql <property file>" );
-        }
+//        if ( args.length != 1 )
+//        {
+//            System.err.println( "usage: db2sql <property file>" );
+//        }
         // Right so there's one argument, we assume it's a property file
         // so lets open it
         Properties props = new Properties();
         try
         {
-            props.load( new FileInputStream( args[0] ) );
-            System.out.println( dumpDB( props ) );
+//            props.load( new FileInputStream( args[0] ) );
+            props.setProperty( "driver.class", "com.mysql.jdbc.Driver"  );
+            props.setProperty( "driver.url", "jdbc:mysql://192.168.99.1/test"  );
+            props.setProperty( "user", "root"  );
+            props.setProperty( "password", "admin"  );
+
+//            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+//            <property name="hibernate.connection.url" value="jdbc:mysql://192.168.99.1/oxwall" />
+//            <property name="hibernate.connection.username" value="root" />
+//            <property name="hibernate.connection.password" value="admin" />
+
+//            String driverClassName = props.getProperty( "driver.class" );
+//            String driverURL = props.getProperty( "driver.url" );
+//            String columnNameQuote = props.getProperty( "columnName.quoteChar", "" );
+//            String catalog = props.getProperty( "catalog" );
+//            String schema = props.getProperty( "schemaPattern" );
+//            String tables = props.getProperty( "tableName" );
+
+
+            String result = dumpDB( props );
+            myLog.debug( result );
         }
-        catch ( IOException e )
+        catch ( Throwable e )
         {
-            System.err.println( "Unable to open property file: " + args[0] + " exception: " + e );
+            myLog.error( "Throwable caught: " + e.getMessage(), e );
         }
 
     }
