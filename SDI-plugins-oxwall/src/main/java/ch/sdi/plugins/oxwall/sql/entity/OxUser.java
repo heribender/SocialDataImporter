@@ -49,7 +49,7 @@ public class OxUser
             accountType: the desired account
                          Nena1: all have 290365aadde35a97f11207ca7e4279cc
                          see below ow_base_question_account_type
-            emailVerify: 0 if user has not yet verified email, 1 if it is verified ( TODO: (if 0) additional steps have to be done like providing a dataset in ow_base_email_verify and send the hash to the new user)
+            emailVerify: 0 if user has not yet verified email, 1 if it is verified ( Note: (if 0) additional steps have to be done like providing a dataset in ow_base_email_verify and send the hash to the new user)
             joinIp: int(11) Nena1 example: 1535710340 (all positive)
                     PHP: ip2long(OW::getRequest()->getRemoteAddress())
                         example: (see http://php.net/manual/en/function.ip2long.php)

@@ -63,7 +63,7 @@ import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
- * TODO
+ * SQL job implementation for the oxwall platform.
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri
@@ -178,8 +178,6 @@ public class OxSqlJob implements SqlJob
                                        aPerson.getEMail(),
                                        dbEntities.toArray() );
         myLog.info( msg );
-//        throw new SdiException( "TODO: remove: ",
-//                                SdiException.EXIT_CODE_CONFIG_ERROR );
     }
 
     /**
@@ -270,6 +268,8 @@ public class OxSqlJob implements SqlJob
     }
 
     /**
+     * Checks if the given hash is present in the ow_base_avatar table
+     *
      * @param aHash
      * @return
      */
@@ -323,7 +323,6 @@ public class OxSqlJob implements SqlJob
         } // if em == null
 
         initProfileQuestions();
-        initGenderMap();
         initDefaultGroups();
         initDefaultRoles();
 
@@ -351,13 +350,9 @@ public class OxSqlJob implements SqlJob
     }
 
     /**
-     * @throws SdiException
-     */
-    private void initGenderMap() throws SdiException
-    {
-    }
-
-    /**
+     * Checks the configuration if there are profile questions configured and populates the
+     * myProfileQuestions member with the found configurations.
+     * <p>
      * @throws SdiException
      */
     private void initProfileQuestions() throws SdiException

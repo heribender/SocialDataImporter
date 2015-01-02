@@ -62,7 +62,7 @@ public class OxProfileData
                             (128, '0b0e44da932442a185649d851e108d71', 'f90cde5913235d172603cc4e7b9726e3', NULL, 'text', 'text', 0, 1, 1, 0, 1, 0, 1, 1, 6, '[]', NULL);
                         type: enum field: (text, select, datetime, boolean, multiselect) default text
                         sectionName: the section (Tab in GUI) where the profile field appears
-                        acctountTypeName: (all NULL in Nena1. TODO: Maybe if there were more than one account type there would be an entry)
+                        acctountTypeName: (all NULL in Nena1. Note: Maybe if there were more than one account type there would be an entry)
                    entered values of each user is in ow_base_question_data (foreign key userId):
                            INSERT INTO `ow_base_question_data` (`id`, `questionName`, `userId`, `textValue`, `intValue`, `dateValue`) VALUES
                            (61, '0b0e44da932442a185649d851e108d71', 2, '+41 79 823 54 32', 0, NULL),

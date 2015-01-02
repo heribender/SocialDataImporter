@@ -39,7 +39,7 @@ package ch.sdi;
  *     --sdi.mail.body.template=./input/mailbody.txt
  * </pre>
  *
- * The <code>sdi.dry-run=true</code> property setting has the effect that there are no attempts done for
+ * The <code>sdi.dry-run=true</code> property setting has the effect that no attempts are done for
  * connecting to external systems (DB, FTP target, SMTP server).
  * <p>
  *

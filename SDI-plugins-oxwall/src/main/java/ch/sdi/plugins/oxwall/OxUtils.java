@@ -23,7 +23,8 @@ import java.util.Date;
 
 
 /**
- * TODO
+ * Utilities for the oxwall platform.
+ * <p>
  *
  * @version 1.0 (04.12.2014)
  * @author  Heri
@@ -31,6 +32,12 @@ import java.util.Date;
 public class OxUtils
 {
 
+    /**
+     * Converts the given date to the timestamp representation used in oxwall tables (seconds since 1970)
+     * <p>
+     * @param aDate
+     * @return the unix timestamp (seconds since 1970) or zero if given date is <code>null</code>.
+     */
     public static long dateToLong( Date aDate )
     {
         if ( aDate == null )
