@@ -46,8 +46,8 @@ public interface FieldConverter<T>
     /**
      * Converts the given value to the desired target type.
      * <p>
-     * @param aValue
-     * @return
+     * @param aValue the value to be converted
+     * @return the converted value (or <code>null</code> if input is <code>null</code>)
      * @throws SdiException if the conversion fails.
      */
     public T convert( String aValue ) throws SdiException;

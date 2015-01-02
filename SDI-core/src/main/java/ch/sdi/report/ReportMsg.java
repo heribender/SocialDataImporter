@@ -17,14 +17,13 @@
 
 package ch.sdi.report;
 
-import java.util.Map;
-
 import org.apache.logging.log4j.message.Message;
 import org.springframework.util.StringUtils;
 
 
 /**
- * TODO
+ * Special log4j message implementation for sampling report items.
+ * <p>
  *
  * @version 1.0 (19.11.2014)
  * @author Heri
@@ -51,19 +50,8 @@ public class ReportMsg implements Message
 
     public ReportMsg( ReportType type, String aKey, Object aValue )
     {
-        this( type, new String[] { aKey }, new Object[] { aValue } );
+        this( type, new String[] { aKey }, new Object[] { aValue }, null );
     }
-
-    // TODO: still used?
-    private ReportMsg( ReportType type, String[] aKeys, Object[] aValues )
-    {
-        this( type, aKeys, aValues, null );
-    }
-
-//    public ReportMsg( ReportType type, String aKey, Object aValue, Throwable aThrowable )
-//    {
-//        this( type, new String[] { aKey }, new Object[] { aValue }, new Throwable[] { aThrowable } );
-//    }
 
     private ReportMsg( ReportType type, String[] aKeys, Object[] aValues, Throwable[] aThrowables )
     {
@@ -118,29 +106,12 @@ public class ReportMsg implements Message
         return sb.toString();
     }
 
-    private String formatCols( Map<String, Object> cols )
-    {
-        StringBuilder sb = new StringBuilder();
-        boolean first = true;
-        for ( Map.Entry<String, Object> entry : cols.entrySet() )
-        {
-            if ( !first )
-            {
-                sb.append( ", " );
-            }
-            sb.append( entry.getKey() ).append( "=" ).append( entry.getValue() );
-            first = false;
-        }
-        return sb.toString();
-    }
-
     /**
      * @see org.apache.logging.log4j.message.Message#getFormat()
      */
     @Override
     public String getFormat()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -159,7 +130,6 @@ public class ReportMsg implements Message
     @Override
     public Throwable getThrowable()
     {
-        // TODO Auto-generated method stub
         return null;
     }
 

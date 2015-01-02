@@ -31,7 +31,8 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Creates a mail content
+ * <p>
  *
  * @version 1.0 (02.11.2014)
  * @author Heri
@@ -49,6 +50,13 @@ public class MailCreator
     @Autowired
     private MailTextResolver myMailTextResolver;
 
+    /**
+     * Creates a new simple mail class and fills the subject and the body for the given person
+     * @param aPerson the person for whom the mail is addressed
+     *
+     * @return a mail instance
+     * @throws SdiException on any problem
+     */
     public Email createMailFor( Person<?> aPerson ) throws SdiException
     {
         Email email = new SimpleEmail();

@@ -66,11 +66,19 @@ public class MailTextResolver
 
     private String myBodyKey;
 
+    /**
+     * Initializes the mail content configuration and provides the resolved body in the environment with
+     * the key dyn.mail.body.bytemplatefile
+     * <p>
+     * A configured body template file (sdi.mail.body.template) takes precedence over the key
+     * sdi.mail.body
+     * <p>
+     * @throws SdiException on any problem
+     */
     public void init() throws SdiException
     {
         myBodyKey = MailProperties.KEY_BODY;
 
-        // a configured body template file takes precedence over the key sdi.mail.body
         if ( myEnv.containsProperty( MailProperties.KEY_BODY_TEMPLATE ) )
         {
             String charsetName;

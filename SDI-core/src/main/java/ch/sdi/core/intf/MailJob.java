@@ -21,7 +21,7 @@ package ch.sdi.core.intf;
 
 
 /**
- * TODO
+ * Base interface for all mail jobs
  *
  * @version 1.0 (23.11.2014)
  * @author  Heri

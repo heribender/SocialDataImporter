@@ -23,7 +23,7 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Base interface for a custom SQL jobs.
  *
  * @version 1.0 (23.11.2014)
  * @author  Heri
@@ -33,23 +33,24 @@ public interface SqlJob extends TargetJob
     /**
      * Check if the person is already present in the target platform.
      * <p>
-     *
      * @param aPerson
+     * @return <code>true</code> if the given person is already present
+     * @throws SdiException on any problem
      */
     public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException;
 
     /**
-     *
+     * Starts a transaction
      */
     public void startTransaction();
 
     /**
-     *
+     * Commits a transaction
      */
     public void commitTransaction();
 
     /**
-     *
+     * Transaction rollback
      */
     public void rollbackTransaction();
 

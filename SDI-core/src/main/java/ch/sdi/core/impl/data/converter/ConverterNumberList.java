@@ -94,6 +94,12 @@ public class ConverterNumberList implements FieldConverter<List<Number>>
     @Override
     public List<Number> convert( String aValue ) throws SdiException
     {
+        if ( !StringUtils.hasText( aValue ) )
+        {
+            myLog.debug( "Given value is null" );
+            return null;
+        }
+
         return toList( aValue, myDelimiter );
     }
 

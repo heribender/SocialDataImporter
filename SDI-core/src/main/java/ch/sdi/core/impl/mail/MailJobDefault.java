@@ -33,7 +33,8 @@ import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
- * TODO
+ * Default implementation for a mail job.
+ * <p>
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri
@@ -90,8 +91,7 @@ public class MailJobDefault implements MailJob
     @Override
     public void close() throws SdiException
     {
-        // TODO Auto-generated method stub
-
+        myLog.debug( "closing the mail job" );
     }
 
     class MailWrap

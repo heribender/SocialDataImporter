@@ -19,8 +19,6 @@ package ch.sdi.core.impl.data;
 
 import java.util.Collection;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
@@ -32,7 +30,10 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Executes the input collecting phase.
+ * <p>
+ * The collecting type must be configured by sdi.collect.type (one of CollectorType enums)
+ * <p>
  *
  * @version 1.0 (08.11.2014)
  * @author Heri
@@ -40,10 +41,6 @@ import ch.sdi.core.intf.SdiMainProperties;
 @Component
 public class InputCollectorExecutor
 {
-
-    /** logger for this class */
-    private Logger myLog = LogManager.getLogger( InputCollectorExecutor.class );
-
     @Autowired
     private Environment  myEnv;
     @Autowired
@@ -60,6 +57,12 @@ public class InputCollectorExecutor
         super();
     }
 
+    /**
+     * Performs the input collecting.
+     *
+     * @return a list of collected persons with normalized field names
+     * @throws SdiException on any problem
+     */
     public Collection<? extends Person<?>> execute() throws SdiException
     {
         CollectorType ct = CollectorType.parse( myEnv.getProperty( SdiMainProperties.KEY_COLLECT_TYPE ) );

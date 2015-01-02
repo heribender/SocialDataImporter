@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration packages="ch.sdi">
 
-    <!-- Note: the file is found since the default runtime JRE in eclipse has the VM argument -Dlog4j.configurationFile=../log4j2.xml. 
-        TODO: solve this with maven (copy resource to classpath) -->
+    <!-- Note: the file is found since the default runtime JRE in eclipse has the VM argument 
+         -Dlog4j.configurationFile=../log4j2.xml. -->
 
     <Properties>
         <Property name="log-path">../../logs</Property>

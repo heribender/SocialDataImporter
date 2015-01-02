@@ -34,7 +34,8 @@ import ch.sdi.core.intf.CollectorResult;
 
 
 /**
- * TODO
+ * This input transformer transforms the raw input into a normalized collection of PropertiesPerson
+ * <p>
  *
  * @version 1.0 (08.11.2014)
  * @author  Heri
@@ -49,7 +50,6 @@ public class InputTransformerProperties implements InputTransformer
     private FieldnameNormalizer myFieldnameNormalizer;
 
     /**
-     * @throws SdiException
      * @see ch.sdi.core.impl.data.InputTransformer#execute(ch.sdi.core.intf.CollectorResult)
      */
     @Override
@@ -102,7 +102,7 @@ public class InputTransformerProperties implements InputTransformer
         } // if !iter.hasNext()
 
         // TODO: make it configurable which field can be used as primary key which will be the name of the
-        // embedded PropertySource and must be unique (TODO: verify if this is even needed).
+        // embedded PropertySource and must be unique.
         String name = props.getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
         if ( !StringUtils.hasText( name ) )
         {

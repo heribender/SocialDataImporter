@@ -22,7 +22,7 @@ import ch.sdi.core.exc.SdiException;
 
 
 /**
- * TODO
+ * Interface for a input collector
  *
  * @version 1.0 (08.11.2014)
  * @author  Heri

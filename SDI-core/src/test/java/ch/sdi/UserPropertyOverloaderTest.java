@@ -29,7 +29,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import ch.sdi.UserPropertyOverloader;
 import ch.sdi.core.TestUtils;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
@@ -37,7 +36,7 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (07.11.2014)
  * @author  Heri

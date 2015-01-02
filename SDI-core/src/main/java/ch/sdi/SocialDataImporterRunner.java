@@ -18,6 +18,11 @@
 
 package ch.sdi;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +38,6 @@ import org.springframework.stereotype.Component;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.InputCollectorExecutor;
-import ch.sdi.core.impl.data.InputTransformer;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.target.TargetExecutor;
@@ -41,7 +45,8 @@ import ch.sdi.report.SdiReporter;
 
 
 /**
- * TODO
+ * Entry point of the SocialDataImporter application.
+ * <p>
  *
  * @version 1.0 (10.11.2014)
  * @author  Heri
@@ -57,8 +62,6 @@ public class SocialDataImporterRunner
     private ConfigurableEnvironment  myEnv;
     @Autowired
     private InputCollectorExecutor myCollectorExecutor;
-    @Autowired
-    private InputTransformer  myInputTransformer;
     @Autowired
     private UserPropertyOverloader  myUserPropertyOverloader;
     @Autowired
@@ -79,7 +82,63 @@ public class SocialDataImporterRunner
         super();
     }
 
+    /**
+     * Runs the SocialDataImporter application.
+     * <p>
+     * @param args
+     * @throws SdiException
+     */
     public void run( String[] args ) throws SdiException
+    {
+        initialize( args );
+
+        try
+        {
+            PersonKey.initCustomKeys( myEnv );
+
+            mySdiReporter.reset();
+
+            Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
+
+            if ( myLog.isDebugEnabled() )
+            {
+                myLog.debug( "collected persons: " + inputPersons );
+            } // if myLog.isDebugEnabled()
+
+            myTargetExecutor.execute( inputPersons );
+
+        }
+        finally
+        {
+            String report = mySdiReporter.getReport();
+            myLog.debug( "Generated report:\n" + report );
+            File outputDir = myEnv.getProperty( ConfigUtils.KEY_PROP_OUTPUT_DIR, File.class );
+            if ( outputDir != null )
+            {
+                File reportFile = new File( outputDir, "SdiReport.txt" );
+                try
+                {
+                    OutputStreamWriter osw = new OutputStreamWriter( new FileOutputStream( reportFile ), "UTF-8" );
+                    osw.write( report );
+                    osw.close();
+                }
+                catch ( IOException t )
+                {
+                    myLog.warn( "Unable to write report file: " + reportFile.getPath(), t );
+                }
+            } // if outputDir != null
+
+        }
+
+    }
+
+    /**
+     * Initializes the environment.
+     * <p>
+     * @param aArgs the command line arguments
+     * @throws SdiException on any problems
+     */
+    private void initialize( String[] aArgs ) throws SdiException
     {
         if ( myConversionService == null )
         {
@@ -91,11 +150,12 @@ public class SocialDataImporterRunner
 
         myUserPropertyOverloader.overrideByUserProperties();
 
-        myLog.debug( "adding command line arguments to the environment: " );  // TODO: debug out args
+        String s = Arrays.toString( aArgs );
+        myLog.debug( "adding command line arguments to the environment: " + s );
 
         MutablePropertySources propertySources = myEnv.getPropertySources();
         propertySources.addFirst(
-                   new SimpleCommandLinePropertySource( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE, args ));
+                   new SimpleCommandLinePropertySource( ConfigUtils.PROP_SOURCE_NAME_CMD_LINE, aArgs ));
 
         if ( myLog.isDebugEnabled() )
         {
@@ -126,30 +186,6 @@ public class SocialDataImporterRunner
 
 
         myLog.trace( "inputcollector.thing.alternateName: " + myEnv.getProperty( "inputcollector.thing.alternateName" ) );
-
-        try
-        {
-            PersonKey.initCustomKeys( myEnv );
-
-            mySdiReporter.reset();
-
-            Collection<? extends Person<?>> inputPersons = myCollectorExecutor.execute();
-
-            if ( myLog.isDebugEnabled() )
-            {
-                myLog.debug( "collected persons: " + inputPersons );
-            } // if myLog.isDebugEnabled()
-
-            myTargetExecutor.execute( inputPersons );
-
-        }
-        finally
-        {
-            String report = mySdiReporter.getReport();
-            myLog.debug( "Generated report:\n" + report );
-            // TODO: Write it to a file
-        }
-
     }
 
 }

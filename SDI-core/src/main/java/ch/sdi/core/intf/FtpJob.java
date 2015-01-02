@@ -20,7 +20,7 @@ package ch.sdi.core.intf;
 
 
 /**
- * TODO
+ * Interface for custom FTP jobs
  *
  * @version 1.0 (23.11.2014)
  * @author  Heri

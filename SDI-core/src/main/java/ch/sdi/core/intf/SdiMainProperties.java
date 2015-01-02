@@ -21,7 +21,12 @@ import ch.sdi.core.annotations.SdiProps;
 
 
 /**
- * TODO
+ * Configuration interface for the sdimain.properties.<p>
+ *
+ * The expected property names are defined her.<p>
+ *
+ * Because this interface is annotated with @SdiProps it is subject to the automatic mechanisme for
+ * overloading default properties with user defined properties (see {@link ch.sdi.core.annotations.SdiProps}).
  *
  * @version 1.0 (04.11.2014)
  * @author  Heri

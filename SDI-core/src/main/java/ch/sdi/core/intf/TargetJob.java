@@ -15,7 +15,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
 package ch.sdi.core.intf;
 
 import ch.sdi.core.exc.SdiException;
@@ -23,25 +22,38 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Base interface for all custom target jobs.
  *
  * @version 1.0 (15.11.2014)
- * @author  Heri
+ * @author Heri
  */
 public interface TargetJob
 {
 
     /**
-    *
-    */
-   public void init() throws SdiException;
-
-   public void close() throws SdiException;
+     * Initializes the job. Is invoked once before all persons will be executed. Resources which are
+     * valid for all persons can be allocated here.
+     * <p>
+     * @throws SdiException on any problem
+     */
+    public void init() throws SdiException;
 
     /**
+     * Closes the job. Is invoked once after all persons have been executed. Resources can be freed.
+     * <p>
+     * @throws SdiException on any problem
+     */
+    public void close() throws SdiException;
+
+    /**
+     * Executes the concrete job for the given person
+     * <p>
+     *
      * @param aPerson
+     *        must not be <code>null</code>
+     * @throws SdiException
+     *         on any problem
      */
     void execute( Person<?> aPerson ) throws SdiException;
-
 
 }

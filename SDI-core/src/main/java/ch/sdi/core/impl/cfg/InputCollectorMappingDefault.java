@@ -26,14 +26,8 @@ import ch.sdi.core.intf.InputCollectorMappingProperties;
 /**
  * Configuration class for loading the default InputCollectorMapping.properties file.<p>
  *
- * TODO: review this comment!
- * If you implement your own configuration class which implements {@link InputCollectorMappingProperties} and
- * provide it on the classpath defaults are not loaded. In this case you have to define all needed
- * properties for this configuration artifact.<p>
- *
- * Another way of overloading default properties is providing a same name properties file prefixed with
- * "user.". In this case the defaults are loaded and then overwritten by the properties found in your
- * user.xxx.properties file.<p>
+ * Because the implemented interface is annotated with @SdiProps it is subject to the automatic mechanisme for
+ * overloading default properties with user defined properties (see {@link ch.sdi.core.annotations.SdiProps}).
  *
  * @version 1.0 (02.11.2014)
  * @author  Heri

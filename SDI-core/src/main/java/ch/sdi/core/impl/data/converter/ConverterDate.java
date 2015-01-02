@@ -110,7 +110,7 @@ public class ConverterDate implements FieldConverter<Date>
     {
         if ( !StringUtils.hasText( aValue ) )
         {
-            // TODO: make it configurable if this field is mandatory or not!
+            myLog.debug( "Given value is null" );
             return null;
         }
 

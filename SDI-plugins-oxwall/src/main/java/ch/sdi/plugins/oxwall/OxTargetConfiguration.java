@@ -25,7 +25,15 @@ import ch.sdi.core.annotations.SdiProps;
 
 
 /**
- * TODO
+ * Configuration interface for the target.properties.
+ * <p>
+ * The property file target.properties (on the classpath) is automatically loaded into the environment.
+ * <p>
+ * The expected property names are defined her.
+ * <p>
+ * Because this interface is annotated with @SdiProps it is subject to the automatic mechanisme for
+ * overloading default properties with user defined properties (see {@link ch.sdi.core.annotations.SdiProps}).
+ * <p>
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri

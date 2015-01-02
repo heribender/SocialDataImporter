@@ -36,7 +36,7 @@ import ch.sdi.core.intf.MailProperties;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (12.12.2014)
  * @author  Heri
@@ -99,6 +99,7 @@ public class MailSenderDefaultTest
         email.addTo( "heri@lamp.vm" );
         email.setSubject( "Testmail" );
         email.setMsg( "Dies ist ein Testmail" );
+        myLog.debug( "Test: sending simple mail: " + email );
 
         myClassUnderTest.sendMail( email );
 

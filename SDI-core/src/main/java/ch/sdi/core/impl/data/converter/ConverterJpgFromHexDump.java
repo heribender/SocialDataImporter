@@ -27,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiConverter;
 import ch.sdi.core.exc.SdiException;
@@ -67,6 +68,12 @@ public class ConverterJpgFromHexDump extends ConverterImage
     @Override
     public BufferedImage convert( String aValue ) throws SdiException
     {
+        if ( !StringUtils.hasText( aValue ) )
+        {
+            myLog.debug( "Given value is null" );
+            return null;
+        }
+
         byte[] binary;
 
         try

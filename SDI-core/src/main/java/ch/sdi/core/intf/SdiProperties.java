@@ -20,7 +20,7 @@ package ch.sdi.core.intf;
 
 
 /**
- * TODO
+ * Base interface for all property classes for this application
  *
  * @version 1.0 (04.11.2014)
  * @author  Heri

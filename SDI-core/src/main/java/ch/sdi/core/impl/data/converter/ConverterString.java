@@ -27,9 +27,11 @@ import ch.sdi.core.intf.FieldConverter;
 
 
 /**
- * Default converter for all collected values which do not have a special converter configured. In fact
- * this converter only convertes given null values into an empty string. It mainly is provided for
- * convenience (in order not to have null checks in iterations over the collected fields)
+ * Default converter for all collected values which do not have a special converter configured. It just
+ * returns the given value.
+ * <p>
+ * It is provided for convenience (in order not to have null checks in iterations over the collected
+ * fields)
  * <p>
  *
  * @version 1.0 (09.11.2014)
@@ -45,7 +47,7 @@ public class ConverterString implements FieldConverter<String>
     @Override
     public String convert( String aValue ) throws SdiException
     {
-        return aValue == null ? "" : aValue;
+        return aValue;
     }
 
     /**

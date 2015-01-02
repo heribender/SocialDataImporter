@@ -36,7 +36,8 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Default implementation of a mail sender which works on a simple org.apache.commons.mail.Email.
+ * <p>
  *
  * @version 1.0 (06.11.2014)
  * @author  Heri
@@ -60,6 +61,9 @@ public class MailSenderDefault implements MailSender<Email>
     private boolean myDryRun;
     private String myContentType;
 
+    /**
+     * @see ch.sdi.core.intf.MailSender#sendMail(java.lang.Object)
+     */
     @Override
     public void sendMail( Email aMail ) throws SdiException
     {
@@ -91,7 +95,7 @@ public class MailSenderDefault implements MailSender<Email>
         if ( myDryRun )
         {
             myLog.debug( "DryRun is set. Not sending the mail" );
-            // TODO: save local in output dir
+            // TODO: save locally in output dir
         }
         else
         {
@@ -110,6 +114,11 @@ public class MailSenderDefault implements MailSender<Email>
 
     }
 
+    /**
+     * Initializes the mail sender by looking up configured values needed for accessing an SMTP host.
+     * <p>
+     * @throws SdiException
+     */
     public void init() throws SdiException
     {
         myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );

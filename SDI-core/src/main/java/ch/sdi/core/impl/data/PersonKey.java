@@ -26,19 +26,18 @@ import org.springframework.util.StringUtils;
 
 
 /**
- * TODO
+ * Enumeration of the internally used normalized field names of a person associated with the string
+ * used in key/value pairs.
+ * <p>
+ * The property names are according to http://schema.org/Person. See also comments in
+ * template person.properties
+ *
  *
  * @version 1.0 (13.11.2014)
  * @author  Heri
  */
 public enum PersonKey
 {
-
-    /**
-     * Note: Following property names are according to http://schema.org/Person. See also comments in
-     * template person.properties
-     */
-
     /**
      * Description: An additional name for a Person, can be used for a middle name.<p>
      * Type       : Text<p>

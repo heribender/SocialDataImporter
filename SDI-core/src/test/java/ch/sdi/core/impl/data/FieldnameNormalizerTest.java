@@ -39,7 +39,7 @@ import ch.sdi.core.exc.SdiException;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (02.01.2015)
  * @author  Heri

@@ -36,7 +36,7 @@ public interface MailSender<T>
      *
      * @param aMail
      *        the mail to be sent. All content which is not transport specific (receipient(s), subject,
-     *        body, etc.) are expected to be already set correctyl.
+     *        body, etc.) are expected to be already set correctly.
      * @throws SdiException
      *         on any problem. The original exception is embedded.
      */

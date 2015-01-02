@@ -27,7 +27,9 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * TODO
+ * Global singleton for collecting ReportMsg items in order to render a report at the end of the
+ * data import.
+ * <p>
  *
  * @version 1.0 (20.11.2014)
  * @author  Heri
@@ -50,21 +52,34 @@ public class SdiReporter
         super();
     }
 
+    /**
+     * Clears all ReportMsg from internal memory
+     */
     public void reset()
     {
         myLog.info( "resetting " + this.getClass().getSimpleName() );
         myMessages = new ArrayList<ReportMsg>();
     }
 
+    /**
+     * Adds given ReportMsg to the internal memory
+     * <p>
+     * @param aMsg
+     */
     public void add( ReportMsg aMsg )
     {
         myLog.trace( "adding a message" );
         myMessages.add( aMsg );
     }
 
+    /**
+     * Renders the report
+     * <p>
+     * @return
+     */
     public String getReport()
     {
         myLog.debug( "Rendering the report" );
-        return "TODO (Format this list nicely): " + myMessages;
+        return "TODO (Format this list nicely):\n" + myMessages;
     }
 }

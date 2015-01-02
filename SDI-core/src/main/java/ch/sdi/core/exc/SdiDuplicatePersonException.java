@@ -22,7 +22,8 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * TODO
+ * Special exception for indicating that the person to be processed is already present in the target
+ * platform.
  *
  * @version 1.0 (24.11.2014)
  * @author  Heri

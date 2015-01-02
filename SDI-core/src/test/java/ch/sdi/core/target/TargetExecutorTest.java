@@ -38,7 +38,7 @@ import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (02.12.2014)
  * @author  Heri

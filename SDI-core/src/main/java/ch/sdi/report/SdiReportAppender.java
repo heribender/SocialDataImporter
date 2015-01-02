@@ -34,7 +34,12 @@ import ch.sdi.core.util.ApplicationContextProvider;
 
 
 /**
- * TODO
+ * Custom log4j appender which expects the message of a log event to be an instance of ReportMsg. All
+ * received ReportMsg's are added to the global singleton SdiReporter.
+ * <p>
+ * The annotation @Plugin ensures that the appender is loaded by the log4j framework. The log4j config
+ * file must have the attribute  packages="ch.sdi" in the Configuration tag.
+ * <p>
  *
  * @version 1.0 (20.11.2014)
  * @author Heri
@@ -47,6 +52,15 @@ public class SdiReportAppender extends AbstractAppender
 
     private SdiReporter myReporter;
 
+    /**
+     * Factory method called by the log4j initialization framework
+     * <p>
+     * @param name
+     * @param ignoreExceptions
+     * @param layout
+     * @param filter
+     * @return
+     */
     @PluginFactory
     public static SdiReportAppender createAppender( @PluginAttribute( "name" ) String name,
                                                     @PluginAttribute( "ignoreExceptions" ) boolean ignoreExceptions,
@@ -56,7 +70,7 @@ public class SdiReportAppender extends AbstractAppender
 
         if ( name == null )
         {
-            LOGGER.error( "No name provided for StubAppender" );
+            LOGGER.error( "No name provided for SdiReportAppender" );
             return null;
         }
 
@@ -112,7 +126,8 @@ public class SdiReportAppender extends AbstractAppender
 
         if ( ctxt == null )
         {
-            LOGGER.error( "ApplicationContext is null. Maybe too early? Or we are in a unit test" );
+            LOGGER.error( "ApplicationContext is null. Maybe too early? Or we are in a unit test which "
+                    + "does not include the ApplicationContextProvider in the spring configuration?" );
             return null;
         } // if ctxt == null
 

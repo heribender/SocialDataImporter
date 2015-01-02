@@ -24,7 +24,8 @@ import ch.sdi.core.intf.CollectorResult;
 
 
 /**
- * TODO
+ * Transforms the raw collected input into a normalized collection of Person
+ * <p>
  *
  * @version 1.0 (13.11.2014)
  * @author  Heri
@@ -33,8 +34,11 @@ public interface InputTransformer
 {
 
     /**
+     * Transforms the raw collected input into a normalized collection of Person
+     * <p>
      * @param aCollectorResult
-     * @return
+     * @return a normalized collection of Person
+     * @throws SdiException on any problem
      */
     public Collection<? extends Person<?>> execute( CollectorResult aCollectorResult )
             throws SdiException;

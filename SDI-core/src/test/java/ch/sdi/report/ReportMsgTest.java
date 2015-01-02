@@ -27,7 +27,7 @@ import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (19.11.2014)
  * @author  Heri

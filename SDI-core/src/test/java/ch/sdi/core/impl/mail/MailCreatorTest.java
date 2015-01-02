@@ -45,7 +45,7 @@ import ch.sdi.core.intf.MailProperties;
 
 
 /**
- * TODO
+ * Testcase
  *
  * @version 1.0 (02.11.2014)
  * @author  Heri
