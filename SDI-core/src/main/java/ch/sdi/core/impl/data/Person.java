@@ -188,7 +188,10 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
     {
         List<Long> result = new ArrayList<Long>();
         List<?> list = getProperty( aKey, List.class );
-        list.forEach( item -> result.add( (Long) item ) );
+        if ( list != null )
+        {
+            list.forEach( item -> result.add( (Long) item ) );
+        } // if list != null
         return result;
     }
 
