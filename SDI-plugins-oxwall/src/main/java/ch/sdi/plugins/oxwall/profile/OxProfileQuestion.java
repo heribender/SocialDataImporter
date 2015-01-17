@@ -122,6 +122,7 @@ public abstract class OxProfileQuestion
         return sb.toString();
     }
 
+    public abstract boolean hasValue( Person<?> aPerson ) throws SdiException;
 
 
 }

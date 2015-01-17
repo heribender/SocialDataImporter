@@ -103,8 +103,8 @@ public class InputTransformerProperties implements InputTransformer
 
         // TODO: make it configurable which field can be used as primary key which will be the name of the
         // embedded PropertySource and must be unique.
-        String name = props.getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
-        if ( !StringUtils.hasText( name ) )
+        String mail = props.getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
+        if ( !StringUtils.hasText( mail ) )
         {
             throw new SdiException( "Person has no mail address or the configuration of the field mapping"
                                     + " is not correct. "
@@ -113,7 +113,7 @@ public class InputTransformerProperties implements InputTransformer
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if !StringUtils.hasText( name )
 
-        PropertiesPerson result = new PropertiesPerson( name, props );
+        PropertiesPerson result = new PropertiesPerson( mail, props );
 
         return result;
 

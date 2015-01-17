@@ -70,10 +70,16 @@ public class OxProfileQuestionGender extends OxProfileQuestionNumber
      * @see ch.sdi.plugins.oxwall.profile.OxProfileQuestionNumber#getLongValue(ch.sdi.core.impl.data.Person)
      */
     @Override
-    protected long getLongValue( Person<?> aPerson )
+    protected Long getLongValue( Person<?> aPerson )
     {
-        return myGenderMap.get( aPerson.getProperty( myPersonKey,
-                                                     OxGender.class ) ).longValue();
+        OxGender gender = aPerson.getProperty( myPersonKey,
+                                               OxGender.class );
+        if ( gender == null )
+        {
+            return null;
+        } // if gender == null
+
+        return myGenderMap.get( gender ).longValue();
     }
 
     /**

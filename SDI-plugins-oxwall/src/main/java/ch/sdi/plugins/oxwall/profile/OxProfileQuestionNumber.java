@@ -18,6 +18,7 @@
 
 package ch.sdi.plugins.oxwall.profile;
 
+import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
@@ -58,9 +59,25 @@ public class OxProfileQuestionNumber extends OxProfileQuestion
      * @param aPerson
      * @return
      */
-    protected long getLongValue( Person<?> aPerson )
+    protected Long getLongValue( Person<?> aPerson )
     {
-        return aPerson.getNumberProperty( myPersonKey ).longValue();
+        Number n = aPerson.getNumberProperty( myPersonKey );
+
+        if ( n == null )
+        {
+            return null;
+        } // if n == null
+
+        return Long.valueOf( aPerson.getNumberProperty( myPersonKey ).longValue() );
+    }
+
+    /**
+     * @see ch.sdi.plugins.oxwall.profile.OxProfileQuestion#hasValue(ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public boolean hasValue( Person<?> aPerson ) throws SdiException
+    {
+        return getLongValue( aPerson ) != null;
     }
 
 }

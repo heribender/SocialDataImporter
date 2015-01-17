@@ -125,4 +125,16 @@ public class OxUserRole
         roleId = aRoleId;
     }
 
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder( super.toString() );
+
+        sb.append( "\n    id         : " ).append( id );
+        sb.append( "\n    userId     : " ).append( userId );
+        sb.append( "\n    roleId     : " ).append( roleId );
+        return sb.toString();
+    }
+
+
 }

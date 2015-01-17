@@ -69,7 +69,7 @@ public class MailJobDefault implements MailJob
         Email email = myMailCreator.createMailFor( aPerson );
         myMailSender.sendMail( email );
 
-        ReportMsg msg = new ReportMsg( ReportType.FTP_TARGET,
+        ReportMsg msg = new ReportMsg( ReportType.MAIL_TARGET,
                                        aPerson.getEMail(),
                                        new MailWrap( email ) );
         myLog.info( msg );

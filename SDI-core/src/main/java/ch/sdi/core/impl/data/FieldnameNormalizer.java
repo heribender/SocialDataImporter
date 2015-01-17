@@ -119,10 +119,9 @@ public class FieldnameNormalizer
 
         if ( !configuredReplaceMap.isEmpty() )
         {
-            throw new SdiException( "At least one configured input collector mapping not contained in"
+            myLog.warn( "At least one configured input collector mapping not contained in"
                                     + " given input list: "
-                                    + configuredReplaceMap.values(),
-                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+                                    + configuredReplaceMap.values() );
 
         } // if !replaceMap.isEmpty()
 

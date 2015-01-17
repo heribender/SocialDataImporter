@@ -18,6 +18,7 @@
 
 package ch.sdi.plugins.oxwall.profile;
 
+import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
@@ -53,6 +54,15 @@ public class OxProfileQuestionDate extends OxProfileQuestion
     {
         super.fillValues( aProfileDataEntity, aPerson );
         aProfileDataEntity.setDateValue( aPerson.getDateProperty( myPersonKey ) );
+    }
+
+    /**
+     * @see ch.sdi.plugins.oxwall.profile.OxProfileQuestion#hasValue(ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public boolean hasValue( Person<?> aPerson ) throws SdiException
+    {
+        return aPerson.getDateProperty( myPersonKey ) != null;
     }
 
 }

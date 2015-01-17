@@ -143,6 +143,11 @@ public class OxSqlJob implements SqlJob
         myLog.debug( "creating profile question entities" );
         for ( OxProfileQuestion question : myProfileQuestions )
         {
+            if ( !question.hasValue( aPerson ) )
+            {
+                continue;
+            } // if !question.hasValue( aPerson )
+
             OxProfileData profileData = new OxProfileData();
             profileData.setUserId( user.getId() );
             question.fillValues( profileData, aPerson );
@@ -189,6 +194,7 @@ public class OxSqlJob implements SqlJob
         List<Long> result = new ArrayList<Long>();  // TODO: add roles per user, as with group membership
         myLog.debug( "collected roles of person: " + result );
         result.addAll( myDefaultRoles );
+        myLog.debug( "resolved roles of person: " + result );
         return result;
     }
 
@@ -202,6 +208,7 @@ public class OxSqlJob implements SqlJob
         List<Long> result = aPerson.getLongListProperty( PersonKey.PERSON_MEMBEROF.getKeyName() );
         myLog.debug( "collected groups of person: " + result );
         result.addAll( myDefaultGroups );
+        myLog.debug( "resolved groups of person: " + result );
         return result;
     }
 
@@ -214,6 +221,8 @@ public class OxSqlJob implements SqlJob
     {
         if ( myDryRun )
         {
+            myLog.trace( "DryRun: Going to save entity: " + aEntity );
+
             try
             {
                 MethodUtils.invokeExactMethod( aEntity, "setId", new Object[] { Long.valueOf( myDummyId ) } );

@@ -5,7 +5,7 @@
         TODO: solve this with maven (copy resource to classpath) -->
 
     <Properties>
-        <Property name="log-path">../../logs</Property>
+        <Property name="log-path">../logs</Property>
     </Properties>
 
     <Appenders>
@@ -55,7 +55,7 @@
 
         <Logger
             name="org.hibernate"
-            level="debug">
+            level="info">
         </Logger>
         
         <Logger

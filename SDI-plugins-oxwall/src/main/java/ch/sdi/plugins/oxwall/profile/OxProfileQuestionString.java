@@ -18,6 +18,9 @@
 
 package ch.sdi.plugins.oxwall.profile;
 
+import org.springframework.util.StringUtils;
+
+import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 
@@ -52,6 +55,15 @@ public class OxProfileQuestionString extends OxProfileQuestion
     {
         super.fillValues( aProfileDataEntity, aPerson );
         aProfileDataEntity.setTextValue( aPerson.getStringProperty( myPersonKey ) );
+    }
+
+    /**
+     * @see ch.sdi.plugins.oxwall.profile.OxProfileQuestion#hasValue(ch.sdi.core.impl.data.Person)
+     */
+    @Override
+    public boolean hasValue( Person<?> aPerson ) throws SdiException
+    {
+        return StringUtils.hasText( aPerson.getStringProperty( myPersonKey ) );
     }
 
 }

@@ -20,6 +20,7 @@ package ch.sdi.report;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,7 +69,11 @@ public class SdiReporter
      */
     public void add( ReportMsg aMsg )
     {
-        myLog.trace( "adding a message" );
+        // Since wie are already in a call from a logger there would be an error entry if we call
+        // the logger again ("Recursive call to appender "). So log this asynchroneously:
+        CompletableFuture
+            .supplyAsync(() -> "adding a message" )
+            .thenAcceptAsync( myLog::trace );
         myMessages.add( aMsg );
     }
 
