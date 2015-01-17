@@ -1,5 +1,108 @@
-Remember the three main steps:
+# Configuration
 
-collect data  ->  normalize data  ->  target import
+Many aspects for a custom installation may be configured. Configured values are accessed
+during runtime through the spring environment. The different kinds of configuration have
+following precedence:
+
+  - Command line argument
+  - user.xxx.properties files
+  - system properties
+  - systemEnvironment
+  - xxx.properties files
+	
+If the same property is configured twice, the higher precedence overwrites the lower one.
+If it is configured twice within the same group of precedence (e.g. twice configured in 
+different user.xxx.properties files) the behaviour is undefined.
+
+## Syntax
+
+The syntax follows the standard configuration syntax
+
+    key = value
+  
+The value part may contain placeholders in the form 
+
+    ${other.key}
+
+Such placeholders are resolved at runtime by the spring environment automatically by 
+looking up the value of "other.key".
+
+Supplying a property by commandline must be prefixed by '--', e.g.
+    
+    --sdi.collect.csv.filename=./input/importdata.csv	
+
+	
+## Configuration files
+
+The core package contains following different configuration files with default values. They
+are packed within the jar files. You can override default values by providing a same named
+property file prefixed with "user.". Such an overload file must be found in the classpath 
+(e.g. [SDI-install-folder]/cfg).
+
+The provided configuration files are well documented. Each property is described and - if
+necessary - provide examples.
+
+### sdimain.properties	
+
+Contains global properties like SSH and FTP login data, collection type, value converters
+etc.
+
+The property dry-run lets you run the application in test mode. All steps are executed 
+except the changing of the target systems (DB, FTP, Mail-Delivery, etc.).
+
+Converters can be used to convert text values (as usually used in CSV files) to internal
+types. Some converters can be parametrize. E.g. the toDate converter can convert textual
+dates into a Date class by using the configured pattern. It is also possible to 
+configure more toDate converters for different fields with different patterns:
+
+	sdi.converter.<fieldname> = toDate
+	
+The value found in 'fieldname' is treated as date value
+	
+	sdi.converter.toDate.pattern = yyyy-MM-dd
+	
+The toDate converter tries to parse the text value by using the pattern. This form is valid
+for all toDate converters unless specified different for a particular field.
+
+	sdi.converter.toDate.<fieldname1>.pattern =dd.MM.yyy 
+	sdi.converter.toDate.<fieldname2>.pattern = yyyy-MM-dd
+	
+The toDate converter uses first pattern for 'fielname1', the second pattern for 'fieldname2'
+
+There are converters for
+
+  - toData
+  - toGender
+  - toJpgFromHexDump
+  - toNumberList
+
+  
+### mail.properties
+
+Contains all settings for setting up customized mails and send them to a SMTP provider.
+
+### InputCollectorMapping.properties
+
+Remember the three main steps of the application:
+
+    collect data  ->  normalize data  ->  target import
+	
+The hard coded target jobs (e.g. the SQL job which executes the DB inserts) pick up the 
+relevant data from a person entity which has normalized field names. It is your
+responsibility to map custom fieldnames	used during the collect phase to the normalized
+equivalent. For example, if the field containing the username of a new person to be 
+imported is called 'Screenname' you have to map this to the internal normalized field
+name 'inputcollector.thing.alternateName':
+
+    inputcollector.thing.alternateName=Screenname
+
+
+### target.properties
+### person.properties
+
+### persistence.xml
+
+
+
 
 
