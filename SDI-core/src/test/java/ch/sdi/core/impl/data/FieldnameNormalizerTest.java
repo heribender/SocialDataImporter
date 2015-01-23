@@ -152,20 +152,12 @@ public class FieldnameNormalizerTest
     /**
      * Test method for {@link ch.sdi.core.impl.data.FieldnameNormalizer#normalize(java.util.Collection)}.
      */
-    @Test(expected=SdiException.class)
+    @Test
     public void testNormalizeNotCovered() throws Throwable
     {
         myLog.debug( "testing given fieldnames do not cover all configured mappings" );
         TestUtils.addToEnvironment( myEnv, "inputcollector.thing.alternateName", "Screenname" );
-        try
-        {
-            myClassUnderTest.normalize( new ArrayList<>() );
-        }
-        catch ( SdiException t )
-        {
-            myLog.info( "Expected Exception received: " + t.getMessage() );
-            throw t;
-        }
+        myClassUnderTest.normalize( new ArrayList<>() );
     }
 
 }
