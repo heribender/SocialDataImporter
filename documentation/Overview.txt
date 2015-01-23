@@ -33,7 +33,7 @@ platform server. The application runner in the core module executes these tasks 
 The actual oxwall plugin uses the following standard jobs:
   - SQL job for entering data into the database
   - FTP job for uploading files (incl. SSH access for executing remote shell commands)
-  - a mail job which personlizes a configurable mail template and sends it to an SMTP server
+  - a mail job which personalizes a configurable mail template and sends it to an SMTP server
 
 The implementation of these jobs is splitted into the SDI-core module and the oxwall-plugin:
   - common tasks (as SSH and FTP clients) are implemented in the core whereas the business rules (which files, etc.) are implemented in 

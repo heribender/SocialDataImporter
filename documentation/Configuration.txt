@@ -2,7 +2,7 @@
 
 Many aspects for a custom installation may be configured. Configured values are accessed
 during runtime through the spring environment. The different kinds of configuration have
-following precedence:
+following precedence (in descending order):
 
   - Command line argument
   - user.xxx.properties files
@@ -24,7 +24,7 @@ The value part may contain placeholders in the form
 
     ${other.key}
 
-Such placeholders are resolved at runtime by the spring environment automatically by 
+Such placeholders are automatically resolved at runtime by the spring environment by 
 looking up the value of "other.key".
 
 Supplying a property by commandline must be prefixed by '--', e.g.
@@ -32,12 +32,17 @@ Supplying a property by commandline must be prefixed by '--', e.g.
     --sdi.collect.csv.filename=./input/importdata.csv	
 
 	
-## Configuration files
+## Configuration files (core package)
 
 The core package contains following different configuration files with default values. They
 are packed within the jar files. You can override default values by providing a same named
 property file prefixed with "user.". Such an overload file must be found in the classpath 
 (e.g. [SDI-install-folder]/cfg).
+
+- sdimain.properties
+- mail.properties
+- InputCollectorMapping.properties
+- person.properties
 
 The provided configuration files are well documented. Each property is described and - if
 necessary - provide examples.
@@ -50,26 +55,28 @@ etc.
 The property dry-run lets you run the application in test mode. All steps are executed 
 except the changing of the target systems (DB, FTP, Mail-Delivery, etc.).
 
-Converters can be used to convert text values (as usually used in CSV files) to internal
-types. Some converters can be parametrize. E.g. the toDate converter can convert textual
+Converters can be used to convert text values (as usually used in CSV input files) to internal
+types. Some converters can be parametrized. E.g. the toDate converter can convert textual
 dates into a Date class by using the configured pattern. It is also possible to 
-configure more toDate converters for different fields with different patterns:
+configure more than one toDate converters for different fields with different patterns.
+
+Example:
 
 	sdi.converter.<fieldname> = toDate
 	
-The value found in 'fieldname' is treated as date value
+The value found (during collection phase) in 'fieldname' is treated as date value
 	
 	sdi.converter.toDate.pattern = yyyy-MM-dd
 	
 The toDate converter tries to parse the text value by using the pattern. This form is valid
-for all toDate converters unless specified different for a particular field.
+for all toDate converters unless specified different for a particular field:
 
-	sdi.converter.toDate.<fieldname1>.pattern =dd.MM.yyy 
+	sdi.converter.toDate.<fieldname1>.pattern = dd.MM.yyy 
 	sdi.converter.toDate.<fieldname2>.pattern = yyyy-MM-dd
 	
-The toDate converter uses first pattern for 'fielname1', the second pattern for 'fieldname2'
+The toDate converter uses first pattern for 'fieldname1', the second pattern for 'fieldname2'
 
-There are converters for
+Provided converters:
 
   - toData
   - toGender
@@ -79,7 +86,7 @@ There are converters for
   
 ### mail.properties
 
-Contains all settings for setting up customized mails and send them to a SMTP provider.
+Contains all settings for setting up a customized mail and send it to a SMTP provider.
 
 ### InputCollectorMapping.properties
 
@@ -88,7 +95,7 @@ Remember the three main steps of the application:
     collect data  ->  normalize data  ->  target import
 	
 The hard coded target jobs (e.g. the SQL job which executes the DB inserts) pick up the 
-relevant data from a person entity which has normalized field names. It is your
+relevant data from a person entity by looking up the normalized field names. It is your
 responsibility to map custom fieldnames	used during the collect phase to the normalized
 equivalent. For example, if the field containing the username of a new person to be 
 imported is called 'Screenname' you have to map this to the internal normalized field
@@ -96,11 +103,50 @@ name 'inputcollector.thing.alternateName':
 
     inputcollector.thing.alternateName=Screenname
 
-
-### target.properties
 ### person.properties
 
-### persistence.xml
+This file is rather a documentation about the internally used normalized field names than
+a real property file. You must use these field names in the InputCollectorMapping.properties
+
+
+## Configuration files (oxwall plugin)
+
+### target.properties
+
+Properties which only concern the oxwall target platform are provided in the file 
+target.properties. The configured default values can be overwritten by a defining them
+in a file user.target.properties which has to be loacated in the classpath 
+(e.g. [SDI-install-folder]/cfg).
+
+### META-INF/persistence.xml
+
+Configures the access parameters to the oxwall database (MySql). The format is XML and 
+defined by the needs of the used ORM/JPA framework Hibernate. You have to provide the
+connection string (example see below), the user name and the password. The database of 
+the platform must be able to be reached remotely which is usually not the default 
+behaviour of a MySql installation. An example of how to enable remote access can be found
+in 
+http://www.cyberciti.biz/tips/how-do-i-enable-remote-access-to-mysql-database-server.html
+
+The connection string is composed as
+
+    Protocol://Host/SchemaName
+	
+The "Host" may be an IP address or a domain name. The SchemaName is the name of the
+oxwall database within your MySql installation. The protocol is already correct for a
+MySql database, leave it untouched. For example:
+	
+    jdbc:mysql://192.168.99.1/oxwall
+	or
+    jdbc:mysql://myoxwall.org/oxdb
+	
+	
+	
+	
+	
+	
+
+
 
 
 
