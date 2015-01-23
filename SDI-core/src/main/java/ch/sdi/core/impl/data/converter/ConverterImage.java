@@ -26,9 +26,6 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.intf.FieldConverter;
 
@@ -41,9 +38,6 @@ import ch.sdi.core.intf.FieldConverter;
  */
 public abstract class ConverterImage implements FieldConverter<BufferedImage>
 {
-
-    /** logger for this class */
-    private Logger myLog = LogManager.getLogger( ConverterImage.class );
 
     /**
      * Converts the content of the given input stream to a BufferedImage.

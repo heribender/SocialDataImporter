@@ -49,7 +49,7 @@ public class UserPropertyOverloaderTest
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( UserPropertyOverloaderTest.class );
     @Autowired
-    private ConfigurableEnvironment  env;
+    private ConfigurableEnvironment myEnv;
     @Autowired
     private UserPropertyOverloader myClassUnderTest;
 
@@ -59,7 +59,7 @@ public class UserPropertyOverloaderTest
     @Before
     public void setUp() throws Exception
     {
-        TestUtils.addToEnvironment( env, "hello", "world" );
+        TestUtils.addToEnvironment( myEnv, "hello", "world" );
     }
 
     /**
@@ -74,9 +74,9 @@ public class UserPropertyOverloaderTest
         // content should have been entered into the environment
         String name = SdiMainProperties.USER_OVERRIDE_PREFIX
                 + ConfigUtils.makePropertyResourceName( InputCollectorMappingProperties.class );
-        Assert.assertNotNull( env.getPropertySources().get( name ) );
-        Assert.assertEquals( "universe", env.getProperty( "hello" ) );
-        Assert.assertEquals( "Screenname", env.getProperty( "inputcollector.thing.alternateName" ) );
+        Assert.assertNotNull( myEnv.getPropertySources().get( name ) );
+        Assert.assertEquals( "universe", myEnv.getProperty( "hello" ) );
+        Assert.assertEquals( "Screenname", myEnv.getProperty( "inputcollector.thing.alternateName" ) );
     }
 
 }
