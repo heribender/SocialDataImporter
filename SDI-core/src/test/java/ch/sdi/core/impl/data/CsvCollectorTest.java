@@ -133,11 +133,11 @@ public class CsvCollectorTest
                                     "Screenname,Name,Middlename,Prename,email,birthday,entrydate" );
 
         myLog.debug( "fieldnames now set in environment" );
-        testSuccess();
+        testSuccess( 7, 2 );
 
         TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
         myLog.debug( "skip >= rowsize. Ignored because headerRow is false" );
-        testSuccess();
+        testSuccess( 7, 2 );
 
 
         TestUtils.addToEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
@@ -151,14 +151,14 @@ public class CsvCollectorTest
         TestUtils.removeFromEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FIELD_NAMES );
 
         myLog.debug( "CSV_testdata_withHeader0.csv success" );
-        testSuccess();
+        testSuccess( 7, 2 );
 
         // CSV_testdata_withHeader2.csv:
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "2" );
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                     toFile( "CSV_testdata_withHeader2.csv" ).getCanonicalPath() );
         myLog.debug( "CSV_testdata_withHeader2.csv success" );
-        testSuccess();
+        testSuccess( 7, 2 );
 
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, "5" );
         myLog.debug( "skip >= rowsize. HeaderRow=true -> Exception" );
@@ -182,7 +182,7 @@ public class CsvCollectorTest
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         toFile( "CSV_testdata_noHeader_empty_fields.csv" ).getCanonicalPath() );
         myLog.debug( "loading avatar picture (jpg hex dump)" );
-        testSuccess();
+        testSuccess( 7, 2 );
 
         // avatar
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, "true" );
@@ -190,7 +190,7 @@ public class CsvCollectorTest
         TestUtils.replaceInEnvironment( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME,
                                         toFile( "CSV_testdata_withHeader0_Avatar.csv" ).getCanonicalPath() );
         myLog.debug( "empty field content -> Empty String or null (if date)" );
-        testSuccess();
+        testSuccess( 8, 2 );
 
     }
 
@@ -213,7 +213,7 @@ public class CsvCollectorTest
     /**
     *
     */
-   private void testSuccess() throws Throwable
+   private void testSuccess( int aExpectedFieldNum, int aExpectedRowNum ) throws Throwable
    {
        CollectorResult actual = myClassUnderTest.execute();
        myLog.debug( "Received: " + actual );
@@ -221,12 +221,12 @@ public class CsvCollectorTest
        Collection<String> receivedFieldnames = actual.getFieldnames();
        myLog.debug( "Received field names: " + receivedFieldnames );
        Assert.assertNotNull( receivedFieldnames );
-       Assert.assertEquals( 7, receivedFieldnames.size() );
+       Assert.assertEquals( aExpectedFieldNum, receivedFieldnames.size() );
 
        Collection<Collection<Object>> receivedRows = actual.getRows();
        myLog.debug( "Received rows: " + receivedRows );
        Assert.assertNotNull( receivedRows );
-       Assert.assertEquals( 2, receivedRows.size() );
+       Assert.assertEquals( aExpectedRowNum, receivedRows.size() );
    }
 
 }
