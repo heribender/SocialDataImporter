@@ -50,6 +50,7 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_COLLECT_CSV_HEADER_ROW = "sdi.collect.csv.headerrow";
     public static final String KEY_COLLECT_CSV_SKIP_AFTER_HEADER = "sdi.collect.csv.skipafterheader";
     public static final String KEY_COLLECT_CSV_FIELD_NAMES = "sdi.collect.csv.fieldnames";
+    public static final String KEY_COLLECT_CSV_COMMENT_CHARS_PREFIX = "sdi.collect.csv.comment.";
 
     public static final String KEY_PREFIX_CONVERTER = "sdi.converter.";
 

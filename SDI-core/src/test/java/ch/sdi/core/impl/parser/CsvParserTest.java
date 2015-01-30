@@ -20,6 +20,7 @@ package ch.sdi.core.impl.parser;
 import static org.junit.Assert.assertEquals;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.data.filter.FilterCommentedLine;
+import ch.sdi.core.impl.data.filter.RawDataFilterString;
 
 
 /**
@@ -119,6 +122,29 @@ public class CsvParserTest
         assertEquals( "", list.get( 6 ) );
 
 
+    }
+
+    @Test
+    public void testParseWithLineCommentFilter() throws Throwable
+    {
+        String testFileName = "CSV_testdata_with_commented_lines.csv";
+
+        List<RawDataFilterString> commentFilters = new ArrayList<>();
+        FilterCommentedLine filter = new FilterCommentedLine();
+        filter.init( null, "#" );
+        commentFilters.add( filter );
+        filter = new FilterCommentedLine();
+        filter.init( null, "//" );
+        commentFilters.add( filter );
+
+        InputStream is;
+        List<List<String>>actual;
+
+        myLog.debug( "Testing empty fields" );
+        is = ClassLoader.getSystemResourceAsStream( testFileName );
+        actual = myClassUnderTest.parse( is, ";", "UTF-8", commentFilters );
+        myLog.debug( "Received: " + actual );
+        assertEquals( 2, actual.size() );
     }
 
     @Test( expected=SdiException.class )

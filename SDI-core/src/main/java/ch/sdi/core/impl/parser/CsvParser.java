@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.data.filter.RawDataFilterString;
 
 
 /**
@@ -66,6 +67,30 @@ public class CsvParser
                                      String aDelimiter,
                                      String aEncoding ) throws SdiException
     {
+        return parse( aInputStream, aDelimiter, aEncoding, null );
+    }
+
+    /**
+     * Parses the given input stream.
+     * <p>
+     *
+     * @param aInputStream
+     *        must not be null
+     * @param aDelimiter
+     *        must not be null
+     * @param aEncoding
+     *        The encoding to be used. If null or empty, the systems default encoding is used.
+     * @return a list which contains a list for each found person. The inner list contains the found
+     *         values for this person. The number and the order must correspond to the configured field
+     *         name list (see
+     *         in each line.
+     * @throws SdiException
+     */
+    public List<List<String>> parse( InputStream aInputStream,
+                                     String aDelimiter,
+                                     String aEncoding,
+                                     List<RawDataFilterString> aFilters ) throws SdiException
+    {
         if ( !StringUtils.hasLength( aDelimiter ) )
         {
             throw new SdiException( "Delimiter not set", SdiException.EXIT_CODE_CONFIG_ERROR );
@@ -82,9 +107,23 @@ public class CsvParser
 
             int lineNo = 0;
             String line;
+            LineLoop:
             while ( ( line = br.readLine() ) != null )
             {
                 lineNo++;
+
+                if ( aFilters != null )
+                {
+                    for ( RawDataFilterString filter : aFilters )
+                    {
+                        if ( filter.isFiltered( line ) )
+                        {
+                            myLog.debug( "Skipping commented line: " + line );
+                            continue LineLoop;
+                        }
+                    }
+                }
+
                 myLog.debug( "Parsing line " + lineNo + ": " + line );
 
                 List<String> list = new ArrayList<String>();
@@ -103,13 +142,13 @@ public class CsvParser
                     {
                         list.add( "" );
                     } // if line.endsWith( aDelimiter )
-
-                    result.add( list );
                 }
                 finally
                 {
                     sc.close();
                 }
+
+                result.add( list );
             }
 
             return result;

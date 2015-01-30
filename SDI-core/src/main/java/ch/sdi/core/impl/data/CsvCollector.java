@@ -32,12 +32,16 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
+import ch.sdi.core.impl.data.filter.CollectFilter;
+import ch.sdi.core.impl.data.filter.FilterCommentedLine;
+import ch.sdi.core.impl.data.filter.FilterFactory;
+import ch.sdi.core.impl.data.filter.RawDataFilterString;
 import ch.sdi.core.impl.parser.CsvParser;
 import ch.sdi.core.intf.CollectorResult;
 import ch.sdi.core.intf.FieldConverter;
@@ -64,16 +68,23 @@ public class CsvCollector implements InputCollector
     @Autowired
     private CsvParser myParser;
     @Autowired
-    private Environment myEnv;
+    private ConfigurableEnvironment myEnv;
     @Autowired
     private InputCollectorFactory myInputCollectorFactory;
     @Autowired
     private ConverterFactory myConverterFactory;
-
-
+    @Autowired
+    private FilterFactory myFilterFactory;
 
     private Collection<String> myFieldnames;
     Collection<Collection<Object>> myRows;
+    private String myDelimiter;
+    private String myEncoding;
+    private List<RawDataFilterString> myLineFilters;
+    private List<CollectFilter<?>> myCollectFilters;
+    private boolean myHeaderRow;
+    private int mySkip;
+    private String myInputFileName;
 
     /**
      * Constructor
@@ -92,71 +103,20 @@ public class CsvCollector implements InputCollector
     @Override
     public CollectorResult execute() throws SdiException
     {
-        String delimiter = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
-        String encoding = Charset.defaultCharset().name();
-        encoding = myEnv.getProperty( SdiMainProperties.KEY_COLLECT_CSV_ENCODING, encoding );
+        init();
 
-        boolean headerRow = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
-        int skip = ConfigUtils.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
-        String fileName =  ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
+        InputStream is = openInputStream();
 
-        if ( myLog.isDebugEnabled() )
-        {
-            StringBuilder sb = new StringBuilder( "Starting a CSV collection." );
-            sb.append( "\n    Configuration properties:" )
-              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_DELIMITER ).append( " = " ).append( delimiter )
-              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW ).append( " = " ).append( headerRow )
-              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER ).append( " = " ).append( skip )
-              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_FILENAME ).append( " = " ).append( fileName );
+        List<List<String>> parsed = myParser.parse( is, myDelimiter, myEncoding, myLineFilters );
 
-            myLog.debug( sb.toString()  );
-
-        } // if myLog.isDebugEnabled()
-
-        File file = new File( fileName );
-
-        if ( myLog.isDebugEnabled() )
-        {
-            try
-            {
-                myLog.debug( "Loading CSV file " + file.getCanonicalPath() );
-            }
-            catch ( IOException t1 )
-            {
-                myLog.warn( "Problems with resolving canonical path of filet " + fileName );
-            }
-        } // if myLog.isDebugEnabled()
-
-        InputStream is;
-        try
-        {
-            is = new FileInputStream( file );
-        }
-        catch ( FileNotFoundException t )
-        {
-            throw new SdiException( "File not found "+ fileName, t,
-                                    SdiException.EXIT_CODE_CONFIG_ERROR );
-        }
-
-        List<List<String>> parsed = null;
-
-        parsed = myParser.parse( is, delimiter, encoding );
-
-        myFieldnames = evaluateFieldNames( parsed, headerRow );
+        myFieldnames = evaluateFieldNames( parsed, myHeaderRow );
         myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Fieldnames", myFieldnames ) );
 
-        int toSkip = 0;
-
-        if ( headerRow )
-        {
-            toSkip = skip + 1;
-        } // if headerRow
-
+        int toSkip = myHeaderRow ? (mySkip + 1) : 0;
         myLog.debug( "Skipping first " + toSkip + " rows" );
-
         if ( parsed.size() < toSkip )
         {
-            throw new SdiException( "No data found in CSV file "+ fileName,
+            throw new SdiException( "No data found in CSV file "+ myInputFileName,
                                     SdiException.EXIT_CODE_PARSE_ERROR );
         } // if parsed.size() < toSkip
 
@@ -164,6 +124,7 @@ public class CsvCollector implements InputCollector
 
         List<FieldConverter<?>> converters = myConverterFactory.getFieldConverters( myFieldnames );
 
+        ROW_LOOP:
         for ( int i = toSkip; i < parsed.size(); i++ )
         {
             List<String> row = parsed.get( i );
@@ -171,7 +132,19 @@ public class CsvCollector implements InputCollector
 
             try
             {
-                myRows.add( convertFields( row, converters ) );
+                Collection<Object> converted = convertFields( row, converters );
+
+                for ( CollectFilter<?> filter : myCollectFilters )
+                {
+                    if ( filter.isFiltered( Dataset.create( myFieldnames, converted ) ) )
+                    {
+                        myLog.debug( "Given row is filtered: " + row );
+                    }
+
+                    continue ROW_LOOP;
+                }
+
+                myRows.add( converted );
             }
             catch ( Exception t )
             {
@@ -198,6 +171,87 @@ public class CsvCollector implements InputCollector
 
         };
 
+    }
+
+    /**
+     * @return
+     * @throws SdiException
+     */
+    private InputStream openInputStream() throws SdiException
+    {
+        File file = new File( myInputFileName );
+
+        if ( myLog.isDebugEnabled() )
+        {
+            try
+            {
+                myLog.debug( "Loading CSV file " + file.getCanonicalPath() );
+            }
+            catch ( IOException t1 )
+            {
+                myLog.warn( "Problems with resolving canonical path of filet " + myInputFileName );
+            }
+        } // if myLog.isDebugEnabled()
+
+        InputStream is;
+        try
+        {
+            is = new FileInputStream( file );
+        }
+        catch ( FileNotFoundException t )
+        {
+            throw new SdiException( "File not found "+ myInputFileName, t,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        }
+        return is;
+    }
+
+    /**
+     * Initializes the CSVCollector by config values
+     *
+     * @throws SdiException
+     */
+    private void init() throws SdiException
+    {
+        myDelimiter = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_DELIMITER );
+        myEncoding = Charset.defaultCharset().name();
+        myEncoding = myEnv.getProperty( SdiMainProperties.KEY_COLLECT_CSV_ENCODING, myEncoding );
+        myLineFilters = new ArrayList<>();
+        Collection<String> set = ConfigUtils.getPropertyNamesStartingWith( myEnv,
+                                      SdiMainProperties.KEY_COLLECT_CSV_COMMENT_CHARS_PREFIX );
+        for ( String key : set )
+        {
+            FilterCommentedLine filter = new FilterCommentedLine();
+            filter.init( myEnv, myEnv.getProperty( key ) );
+            myLineFilters.add( filter );
+        }
+
+        myCollectFilters = new ArrayList<>();
+        set = ConfigUtils.getPropertyNamesStartingWith( myEnv, CollectFilter.KEY_PREFIX_FILTER );
+        for ( String value : set )
+        {
+            myCollectFilters.add( myFilterFactory.getFilter( value ) );
+        }
+
+
+
+        myHeaderRow = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
+        mySkip = ConfigUtils.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
+        myInputFileName = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
+
+        if ( myLog.isDebugEnabled() )
+        {
+            StringBuilder sb = new StringBuilder( "Starting a CSV collection." );
+            sb.append( "\n    Configuration properties:" )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_DELIMITER ).append( " = " ).append( myDelimiter )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW ).append( " = " ).append( myHeaderRow )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER ).append( " = " ).append( mySkip )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_FILENAME ).append( " = " ).append( myInputFileName )
+              .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_COMMENT_CHARS_PREFIX ).append( " = " ).append( myLineFilters );
+
+            myLog.debug( sb.toString()  );
+
+        } // if myLog.isDebugEnabled()
     }
 
     /**

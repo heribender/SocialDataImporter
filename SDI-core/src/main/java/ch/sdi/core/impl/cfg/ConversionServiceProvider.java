@@ -38,7 +38,7 @@ import org.springframework.core.convert.converter.Converter;
 public class ConversionServiceProvider
 {
 
-    @Bean( name = "ConversionService" )
+    @Bean
     public ConversionService getConversionService()
     {
         ConversionServiceFactoryBean bean = new ConversionServiceFactoryBean();

@@ -82,7 +82,7 @@ public class FtpExecutorTest implements ApplicationContextAware
     /** logger for this class */
     private static Logger myLog = LogManager.getLogger( FtpExecutorTest.class );
     @Autowired
-    private ConfigurableEnvironment  myEnv;
+    private ConfigurableEnvironment myEnv;
     private FtpExecutor myClassUnderTest;
     private static String myTargetDirLocal;
     private static List<Authority> myFtpAuthorities;

@@ -17,14 +17,23 @@
 
 package ch.sdi.core.impl.cfg;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertiesPropertySource;
@@ -254,7 +263,9 @@ public class ConfigUtils
      * @param aValue
      * @throws SdiException
      */
-    public static void addToEnvironment( ConfigurableEnvironment aEnv, String aKey, Object aValue )
+    public static void addToEnvironment( ConfigurableEnvironment aEnv,
+                                         String aKey,
+                                         Object aValue )
             throws SdiException
     {
         Map<String, Object> map = getOrCreatePropertySource( aEnv, PROP_SOURCE_NAME_DYNAMIC );
@@ -305,6 +316,8 @@ public class ConfigUtils
 
 
     /**
+     * Injects springs conversion service
+     * <p>
      * @param  aConversionService
      *         myConversionService to set
      */
@@ -313,5 +326,66 @@ public class ConfigUtils
         myConversionService = aConversionService;
     }
 
+    /**
+     * Assembles a set of property names starting with the given prefix.
+     * <p>
+     * The resulting set is sorted according the natural ordering of the full property name.
+     * <p>
+     * @param aEnv
+     * @param aKeyPrefix
+     * @return
+     */
+    public static Collection<String> getPropertyNamesStartingWith( ConfigurableEnvironment aEnv,
+                                                                   String aKeyPrefix )
+    {
+        return getAllPropertyNames( aEnv ).stream()
+            .filter( key -> key.startsWith( aKeyPrefix ) )
+            .collect( Collectors.toCollection( (Supplier<Set<String>>) TreeSet::new ) );
+    }
+
+    /**
+     * Returns a collection of all property names in the environment.
+     * <p>
+     * @param aEnv
+     * @return
+     */
+    public static Collection<String> getAllPropertyNames( ConfigurableEnvironment aEnv )
+    {
+        Collection<String> result = new HashSet<>();
+        aEnv.getPropertySources().forEach( ps -> result.addAll( getAllPropertyNames( ps ) ) );
+        return result;
+    }
+
+    /**
+     * Returns a collection of all property names in the given PropertySource.
+     * <p>
+     * @param aPropSource
+     * @return
+     */
+    public static Collection<String> getAllPropertyNames( PropertySource<?> aPropSource )
+    {
+        Collection<String> result = new HashSet<>();
+
+        if ( aPropSource instanceof CompositePropertySource)
+        {
+            CompositePropertySource cps = (CompositePropertySource) aPropSource;
+            cps.getPropertySources().forEach( ps -> result.addAll( getAllPropertyNames( ps ) ) );
+            return result;
+        }
+
+        if ( aPropSource instanceof EnumerablePropertySource<?> )
+        {
+            EnumerablePropertySource<?> ps = (EnumerablePropertySource<?>) aPropSource;
+            Arrays.asList( ps.getPropertyNames() ).forEach( key -> result.add( key ) );
+            return result;
+        }
+
+        // note: Most descendants of PropertySource are EnumerablePropertySource. There are some
+        // few others like JndiPropertySource or StubPropertySource
+        myLog.debug( "Given PropertySource is instanceof " + aPropSource.getClass().getName()
+                     + " and cannot be iterated" );
+
+        return result;
+    }
 
 }

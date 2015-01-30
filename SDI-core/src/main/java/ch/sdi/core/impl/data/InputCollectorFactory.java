@@ -25,7 +25,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.intf.InputCollector;
 
 
@@ -44,8 +43,6 @@ public final class InputCollectorFactory
     private Logger myLog = LogManager.getLogger( InputCollectorFactory.class );
     @Autowired
     private ApplicationContext myAppCtxt;
-    @Autowired
-    private ConverterFactory myConverterFactory;
 
     /**
      * @param aCollectorType
