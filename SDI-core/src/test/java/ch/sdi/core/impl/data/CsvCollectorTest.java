@@ -41,6 +41,7 @@ import ch.sdi.core.impl.cfg.ConversionServiceProvider;
 import ch.sdi.core.impl.data.converter.ConverterDate;
 import ch.sdi.core.impl.data.converter.ConverterFactory;
 import ch.sdi.core.impl.data.converter.ConverterJpgFromHexDump;
+import ch.sdi.core.impl.data.filter.FilterFactory;
 import ch.sdi.core.impl.parser.CsvParser;
 import ch.sdi.core.intf.CollectorResult;
 import ch.sdi.core.intf.SdiMainProperties;
@@ -59,7 +60,8 @@ import ch.sdi.core.intf.SdiMainProperties;
                                ConverterFactory.class,
                                ConverterDate.class,
                                ConverterJpgFromHexDump.class,
-                               ConversionServiceProvider.class })
+                               ConversionServiceProvider.class,
+                               FilterFactory.class })
 public class CsvCollectorTest
 {
 
