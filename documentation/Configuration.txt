@@ -83,6 +83,20 @@ Provided converters:
   - toJpgFromHexDump
   - toNumberList
 
+Filters can be applied after the raw data of a new user has been collected. Based on a value
+of the collected dataset the user may be filtered out for further processing, i.e. it will
+not be imported to the target platform.
+
+    sdi.collect.filter.1 = <filterName>:<fieldname>
+	sdi.collect.filter.2 = ...
+
+Note that the field name corresponds to the raw collction field name, before it gets normalized.
+The filters are applied in the natural order of the property key (ordinal numbering).
+	
+Provided filters:
+  - trueField: skips the row if the defined field is true
+  - falseField: skips the row if the defined field is false.
+
   
 ### mail.properties
 
