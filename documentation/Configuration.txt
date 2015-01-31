@@ -98,6 +98,7 @@ Provided filters:
   - falseField: skips the row if the defined field is false.
 
   
+  
 ### mail.properties
 
 Contains all settings for setting up a customized mail and send it to a SMTP provider.
