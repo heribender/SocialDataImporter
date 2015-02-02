@@ -20,6 +20,7 @@ package ch.sdi.core.impl.data.filter;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import ch.sdi.core.annotations.SdiFilter;
 import ch.sdi.core.exc.SdiException;
@@ -40,6 +41,7 @@ import ch.sdi.core.impl.data.Dataset;
  * @author  Heri
  */
 @SdiFilter( "falseField" )
+@Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class FilterFalse extends FilterOnBooleanField
 {

@@ -77,7 +77,6 @@ public class CsvCollector implements InputCollector
     private FilterFactory myFilterFactory;
 
     private Collection<String> myFieldnames;
-    Collection<Collection<Object>> myRows;
     private String myDelimiter;
     private String myEncoding;
     private List<RawDataFilterString> myLineFilters;
@@ -120,7 +119,8 @@ public class CsvCollector implements InputCollector
                                     SdiException.EXIT_CODE_PARSE_ERROR );
         } // if parsed.size() < toSkip
 
-        myRows = new ArrayList<Collection<Object>>();
+        Collection<Collection<Object>> myRows = new ArrayList<Collection<Object>>();
+        Collection<Collection<Object>> myRowsFiltered = new ArrayList<Collection<Object>>();
 
         List<FieldConverter<?>> converters = myConverterFactory.getFieldConverters( myFieldnames );
 
@@ -139,9 +139,9 @@ public class CsvCollector implements InputCollector
                     if ( filter.isFiltered( Dataset.create( myFieldnames, converted ) ) )
                     {
                         myLog.debug( "Given row is filtered: " + row );
+                        myRowsFiltered.add( converted );
+                        continue ROW_LOOP;
                     }
-
-                    continue ROW_LOOP;
                 }
 
                 myRows.add( converted );
@@ -154,6 +154,9 @@ public class CsvCollector implements InputCollector
         }
 
         myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Rows", myRows ) );
+        myLog.info( new ReportMsg( ReportMsg.ReportType.POSTPARSE_FILTER, "Filtered datasets",
+                                   myRowsFiltered ) );
+
 
         return new CollectorResult() {
 
@@ -230,7 +233,7 @@ public class CsvCollector implements InputCollector
         set = ConfigUtils.getPropertyNamesStartingWith( myEnv, CollectFilter.KEY_PREFIX_FILTER );
         for ( String value : set )
         {
-            myCollectFilters.add( myFilterFactory.getFilter( value ) );
+            myCollectFilters.add( myFilterFactory.getFilter( myEnv.getProperty( value ) ) );
         }
 
 

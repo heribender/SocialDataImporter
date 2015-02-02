@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 
@@ -31,6 +32,7 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.data.filter.RawDataFilterString;
+import ch.sdi.report.ReportMsg;
 
 
 /**
@@ -103,7 +105,8 @@ public class CsvParser
             BufferedReader br = new BufferedReader( !StringUtils.hasText( aEncoding )
                                                     ? new InputStreamReader( aInputStream )
                                                     : new InputStreamReader( aInputStream, aEncoding ) );
-            List<List<String>> result = new ArrayList<List<String>>();
+            List<List<String>> result = new ArrayList<>();
+            Collection<String> myLinesFiltered = new ArrayList<>();
 
             int lineNo = 0;
             String line;
@@ -119,6 +122,7 @@ public class CsvParser
                         if ( filter.isFiltered( line ) )
                         {
                             myLog.debug( "Skipping commented line: " + line );
+                            myLinesFiltered.add( line );
                             continue LineLoop;
                         }
                     }
@@ -150,6 +154,9 @@ public class CsvParser
 
                 result.add( list );
             }
+
+            myLog.info( new ReportMsg( ReportMsg.ReportType.PREPARSE_FILTER, "Filtered lines",
+                                       myLinesFiltered ) );
 
             return result;
         }

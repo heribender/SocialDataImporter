@@ -36,6 +36,8 @@ public class ReportMsg implements Message
     {
         COLLECTOR,
         COLLECTOR_PROBLEM,
+        PREPARSE_FILTER,
+        POSTPARSE_FILTER,
         TARGET,
         TARGET_PROBLEM,
         MAIL_TARGET,

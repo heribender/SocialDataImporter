@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.annotations.SdiFilter;
@@ -42,6 +43,7 @@ import ch.sdi.core.exc.SdiException;
  * @author  Heri
  */
 @SdiFilter( "commentedLine" )
+@Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class FilterCommentedLine extends RawDataFilterString
 {

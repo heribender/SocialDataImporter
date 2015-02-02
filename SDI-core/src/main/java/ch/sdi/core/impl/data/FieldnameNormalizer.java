@@ -105,7 +105,7 @@ public class FieldnameNormalizer
             {
                 if ( !PersonKey.getKeyNames().contains( collectedFieldName ) )
                 {
-                    throw new SdiException( "Given fieldname " + collectedFieldName + " not configured for "
+                    throw new SdiException( "Given fieldname \"" + collectedFieldName + "\" not configured for "
                             + "normalizing",
                             SdiException.EXIT_CODE_CONFIG_ERROR );
                 } // if condition
