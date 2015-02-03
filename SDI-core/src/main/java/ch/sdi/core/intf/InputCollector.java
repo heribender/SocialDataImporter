@@ -30,5 +30,12 @@ import ch.sdi.core.exc.SdiException;
 public interface InputCollector
 {
 
+    /**
+     * Executes the collection
+     * <p>
+     * @return a CollectorResult instance
+     * @throws SdiException
+     *         on any problem
+     */
     public CollectorResult execute() throws SdiException;
 }
