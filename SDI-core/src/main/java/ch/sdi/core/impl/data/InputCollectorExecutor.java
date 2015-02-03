@@ -42,7 +42,7 @@ import ch.sdi.core.intf.SdiMainProperties;
 public class InputCollectorExecutor
 {
     @Autowired
-    private Environment  myEnv;
+    private Environment myEnv;
     @Autowired
     private InputTransformer  myInputTransformer;
     @Autowired

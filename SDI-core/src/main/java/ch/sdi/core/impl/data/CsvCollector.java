@@ -55,6 +55,12 @@ import ch.sdi.report.ReportMsg;
  * <p>
  * The parsing is done by the CsvParser.
  * <p>
+ * The collector is initializing itself at begin of execute. It reads the preparse filters (raw data
+ * filter) and the postparse filters (collect filters) and applies them during collection.
+ * <p>
+ * At the end of execution it sends a report entry for all collected rows and one for alle rows filtered
+ * out.
+ * <p>
  *
  * @version 1.0 (08.11.2014)
  * @author  Heri
@@ -119,8 +125,8 @@ public class CsvCollector implements InputCollector
                                     SdiException.EXIT_CODE_PARSE_ERROR );
         } // if parsed.size() < toSkip
 
-        Collection<Collection<Object>> myRows = new ArrayList<Collection<Object>>();
-        Collection<Collection<Object>> myRowsFiltered = new ArrayList<Collection<Object>>();
+        Collection<Dataset> myRows = new ArrayList<>();
+        Collection<Dataset> myRowsFiltered = new ArrayList<>();
 
         List<FieldConverter<?>> converters = myConverterFactory.getFieldConverters( myFieldnames );
 
@@ -133,18 +139,19 @@ public class CsvCollector implements InputCollector
             try
             {
                 Collection<Object> converted = convertFields( row, converters );
+                Dataset dataset = Dataset.create( myFieldnames, converted );
 
                 for ( CollectFilter<?> filter : myCollectFilters )
                 {
-                    if ( filter.isFiltered( Dataset.create( myFieldnames, converted ) ) )
+                    if ( filter.isFiltered( dataset ) )
                     {
                         myLog.debug( "Given row is filtered: " + row );
-                        myRowsFiltered.add( converted );
+                        myRowsFiltered.add( dataset );
                         continue ROW_LOOP;
                     }
                 }
 
-                myRows.add( converted );
+                myRows.add( dataset );
             }
             catch ( Exception t )
             {
@@ -167,7 +174,7 @@ public class CsvCollector implements InputCollector
             }
 
             @Override
-            public Collection<Collection<Object>> getRows()
+            public Collection<Dataset> getRows()
             {
                 return myRows;
             }

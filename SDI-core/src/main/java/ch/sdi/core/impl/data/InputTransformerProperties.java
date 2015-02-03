@@ -19,22 +19,31 @@
 package ch.sdi.core.impl.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.intf.CollectorResult;
+import ch.sdi.core.intf.SdiMainProperties;
 
 
 /**
  * This input transformer transforms the raw input into a normalized collection of PropertiesPerson
+ * <p>
+ * At start of execution it reads the ignored fields from the configuration (<code>sdi.normalize.ignoreField</code>)
+ * and applies these filters during execution.
  * <p>
  *
  * @version 1.0 (08.11.2014)
@@ -47,7 +56,10 @@ public class InputTransformerProperties implements InputTransformer
     /** logger for this class */
     private Logger myLog = LogManager.getLogger( InputTransformerProperties.class );
     @Autowired
+    private Environment myEnv;
+    @Autowired
     private FieldnameNormalizer myFieldnameNormalizer;
+    private Collection<String> myIgnoredFields;
 
     /**
      * @see ch.sdi.core.impl.data.InputTransformer#execute(ch.sdi.core.intf.CollectorResult)
@@ -55,51 +67,78 @@ public class InputTransformerProperties implements InputTransformer
     @Override
     public Collection<? extends Person<?>> execute( CollectorResult aCollectorResult ) throws SdiException
     {
-        Collection<String> fieldNames = myFieldnameNormalizer.normalize( aCollectorResult.getFieldnames() );
+        Collection<String> filteredRawFieldNames = getFilteredRawFieldNames( aCollectorResult.getFieldnames() );
+        Map<String,String> normalizedMap = myFieldnameNormalizer.normalize( filteredRawFieldNames );
 
         Collection<Person<?>> result = new ArrayList<Person<?>>();
 
-        Collection<Collection<Object>> rows = aCollectorResult.getRows();
-        for ( Collection<Object> row : rows )
+        Collection<Dataset> rows = aCollectorResult.getRows();
+        for ( Dataset row : rows )
         {
-            result.add( transformRow( row, fieldNames ) );
+            result.add( transformRow( row, normalizedMap ) );
         }
 
         return result;
     }
 
     /**
+     * Reads the ignored fields into member myIgnoredFields and returns a collection of all raw field
+     * names which are not filtered (sdi.normalize.ignoreField).
+     * <p>
+     * @param aFieldnames
+     *        the collected fieldnames
+     * @return
+     */
+    private Collection<String> getFilteredRawFieldNames( Collection<String> aFieldnames )
+    {
+        String value = myEnv.getProperty( SdiMainProperties.KEY_NORMALIZE_IGNORE_FIELD );
+
+        if ( !StringUtils.hasText( value ) )
+        {
+            myLog.debug( "no normalize field filters configured" );
+            myIgnoredFields = new ArrayList<>();
+            return aFieldnames;
+        } // if !StringUtils.hasText( value )
+
+        myIgnoredFields = Arrays.asList( value.split( "," ) );
+
+        return aFieldnames.stream()
+            .filter( f -> !myIgnoredFields.contains( f ) )
+            .collect( Collectors.toCollection( (Supplier<List<String>>) ArrayList::new ) );
+    }
+
+    /**
+     * Transforms the collected Dataset into a PropertiesPerson. Ignored raw field names are not
+     * processed.
+     * <p>
      * @param aRow
-     * @param aFieldNames
+     *        the dataset to be converted
+     * @param aNormalizedFieldNames
+     *        a mapping between raw field names and normalized field names
      * @throws SdiException
      */
-    private PropertiesPerson transformRow( Collection<Object> aRow, Collection<String> aFieldNames ) throws SdiException
+    private PropertiesPerson transformRow( Dataset aRow, Map<String,String> aNormalizedFieldNames )
+            throws SdiException
     {
         Properties props = new Properties();
 
-        Iterator<Object> iter = aRow.iterator();
-        int fieldPos = 0;
-        for ( String field : aFieldNames )
+        for ( String rawKey : aRow.keySet() )
         {
-            if ( !iter.hasNext() )
+            if ( myIgnoredFields.contains( rawKey ) )
             {
-                throw new SdiException( "Mismatch between number of fieldnames and number of fields "
-                                        + "in the row. Pos: " + fieldPos,
+                continue;
+            }
+
+            String normalized = aNormalizedFieldNames.get( rawKey );
+
+            if ( !StringUtils.hasText( normalized ) )
+            {
+                throw new SdiException( "No normalized field name found for raw field name: " + rawKey,
                                         SdiException.EXIT_CODE_PARSE_ERROR );
-            } // if !iter.hasNext()
+            }
 
-            Object o = iter.next();
-
-            props.put( field, o );
-
-            fieldPos++;
+            props.put( normalized, aRow.get( rawKey ) );
         }
-
-        if ( iter.hasNext() )
-        {
-            throw new SdiException( "More fields in the row than in the fieldname list",
-                                    SdiException.EXIT_CODE_PARSE_ERROR );
-        } // if !iter.hasNext()
 
         // TODO: make it configurable which field can be used as primary key which will be the name of the
         // embedded PropertySource and must be unique.
@@ -108,7 +147,7 @@ public class InputTransformerProperties implements InputTransformer
         {
             throw new SdiException( "Person has no mail address or the configuration of the field mapping"
                                     + " is not correct. "
-                                    + "\n    Fieldnames: " + aFieldNames
+                                    + "\n    Fieldnames: " + aNormalizedFieldNames
                                     + "\n    Fields:     " + aRow,
                                     SdiException.EXIT_CODE_CONFIG_ERROR );
         } // if !StringUtils.hasText( name )

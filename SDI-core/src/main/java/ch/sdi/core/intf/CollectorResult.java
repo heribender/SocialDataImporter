@@ -20,6 +20,8 @@ package ch.sdi.core.intf;
 
 import java.util.Collection;
 
+import ch.sdi.core.impl.data.Dataset;
+
 
 /**
  * Interface for a generic collector result.
@@ -31,6 +33,6 @@ import java.util.Collection;
 public interface CollectorResult
 {
     public Collection<String> getFieldnames();
-    public Collection<Collection<Object>> getRows();
+    public Collection<Dataset> getRows();
 
 }

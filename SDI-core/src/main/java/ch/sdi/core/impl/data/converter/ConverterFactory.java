@@ -65,7 +65,7 @@ public class ConverterFactory
      * <p>
      *
      * @param aFieldnames
-     * @return a list of appropriate converters
+     * @return a list of appropriate converters, ordered in the same order as the given fieldnames
      * @throws SdiException if one of the configured converters cannot be found
      */
     public List<FieldConverter<?>> getFieldConverters( Collection<String> aFieldnames ) throws SdiException

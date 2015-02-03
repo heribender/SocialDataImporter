@@ -19,8 +19,8 @@
 package ch.sdi.core.impl.data;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import ch.sdi.core.exc.SdiException;
 
@@ -32,7 +32,7 @@ import ch.sdi.core.exc.SdiException;
  * @version 1.0 (24.01.2015)
  * @author  Heri
  */
-public class Dataset extends HashMap<String, Object>
+public class Dataset extends LinkedHashMap<String, Object>
 {
     private static final long serialVersionUID = 1L;
 

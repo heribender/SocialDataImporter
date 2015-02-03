@@ -225,7 +225,7 @@ public class CsvCollectorTest
        Assert.assertNotNull( receivedFieldnames );
        Assert.assertEquals( aExpectedFieldNum, receivedFieldnames.size() );
 
-       Collection<Collection<Object>> receivedRows = actual.getRows();
+       Collection<Dataset> receivedRows = actual.getRows();
        myLog.debug( "Received rows: " + receivedRows );
        Assert.assertNotNull( receivedRows );
        Assert.assertEquals( aExpectedRowNum, receivedRows.size() );

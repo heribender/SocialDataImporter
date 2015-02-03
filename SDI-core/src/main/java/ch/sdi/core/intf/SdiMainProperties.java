@@ -80,6 +80,8 @@ public interface SdiMainProperties extends SdiProperties
     public static final String KEY_SSH_CHECK_CERTIFICATE = "sdi.ssh.checkcertificate";
 
     public static final String KEY_TARGET_NAME = "sdi.target.name";
+    public static final String KEY_NORMALIZE_IGNORE_FIELD = "sdi.normalize.ignoreField";
+
 
 
 

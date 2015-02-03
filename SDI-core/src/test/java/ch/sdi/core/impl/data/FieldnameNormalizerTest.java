@@ -19,8 +19,8 @@
 package ch.sdi.core.impl.data;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,11 +83,11 @@ public class FieldnameNormalizerTest
         TestUtils.addToEnvironment( myEnv, "inputcollector.thing.alternateName", "Screenname" );
         List<String> fieldnames = new ArrayList<>();
         fieldnames.add( "Screenname" );
-        Collection<String> received = myClassUnderTest.normalize( fieldnames );
+        Map<String,String> received = myClassUnderTest.normalize( fieldnames );
         myLog.debug( "received: " + received );
         Assert.assertNotNull( received );
         Assert.assertEquals( 1, received.size() );
-        Assert.assertEquals( "thing.alternateName", received.stream().findFirst().get() );
+        Assert.assertEquals( "thing.alternateName", received.values().stream().findFirst().get() );
 
     }
 
@@ -100,11 +100,11 @@ public class FieldnameNormalizerTest
         myLog.debug( "testing field thing.alternateName is already normalized" );
         List<String> fieldnames = new ArrayList<>();
         fieldnames.add( "thing.alternateName" );
-        Collection<String> received = myClassUnderTest.normalize( fieldnames );
+        Map<String,String> received = myClassUnderTest.normalize( fieldnames );
         myLog.debug( "received: " + received );
         Assert.assertNotNull( received );
         Assert.assertEquals( 1, received.size() );
-        Assert.assertEquals( "thing.alternateName", received.stream().findFirst().get() );
+        Assert.assertEquals( "thing.alternateName", received.values().stream().findFirst().get() );
 
     }
 

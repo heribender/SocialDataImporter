@@ -70,6 +70,8 @@ public class ReportMsg implements Message
         {
             case COLLECTOR:
             case COLLECTOR_PROBLEM:
+            case PREPARSE_FILTER:
+            case POSTPARSE_FILTER:
             case TARGET:
             case TARGET_PROBLEM:
             case MAIL_TARGET:

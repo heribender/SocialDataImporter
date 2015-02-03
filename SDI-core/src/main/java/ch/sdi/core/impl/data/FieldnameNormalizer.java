@@ -18,7 +18,6 @@
 
 package ch.sdi.core.impl.data;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -63,10 +62,13 @@ public class FieldnameNormalizer
      * <p>
      *
      * @param aFieldnames the fieldnames used in collection phase. Must not be <code>null</code>
-     * @return the normalized representation of the input field names
+     * @return the normalized representation of the input field names in form of a map:
+     *         <pre>
+     *             rawFieldName=NormalizedFieldName
+     *         </pre>
      * @throws SdiException on any problem
      */
-    public Collection<String> normalize( Collection<String> aFieldnames ) throws SdiException
+    public Map<String,String> normalize( Collection<String> aFieldnames ) throws SdiException
     {
         Map<String,String> configuredReplaceMap = new HashMap<String,String>();
 
@@ -89,7 +91,7 @@ public class FieldnameNormalizer
 
         }
 
-        Collection<String> result = new ArrayList<String>();
+        Map<String,String> result = new HashMap<>();
 
         for ( String collectedFieldName : aFieldnames )
         {
@@ -114,7 +116,7 @@ public class FieldnameNormalizer
                 normalized = collectedFieldName;
             }
 
-            result.add( normalized );
+            result.put( collectedFieldName, normalized );
         }
 
         if ( !configuredReplaceMap.isEmpty() )
