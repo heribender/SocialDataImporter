@@ -33,7 +33,7 @@ import ch.sdi.core.intf.MailProperties;
  * @author  Heri
  */
 @Configuration
-@PropertySource("classpath:/" + "Mail.properties" )
+@PropertySource("classpath:/" + "mail.properties" )
 public class MailPropertiesDefault implements MailProperties
 {
 

@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.env.CompositePropertySource;
 import org.springframework.core.env.ConfigurableEnvironment;
@@ -306,7 +305,7 @@ public class ConfigUtils
                                         + " but: " + ps.getClass().getName(),
                                         SdiException.EXIT_CODE_CONFIG_ERROR );
             } // if !( ps instanceof PropertiesPropertySource )
-            Assert.assertTrue( ps instanceof PropertiesPropertySource );
+
             pps = (PropertiesPropertySource) ps;
         }
 

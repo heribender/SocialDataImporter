@@ -45,6 +45,7 @@ public class SocialDataImporter
         }
         finally
         {
+            myLog.debug( "Terminated without errors" );
             mySpringContext.close();
         }
     }
