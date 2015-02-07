@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.target;
+package ch.sdi.core.impl.target;
 
 import java.util.Collection;
 

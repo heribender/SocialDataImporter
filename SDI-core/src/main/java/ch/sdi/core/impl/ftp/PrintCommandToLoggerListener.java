@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.ftp;
+package ch.sdi.core.impl.ftp;
 
 import java.io.IOException;
 import java.io.PrintWriter;

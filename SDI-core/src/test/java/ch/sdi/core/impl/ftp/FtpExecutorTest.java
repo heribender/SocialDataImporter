@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.ftp;
+package ch.sdi.core.impl.ftp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -58,6 +58,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StreamUtils;
 
 import ch.sdi.core.TestUtils;
+import ch.sdi.core.impl.ftp.FtpExecutor;
 import ch.sdi.core.intf.SdiMainProperties;
 
 
@@ -125,7 +126,7 @@ public class FtpExecutorTest implements ApplicationContextAware
     }
 
     /**
-     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     * Test method for {@link ch.sdi.core.impl.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testInitBySpring() throws Throwable
@@ -162,7 +163,7 @@ public class FtpExecutorTest implements ApplicationContextAware
     }
 
     /**
-     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     * Test method for {@link ch.sdi.core.impl.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testUploadAnonymous() throws Throwable
@@ -201,7 +202,7 @@ public class FtpExecutorTest implements ApplicationContextAware
     }
 
     /**
-     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     * Test method for {@link ch.sdi.core.impl.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testUploadLogin() throws Throwable
@@ -239,7 +240,7 @@ public class FtpExecutorTest implements ApplicationContextAware
     }
 
     /**
-     * Test method for {@link ch.sdi.core.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
+     * Test method for {@link ch.sdi.core.impl.ftp.FtpExecutor#executeUpload(java.io.InputStream, java.lang.String)}.
      */
     @Test
     public void testUploadLoginSSLImplicite() throws Throwable

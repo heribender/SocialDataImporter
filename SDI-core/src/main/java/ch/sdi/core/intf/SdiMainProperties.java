@@ -54,7 +54,6 @@ public interface SdiMainProperties extends SdiProperties
 
     public static final String KEY_PREFIX_CONVERTER = "sdi.converter.";
 
-    public static final String KEY_TARGET_TEMP_DIR = "sdi.target.tmpDir";
     public static final String KEY_TARGET_IGNORE_FAILED_PERSON = "sdi.target.ignoreFailedPerson";
 
     public static final String KEY_PREFIX_TARGET_JOB = "sdi.targetjob.";

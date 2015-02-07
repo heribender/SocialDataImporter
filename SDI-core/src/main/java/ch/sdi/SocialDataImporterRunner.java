@@ -40,7 +40,7 @@ import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.InputCollectorExecutor;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
-import ch.sdi.core.target.TargetExecutor;
+import ch.sdi.core.impl.target.TargetExecutor;
 import ch.sdi.report.SdiReporter;
 
 

@@ -15,7 +15,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.ftp;
+package ch.sdi.core.impl.ftp;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -31,10 +31,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
-import ch.sdi.core.ftp.FtpExecutor;
 import ch.sdi.core.impl.cfg.ConfigUtils;
-import ch.sdi.core.impl.cfg.ssh.SshExecutor;
 import ch.sdi.core.impl.data.Person;
+import ch.sdi.core.impl.ftp.FtpExecutor;
+import ch.sdi.core.impl.ssh.SshExecutor;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.plugins.oxwall.OxTargetJobContext;

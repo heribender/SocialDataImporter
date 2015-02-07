@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.target;
+package ch.sdi.core.impl.target;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -34,6 +34,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
+import ch.sdi.core.impl.target.DefaultTargetJobContext;
+import ch.sdi.core.impl.target.TargetExecutor;
 import ch.sdi.core.intf.SdiMainProperties;
 
 

@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.impl.cfg.ssh;
+package ch.sdi.core.impl.ssh;
 
 import java.io.ByteArrayOutputStream;
 

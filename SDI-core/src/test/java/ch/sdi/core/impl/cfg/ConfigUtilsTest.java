@@ -38,7 +38,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.sdi.core.TestUtils;
-import ch.sdi.core.ftp.FtpExecutor;
 import ch.sdi.core.intf.InputCollectorMappingProperties;
 import ch.sdi.core.intf.SdiProperties;
 
@@ -50,7 +49,7 @@ import ch.sdi.core.intf.SdiProperties;
  * @author  Heri
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes={FtpExecutor.class })
+@ContextConfiguration(classes={ConversionServiceProvider.class })
 public class ConfigUtilsTest
 {
 

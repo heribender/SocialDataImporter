@@ -15,7 +15,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.ftp;
+package ch.sdi.core.impl.ftp;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,6 +47,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.ftp.PrintCommandToLoggerListener;
 
 
 /**

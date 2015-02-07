@@ -15,7 +15,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package ch.sdi.core.impl.cfg.ssh;
+package ch.sdi.core.impl.ssh;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,6 +33,7 @@ import ch.sdi.core.TestUtils;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.cfg.ConversionServiceProvider;
+import ch.sdi.core.impl.ssh.SshExecutor;
 import ch.sdi.core.intf.SdiMainProperties;
 
 

@@ -16,7 +16,7 @@
  */
 
 
-package ch.sdi.core.target;
+package ch.sdi.core.impl.target;
 
 import java.io.File;
 import java.io.IOException;
@@ -127,7 +127,6 @@ public class TargetExecutor
                 for ( Person<?> person : aPersons )
                 {
                     processPerson( person );
-                    myProcessedPersons.add( person );
                 }
 
                 if ( myFailedPersons.isEmpty() )
@@ -171,7 +170,6 @@ public class TargetExecutor
             myTargetJobContext.release( null );
         }
 
-
     }
 
     /**
@@ -191,6 +189,7 @@ public class TargetExecutor
                 job.execute( aPerson );
             }
 
+            myProcessedPersons.add( aPerson );
         }
         catch ( SdiDuplicatePersonException t )
         {
