@@ -116,9 +116,12 @@ public class TargetExecutor
 
         try
         {
+            Collection<? extends TargetJob> jobs = myTargetJobContext.getJobs();
+
             try
             {
-                for ( TargetJob job : myTargetJobContext.getJobs() )
+
+                for ( TargetJob job : jobs )
                 {
                     myLog.info( "Going to prepare the target job " + job.getClass().getSimpleName() );
                     job.init();
@@ -126,7 +129,7 @@ public class TargetExecutor
 
                 for ( Person<?> person : aPersons )
                 {
-                    processPerson( person );
+                    processPerson( person, jobs );
                 }
 
                 if ( myFailedPersons.isEmpty() )
@@ -137,7 +140,7 @@ public class TargetExecutor
             }
             finally
             {
-                for ( TargetJob job : myTargetJobContext.getJobs() )
+                for ( TargetJob job : jobs )
                 {
                     myLog.info( "Going to close the target job " + job.getClass().getSimpleName() );
                     job.close();
@@ -176,7 +179,7 @@ public class TargetExecutor
      * @param aPerson
      * @return
      */
-    private void processPerson( Person<?> aPerson ) throws SdiException
+    private void processPerson( Person<?> aPerson, Collection<? extends TargetJob> aJobs ) throws SdiException
     {
         myLog.info( "processing person " + aPerson.getEMail() );  // TODO: make primary key configurable
 
@@ -184,7 +187,7 @@ public class TargetExecutor
         {
             myTargetJobContext.preparePerson( aPerson );
 
-            for ( TargetJob job : myTargetJobContext.getJobs() )
+            for ( TargetJob job : aJobs )
             {
                 job.execute( aPerson );
             }

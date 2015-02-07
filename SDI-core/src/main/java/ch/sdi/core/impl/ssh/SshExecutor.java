@@ -41,7 +41,7 @@ import ch.sdi.core.intf.SdiMainProperties;
 /**
  * Implements a SSH command executor.
  * <p>
- * The implementation is uses the SSH library http://www.jcraft.com/jsch/. The code was adapted from
+ * The implementation uses the SSH library http://www.jcraft.com/jsch/. The code was adapted from
  * the example in http://www.jcraft.com/jsch/examples/Exec.java.html
  * <p>
  *

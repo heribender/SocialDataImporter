@@ -41,6 +41,7 @@ import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiDuplicatePersonException;
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.converter.ConverterImage;
@@ -93,6 +94,8 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Autowired
     private OxSqlJob mySqlJob;
 
+    private boolean myHasAvatar;
+
 
     /**
      * Constructor
@@ -114,8 +117,14 @@ public class OxTargetJobContext implements CustomTargetJobContext
         // succeeding jobs the lowest damage is done in the system. But oxwalls avatar picture files
         // need the database ID of the new user for the filenames.
         result.add( mySqlJob );
-        result.add( myFtpJob );
+
+        if ( myHasAvatar )
+        {
+            result.add( myFtpJob );
+        }
+
         result.add( myMailJob );
+
         return result;
     }
 
@@ -125,6 +134,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     @Override
     public void prepare() throws SdiException
     {
+        myHasAvatar = ConfigUtils.getBooleanProperty( myEnv, OxTargetConfiguration.KEY_HAS_AVATAR );
     }
 
     /**
@@ -136,10 +146,14 @@ public class OxTargetJobContext implements CustomTargetJobContext
         if ( mySqlJob.isAlreadyPresent( aPerson ) )
         {
             throw new SdiDuplicatePersonException( aPerson );
-        } // if mySqlJob.isAlreadyPresent( aPerson )
+        }
 
         preparePassword( aPerson );
-        prepareAvatar( aPerson );
+
+        if ( myHasAvatar )
+        {
+            prepareAvatar( aPerson );
+        }
 
         String fullname = aPerson.getGivenname() + " "
                 + ( StringUtils.hasText( aPerson.getMiddlename() ) ? (aPerson.getMiddlename() + " ") : "" )
