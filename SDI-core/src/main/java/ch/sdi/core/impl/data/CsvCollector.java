@@ -48,6 +48,7 @@ import ch.sdi.core.intf.FieldConverter;
 import ch.sdi.core.intf.InputCollector;
 import ch.sdi.core.intf.SdiMainProperties;
 import ch.sdi.report.ReportMsg;
+import ch.sdi.report.ReportMsg.ReportType;
 
 
 /**
@@ -115,7 +116,7 @@ public class CsvCollector implements InputCollector
         List<List<String>> parsed = myParser.parse( is, myDelimiter, myEncoding, myLineFilters );
 
         myFieldnames = evaluateFieldNames( parsed, myHeaderRow );
-        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Fieldnames", myFieldnames ) );
+        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "CSV-Fieldnames", myFieldnames ) );
 
         int toSkip = myHeaderRow ? (mySkip + 1) : 0;
         myLog.debug( "Skipping first " + toSkip + " rows" );
@@ -160,8 +161,8 @@ public class CsvCollector implements InputCollector
             }
         }
 
-        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "Rows", myRows ) );
-        myLog.info( new ReportMsg( ReportMsg.ReportType.POSTPARSE_FILTER, "Filtered datasets",
+        myLog.info( new ReportMsg( ReportMsg.ReportType.COLLECTOR, "CSV parsed lines", myRows ) );
+        myLog.info( new ReportMsg( ReportMsg.ReportType.POSTPARSE_FILTER, "CSV Filtered datasets",
                                    myRowsFiltered ) );
 
 
@@ -243,8 +244,6 @@ public class CsvCollector implements InputCollector
             myCollectFilters.add( myFilterFactory.getFilter( myEnv.getProperty( value ) ) );
         }
 
-
-
         myHeaderRow = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_HEADER_ROW, false );
         mySkip = ConfigUtils.getIntProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_SKIP_AFTER_HEADER, 0 );
         myInputFileName = ConfigUtils.getStringProperty( myEnv, SdiMainProperties.KEY_COLLECT_CSV_FILENAME );
@@ -260,8 +259,9 @@ public class CsvCollector implements InputCollector
               .append( "\n       " ).append( SdiMainProperties.KEY_COLLECT_CSV_COMMENT_CHARS_PREFIX ).append( " = " ).append( myLineFilters );
 
             myLog.debug( sb.toString()  );
-
         } // if myLog.isDebugEnabled()
+
+        myLog.info( new ReportMsg( ReportType.COLLECTOR_CFG, "InputSource", myInputFileName ) );
     }
 
     /**

@@ -18,11 +18,12 @@
 package ch.sdi.report;
 
 import org.apache.logging.log4j.message.Message;
-import org.springframework.util.StringUtils;
 
 
 /**
  * Special log4j message implementation for sampling report items.
+ * <p>
+ * Embeds a type (one of the ReportType enum), a key of type String and a value of type Object.
  * <p>
  *
  * @version 1.0 (19.11.2014)
@@ -35,9 +36,11 @@ public class ReportMsg implements Message
     public enum ReportType
     {
         COLLECTOR,
+        COLLECTOR_CFG,
         COLLECTOR_PROBLEM,
         PREPARSE_FILTER,
         POSTPARSE_FILTER,
+        SKIPPED_NO_EMAIL,
         TARGET,
         TARGET_PROBLEM,
         MAIL_TARGET,
@@ -46,21 +49,29 @@ public class ReportMsg implements Message
     };
 
     private final ReportType myType;
-    private final String[] myKeys;
-    private final Object[] myValues;
-    private final Throwable[] myThrowables;
+    private final String myKey;
+    private final Object myValue;
 
     public ReportMsg( ReportType type, String aKey, Object aValue )
     {
-        this( type, new String[] { aKey }, new Object[] { aValue }, null );
-    }
+        if ( type == null )
+        {
+            throw new NullPointerException( "type must not be null" );
+        }
 
-    private ReportMsg( ReportType type, String[] aKeys, Object[] aValues, Throwable[] aThrowables )
-    {
+        if ( aKey == null )
+        {
+            throw new NullPointerException( "aKey must not be null" );
+        }
+
+        if ( aValue == null )
+        {
+            throw new NullPointerException( "aValue must not be null" );
+        }
+
         this.myType = type;
-        this.myKeys = aKeys;
-        this.myValues = aValues;
-        this.myThrowables = aThrowables;
+        this.myKey = aKey;
+        this.myValue = aValue;
     }
 
     @Override
@@ -86,28 +97,8 @@ public class ReportMsg implements Message
     public String getMessageFormat()
     {
         return myType
-                + "; keys: [" + StringUtils.arrayToCommaDelimitedString( myKeys )
-                + "], values: [" + StringUtils.arrayToCommaDelimitedString( myValues )
-                + "], Throwables: [" + renderThrowables( myThrowables ) + "]"
-                ;
-    }
-
-    /**
-     * @param aThrowables
-     * @return
-     */
-    private String renderThrowables( Throwable[] aThrowables )
-    {
-        StringBuilder sb = new StringBuilder();
-
-        if ( myThrowables != null )
-        {
-            for ( Throwable t : aThrowables )
-            {
-                sb.append( t.getClass().getSimpleName() ).append( ": " ).append( t.getMessage() ).append( ", " );
-            }
-        } // if myThrowables != null
-        return sb.toString();
+                + "; key: " + myKey + ","
+                + "value: " + myValue;
     }
 
     /**
@@ -125,7 +116,7 @@ public class ReportMsg implements Message
     @Override
     public Object[] getParameters()
     {
-        return new Object[] { myKeys, myValues };
+        return new Object[] { myKey, myValue };
     }
 
     /**
@@ -142,4 +133,32 @@ public class ReportMsg implements Message
     {
         return getMessageFormat();
     }
+
+
+    /**
+     * @return type
+     */
+    public ReportType getType()
+    {
+        return myType;
+    }
+
+
+    /**
+     * @return keys
+     */
+    public String getKey()
+    {
+        return myKey;
+    }
+
+
+    /**
+     * @return values
+     */
+    public Object getValue()
+    {
+        return myValue;
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 by the original author or authors.
+ * Copyright (c) 2015 by the original author or authors.
  *
  * This code is free software; you can redistribute it and/or modify it under the terms of the
  * GNU Lesser General Public License as published by the Free Software Foundation; either
@@ -22,13 +22,12 @@ import ch.sdi.core.impl.data.Person;
 
 
 /**
- * Special exception for indicating that the person to be processed is already present in the target
- * platform.
+ * Exception if the person has no mail address
  *
- * @version 1.0 (24.11.2014)
+ * @version 1.0 (15.03.2015)
  * @author  Heri
  */
-public class SdiDuplicatePersonException extends SdiSkipPersonException
+public class SdiNoMailAdressException extends SdiSkipPersonException
 {
     private static final long serialVersionUID = 1L;
 
@@ -37,7 +36,7 @@ public class SdiDuplicatePersonException extends SdiSkipPersonException
      *
      * @param aExitCode
      */
-    public SdiDuplicatePersonException( Person<?> aPerson )
+    public SdiNoMailAdressException( Person<?> aPerson )
     {
         super( aPerson );
     }
@@ -48,7 +47,7 @@ public class SdiDuplicatePersonException extends SdiSkipPersonException
      * @param aMessage
      * @param aExitCode
      */
-    public SdiDuplicatePersonException( String aMessage, Person<?> aPerson )
+    public SdiNoMailAdressException( String aMessage, Person<?> aPerson )
     {
         super( aMessage, aPerson );
     }

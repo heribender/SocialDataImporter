@@ -23,6 +23,7 @@ import org.apache.commons.mail.SimpleEmail;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,6 +93,7 @@ public class MailSenderDefaultTest
     /**
      * Test method for {@link ch.sdi.core.impl.mail.MailSenderDefault#sendMail(org.apache.commons.mail.Email)}.
      */
+    @Ignore( "TODO: Provide a mocked mail sink " )
     @Test
     public void testSendMail() throws Throwable
     {

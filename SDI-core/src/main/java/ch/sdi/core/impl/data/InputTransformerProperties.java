@@ -35,8 +35,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import ch.sdi.core.exc.SdiException;
+import ch.sdi.core.exc.SdiNoMailAdressException;
 import ch.sdi.core.intf.CollectorResult;
 import ch.sdi.core.intf.SdiMainProperties;
+import ch.sdi.report.ReportMsg;
 
 
 /**
@@ -71,13 +73,25 @@ public class InputTransformerProperties implements InputTransformer
         Map<String,String> normalizedMap = myFieldnameNormalizer.normalize( filteredRawFieldNames );
 
         Collection<Person<?>> result = new ArrayList<Person<?>>();
+        Collection<Person<?>> skipped = new ArrayList<Person<?>>();
 
         Collection<Dataset> rows = aCollectorResult.getRows();
         for ( Dataset row : rows )
         {
-            result.add( transformRow( row, normalizedMap ) );
+            try
+            {
+                result.add( transformRow( row, normalizedMap ) );
+
+            }
+            catch ( SdiNoMailAdressException t )
+            {
+                skipped.add( t.getPerson() );
+            }
         }
 
+        myLog.info( new ReportMsg( ReportMsg.ReportType.SKIPPED_NO_EMAIL,
+                                   "Skpped Persons (no mail address)",
+                                   skipped ) );
         return result;
     }
 
@@ -145,11 +159,10 @@ public class InputTransformerProperties implements InputTransformer
         String mail = props.getProperty( PersonKey.PERSON_EMAIL.getKeyName() );
         if ( !StringUtils.hasText( mail ) )
         {
-            throw new SdiException( "Person has no mail address or the configuration of the field mapping"
-                                    + " is not correct. "
-                                    + "\n    Fieldnames: " + aNormalizedFieldNames
-                                    + "\n    Fields:     " + aRow,
-                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+            throw new SdiNoMailAdressException( new PropertiesPerson( props.getProperty(
+                              PersonKey.PERSON_GIVENNAME.getKeyName() )
+                              + " " + props.getProperty( PersonKey.PERSON_FAMILYNAME.getKeyName() ),
+                              props  ) );
         } // if !StringUtils.hasText( name )
 
         PropertiesPerson result = new PropertiesPerson( mail, props );

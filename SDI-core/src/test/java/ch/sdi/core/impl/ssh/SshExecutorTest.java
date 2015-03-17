@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,6 @@ import ch.sdi.core.TestUtils;
 import ch.sdi.core.exc.SdiException;
 import ch.sdi.core.impl.cfg.ConfigUtils;
 import ch.sdi.core.impl.cfg.ConversionServiceProvider;
-import ch.sdi.core.impl.ssh.SshExecutor;
 import ch.sdi.core.intf.SdiMainProperties;
 
 
@@ -82,6 +82,7 @@ public class SshExecutorTest
         myClassUnderTest.close();
     }
 
+    @Ignore( "TODO: Provide a mocked SSH sink " )
     @Test
     public void testChmod() throws Throwable
     {
@@ -89,6 +90,7 @@ public class SshExecutorTest
 //        myClassUnderTest.executeCmd( command1 );
     }
 
+    @Ignore( "TODO: Provide a mocked SSH sink " )
     @Test( expected=SdiException.class )
     public void testChown() throws Throwable
     {

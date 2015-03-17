@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 by the original author or authors.
+ * Copyright (c) 2015 by the original author or authors.
  *
  * This code is free software; you can redistribute it and/or modify it under the terms of the
  * GNU Lesser General Public License as published by the Free Software Foundation; either
@@ -16,54 +16,52 @@
  */
 
 
-package ch.sdi.report;
+package ch.sdi.core.exc;
 
-import java.util.ArrayList;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
-
-import ch.sdi.report.ReportMsg.ReportType;
+import ch.sdi.core.impl.data.Person;
 
 
 /**
- * Testcase
+ * TODO
  *
- * @version 1.0 (19.11.2014)
+ * @version 1.0 (15.03.2015)
  * @author  Heri
  */
-public class ReportMsgTest
+public class SdiSkipPersonException extends SdiException
 {
-
-    /** logger for this class */
-    private Logger myLog = LogManager.getLogger( ReportMsgTest.class );
+    private static final long serialVersionUID = 1L;
+    private Person<?> myPerson;
 
     /**
-     * @throws java.lang.Exception
+     * Constructor
+     *
+     * @param aExitCode
      */
-    @Before
-    public void setUp() throws Exception
+    public SdiSkipPersonException( Person<?> aPerson )
     {
+        super( EXIT_CODE_NO_ERROR );
+        myPerson = aPerson;
     }
 
-    @Test
-    public void testOk()
+    /**
+     * Constructor
+     *
+     * @param aMessage
+     * @param aExitCode
+     */
+    public SdiSkipPersonException( String aMessage, Person<?> aPerson )
     {
-        for ( ReportType type : ReportType.values() )
-        {
-            myLog.debug( new ReportMsg( type, "Hallo", new ArrayList<String>() ) );
-        }
+        super( aMessage, EXIT_CODE_NO_ERROR );
+        myPerson = aPerson;
     }
 
-    @Test(expected=NullPointerException.class)
-    public void testNullPointer()
+
+    /**
+     * @return person
+     */
+    public Person<?> getPerson()
     {
-        for ( ReportType type : ReportType.values() )
-        {
-            myLog.debug( new ReportMsg( type, "Hallo", null ) );
-        }
+        return myPerson;
     }
 
 }
