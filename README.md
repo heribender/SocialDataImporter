@@ -42,4 +42,11 @@ A fully working prototype is finished. The tool is now capable of:
 
 The actual product version is "0.9RC1"
 
+Update 22.03.2015
+-----------------
+After finetuning several aspects, fixing some bugs, adding a filter framework, finishing the documentation, fullfilling the TODO of a nicely formatted report and - the most important point - having used the tool for a successful import to a productive oxwall platform, I decided to release the version 1.0.
+ 
+The actual product version is "1.0"
+
+
 

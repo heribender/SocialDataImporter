@@ -9,7 +9,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.parent.groupid>social-data-importer-parent</project.parent.groupid>
         <project.parent.artifactid>parent</project.parent.artifactid>
-        <project.overall-version>0.9-RC1</project.overall-version>
+        <project.overall-version>1.0</project.overall-version>
         <module.version.core>${project.overall-version}</module.version.core>
         <module.version.oxwall-plugins>${project.overall-version}</module.version.oxwall-plugins>
         <logger.version>2.1</logger.version>
@@ -18,7 +18,7 @@
 
     <groupId>social-data-importer-parent</groupId>
     <artifactId>parent</artifactId>
-    <version>0.9-RC1</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
 
     <name>Social Data Importer</name>

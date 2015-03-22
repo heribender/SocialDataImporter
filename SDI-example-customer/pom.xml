@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>social-data-importer</groupId>
     <artifactId>example-customer</artifactId>
-    <version>0.9-RC1</version>
+    <version>1.0</version>
     <name>SdiExampleCustomer</name>
     <description>Example how to provide plugins, customized propteries and a runnable deploy package</description>
 
@@ -14,7 +14,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <logger.version>2.1</logger.version>
-        <sdi.version>0.9-RC1</sdi.version>
+        <sdi.version>1.0</sdi.version>
         <spring.version>4.1.1.RELEASE</spring.version>
     </properties>
 
