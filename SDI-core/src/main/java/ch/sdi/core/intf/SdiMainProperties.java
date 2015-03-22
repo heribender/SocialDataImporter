@@ -38,6 +38,7 @@ public interface SdiMainProperties extends SdiProperties
     public static final String SDI_PROPERTIES_RESOURCE_NAME = "Sdi.properties";
 
     public static final String KEY_DRYRUN = "sdi.dry-run";
+    public static final String KEY_CHECK_DUPLICATE_ON_DRYRUN = "sdi.checkDuplicateOnDryRun";
     public static final String KEY_PROPERTIESOVERRIDE_INCLUDEROOT =
             "sdi.propertiesoverride.includeroot";
     public static final String KEY_OUTPUT_DIR = "sdi.outputDir";

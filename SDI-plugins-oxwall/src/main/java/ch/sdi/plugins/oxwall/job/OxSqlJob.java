@@ -87,6 +87,7 @@ public class OxSqlJob implements SqlJob
     // does not work: @PersistenceContext(unitName="oxwall")
     protected  HibernateEntityManager myEntityManager;
     private boolean myDryRun;
+    private boolean myCheckDuplicateOnDryRun;
     private long myDummyId = 1;
     private List<OxProfileQuestion> myProfileQuestions;
     private List<Long> myDefaultGroups;
@@ -249,7 +250,7 @@ public class OxSqlJob implements SqlJob
     @Override
     public boolean isAlreadyPresent( Person<?> aPerson ) throws SdiException
     {
-        if ( myDryRun )
+        if ( myDryRun && !myCheckDuplicateOnDryRun )
         {
             myLog.debug( "DryRun is active. Not checking for duplicate person" );
             return false;
@@ -317,6 +318,9 @@ public class OxSqlJob implements SqlJob
     public void init() throws SdiException
     {
         myDryRun = ConfigUtils.getBooleanProperty( myEnv, SdiMainProperties.KEY_DRYRUN, false );
+        myCheckDuplicateOnDryRun = ConfigUtils.getBooleanProperty( myEnv,
+                                                                   SdiMainProperties.KEY_CHECK_DUPLICATE_ON_DRYRUN,
+                                                                   false );
         myGroupPrivacy = myEnv.getProperty( KEY_GROUP_PRIVACY, "everybody" );
         myUserAccountType = myEnv.getProperty( OxTargetConfiguration.KEY_USER_ACCOUNT_TYPE );
         myJoinIp = ConfigUtils.getIntProperty( myEnv, OxTargetConfiguration.KEY_USER_JOINIP, 12345 );
