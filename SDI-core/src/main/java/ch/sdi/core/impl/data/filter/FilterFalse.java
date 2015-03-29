@@ -52,7 +52,14 @@ public class FilterFalse extends FilterOnBooleanField
     @Override
     public boolean isFiltered( Dataset aDataset ) throws SdiException
     {
-        return !getFieldValue( aDataset );
+        Boolean value = getFieldValue( aDataset );
+
+        if ( value == null )
+        {
+            return false;
+        } // if value == null
+
+        return !value;
     }
 
 }

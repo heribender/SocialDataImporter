@@ -230,6 +230,13 @@ abstract public class Person<T extends Map> extends EnumerablePropertySource<Map
         return map.keySet().toArray( new String[0] );
     }
 
+    @Override
+    public boolean containsProperty( String aKey )
+    {
+        Map<String, Object> map = getSource();
+        return map.keySet().contains( aKey );
+    }
+
     /**
      * Constructor
      *

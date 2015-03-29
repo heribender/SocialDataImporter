@@ -1,0 +1,22 @@
+# Usage
+
+Download the zip file of release 1.0.1 (or later). It contains all needed binaries, starter batches
+and sample configuration files.
+
+Starting the tool with the batch bin/SocialDataImporter.bat (on windows machines). Unfortunately
+there is not yet a starter script for linux based systems).
+
+There must be a Java8 JRE installed in the system in order the tool can run.
+
+Before the tool can do what you expect from it you must configure it. See the [Configuration](https://github.com/heribender/SocialDataImporter/wiki/Configuration)
+Wiki page for a full explanation of all configuration options.
+
+The tool writes log outputs to the console and to the file logs/SocialDataImporter.log. This
+can be changed in cfg/log4j2.xml (see [Log4j2 configuration](https://logging.apache.org/log4j/2.x/manual/configuration.html) ).
+Currently the logging is very verbose. If you don't like this you can change the overall 
+log level to INFO (currently TRACE).
+
+At the end of the program run a detailled report is generated in output/&lt;yyyyMMdd_hhmmss>,
+where the latter is the current timestamp.
+
+Let me know if you encounter problems: heribender@web.de

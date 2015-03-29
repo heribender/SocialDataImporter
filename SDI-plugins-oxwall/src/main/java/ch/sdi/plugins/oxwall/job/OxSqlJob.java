@@ -114,6 +114,27 @@ public class OxSqlJob implements SqlJob
     {
         List<Object> dbEntities = new ArrayList<Object>();
 
+        if ( aPerson.containsProperty( OxTargetJobContext.KEY_NEEDS_ACTIVATION ) )
+        {
+            OxUser user = findPersonByEmail( aPerson.getEMail() );
+
+            if ( user == null )
+            {
+                throw new SdiException( "person has property " + OxTargetJobContext.KEY_NEEDS_ACTIVATION
+                                        + " but we cannot find the user entity by email address",
+                                        SdiException.EXIT_CODE_UNKNOWN_ERROR );
+            }
+
+            user.setEmailVerify( true );
+            saveEntity( dbEntities, user );
+
+            ReportMsg msg = new ReportMsg( ReportType.SQL_TARGET,
+                                           aPerson.getEMail(),
+                                           dbEntities.toArray() );
+            myLog.info( msg );
+            return;
+        }
+
         myLog.debug( "creating new user entity" );
         OxUser user = new OxUser();
         user.setUsername( aPerson.getStringProperty( PersonKey.THING_ALTERNATENAME.getKeyName() ) );
@@ -256,6 +277,23 @@ public class OxSqlJob implements SqlJob
             return false;
         } // if myDryRun
 
+        OxUser oxUser = findPersonByEmail( aPerson.getEMail() );
+
+        if ( oxUser != null )
+        {
+            myLog.debug( "given Person is already present: " + oxUser );
+            return true;
+        } // if results.size() > 0
+
+        return false;
+    }
+
+    /**
+     * @param aEmail
+     * @return
+     */
+    public OxUser findPersonByEmail( String aEmail )
+    {
         CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
 
         CriteriaQuery<OxUser> criteria = cb.createQuery(OxUser.class);
@@ -265,16 +303,17 @@ public class OxSqlJob implements SqlJob
 
         TypedQuery<OxUser> queryEMail = myEntityManager.createQuery(criteria);
 
-        queryEMail.setParameter( mailParam, aPerson.getEMail() );
+        queryEMail.setParameter( mailParam, aEmail );
         List<OxUser> results = queryEMail.getResultList();
+
+        OxUser oxUser = null;
 
         if ( results.size() > 0 )
         {
-            myLog.debug( "given Person is already present: " + results.get( 0 ) );
-            return true;
+            oxUser = results.get( 0 );
         } // if results.size() > 0
 
-        return false;
+        return oxUser;
     }
 
     /**

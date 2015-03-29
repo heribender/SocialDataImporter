@@ -51,6 +51,7 @@ import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.PasswordEncryptor;
 import ch.sdi.core.intf.TargetJob;
 import ch.sdi.plugins.oxwall.job.OxSqlJob;
+import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 
 
 /**
@@ -81,6 +82,7 @@ public class OxTargetJobContext implements CustomTargetJobContext
     /** the primary key of DB entity */
     public static final String KEY_PERSON_USER_ID = "person.userId";
     public static final String KEY_PERSON_PREPARED_AVATAR_FILES = "person.preparedAvatarFiles";
+    public static final String KEY_NEEDS_ACTIVATION = "person.needsActivation";
 
 
     @Autowired
@@ -145,6 +147,14 @@ public class OxTargetJobContext implements CustomTargetJobContext
     {
         if ( mySqlJob.isAlreadyPresent( aPerson ) )
         {
+            OxUser user = mySqlJob.findPersonByEmail( aPerson.getEMail() );
+            if ( user != null && (user.isEmailVerify() == false) )
+            {
+                aPerson.setProperty( KEY_NEEDS_ACTIVATION, Boolean.TRUE );
+                myLog.debug( "Person " + aPerson.getEMail() + " is already present, but needs activation" );
+                return;
+            }
+
             throw new SdiDuplicatePersonException( aPerson );
         }
 
