@@ -46,12 +46,14 @@ import ch.sdi.core.impl.data.Person;
 import ch.sdi.core.impl.data.PersonKey;
 import ch.sdi.core.impl.data.converter.ConverterImage;
 import ch.sdi.core.impl.mail.MailJobDefault;
+import ch.sdi.core.impl.mail.MailTextResolver;
 import ch.sdi.core.intf.CustomTargetJobContext;
 import ch.sdi.core.intf.FtpJob;
 import ch.sdi.core.intf.PasswordEncryptor;
 import ch.sdi.core.intf.TargetJob;
 import ch.sdi.plugins.oxwall.job.OxSqlJob;
 import ch.sdi.plugins.oxwall.sql.entity.OxUser;
+import ch.sdi.plugins.oxwall.sql.entity.OxUserUnapproved;
 
 
 /**
@@ -148,10 +150,17 @@ public class OxTargetJobContext implements CustomTargetJobContext
         if ( mySqlJob.isAlreadyPresent( aPerson ) )
         {
             OxUser user = mySqlJob.findPersonByEmail( aPerson.getEMail() );
-            if ( user != null && (user.isEmailVerify() == false) )
+            OxUserUnapproved userUnapproved = mySqlJob.findUnapprovedUser( user.getId() );
+
+            if ( user != null && userUnapproved != null )
             {
                 aPerson.setProperty( KEY_NEEDS_ACTIVATION, Boolean.TRUE );
-                myLog.debug( "Person " + aPerson.getEMail() + " is already present, but needs activation" );
+                aPerson.setProperty( MailTextResolver.KEY_EXTRA_MAIL_BODY_FILE,
+                                     "./input/mailbodyActivation.txt" );
+                myLog.debug( "Person " + aPerson.getEMail()
+                             + " is already present, but needs activation" );
+
+                mySqlJob.startTransaction();
                 return;
             }
 

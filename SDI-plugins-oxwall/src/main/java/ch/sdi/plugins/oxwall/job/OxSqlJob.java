@@ -58,6 +58,7 @@ import ch.sdi.plugins.oxwall.sql.entity.OxProfileData;
 import ch.sdi.plugins.oxwall.sql.entity.OxUser;
 import ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership;
 import ch.sdi.plugins.oxwall.sql.entity.OxUserRole;
+import ch.sdi.plugins.oxwall.sql.entity.OxUserUnapproved;
 import ch.sdi.report.ReportMsg;
 import ch.sdi.report.ReportMsg.ReportType;
 
@@ -125,12 +126,19 @@ public class OxSqlJob implements SqlJob
                                         SdiException.EXIT_CODE_UNKNOWN_ERROR );
             }
 
-            user.setEmailVerify( true );
-            saveEntity( dbEntities, user );
+            String msg;
 
-            ReportMsg msg = new ReportMsg( ReportType.SQL_TARGET,
-                                           aPerson.getEMail(),
-                                           dbEntities.toArray() );
+            if ( myDryRun )
+            {
+                msg = "Skip deleting the approve flag, since dryrun is true";
+            }
+            else
+            {
+                msg = "Deleting entry in ow_base_user_disapprove for user " + user.getId();
+                OxUserUnapproved userUnapproved = findUnapprovedUser( user.getId() );
+                myEntityManager.remove( userUnapproved );
+            }
+
             myLog.info( msg );
             return;
         }
@@ -314,6 +322,34 @@ public class OxSqlJob implements SqlJob
         } // if results.size() > 0
 
         return oxUser;
+    }
+
+    /**
+     * @param aUserId
+     * @return
+     */
+    public OxUserUnapproved findUnapprovedUser( Long aUserId )
+    {
+        CriteriaBuilder cb = myEntityManager.getCriteriaBuilder();
+
+        CriteriaQuery<OxUserUnapproved> criteria = cb.createQuery(OxUserUnapproved.class);
+        Root<OxUserUnapproved> root = criteria.from(OxUserUnapproved.class);
+        ParameterExpression<Long> param = cb.parameter(Long.class);
+        criteria.select(root).where(cb.equal( root.get("userId"), param ));
+
+        TypedQuery<OxUserUnapproved> queryEMail = myEntityManager.createQuery(criteria);
+
+        queryEMail.setParameter( param, aUserId );
+        List<OxUserUnapproved> results = queryEMail.getResultList();
+
+        OxUserUnapproved userUnapproved = null;
+
+        if ( results.size() > 0 )
+        {
+            userUnapproved = results.get( 0 );
+        } // if results.size() > 0
+
+        return userUnapproved;
     }
 
     /**

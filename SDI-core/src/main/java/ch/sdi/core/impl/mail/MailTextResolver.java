@@ -60,6 +60,9 @@ public class MailTextResolver
 
     private static final String KEY_PERSON_TEMP = "tempPersonInEnv";
     private static final String KEY_BODY_BY_TEMPLATE_FILE = "dyn.mail.body.bytemplatefile";
+    public static final String KEY_EXTRA_MAIL_BODY_FILE = "person.extraMailBody.filename";
+    public static final String KEY_EXTRA_MAIL_BODY_TEXT = "person.extraMailBody.text";
+
 
     @Autowired
     private ConfigurableEnvironment myEnv;
@@ -109,42 +112,69 @@ public class MailTextResolver
                                         SdiException.EXIT_CODE_CONFIG_ERROR );
             }
 
-
-
             String fileName = myEnv.getProperty( MailProperties.KEY_BODY_TEMPLATE );
-            File file = new File( fileName );
-
-            try
-            {
-                myLog.debug( "Loading mail body from template file " + file.getCanonicalPath() );
-
-                InputStream is = new FileInputStream( file );
-
-                String body;
-                try
-                {
-                    body = StreamUtils.copyToString( is, charset );
-                }
-                finally
-                {
-                    is.close();
-                }
-                myLog.debug( "Loaded mail body from template file " + body );
-                myBodyKey = KEY_BODY_BY_TEMPLATE_FILE;
-                ConfigUtils.addToEnvironment( myEnv, myBodyKey, body );
-            }
-            catch ( Throwable t )
-            {
-                throw new SdiException( "Cannot load mail template " + fileName,
-                                        t,
-                                        SdiException.EXIT_CODE_CONFIG_ERROR );
-            }
+            String body = loadFile( charset, fileName );
+            myBodyKey = KEY_BODY_BY_TEMPLATE_FILE;
+            ConfigUtils.addToEnvironment( myEnv, myBodyKey, body );
 
         } // if myEnv.containsProperty( MailProperties.BODY_TEMPLATE )
     }
 
+    /**
+     * @param aCharset
+     * @param aFileName
+     * @return
+     * @throws SdiException
+     */
+    private String loadFile( Charset aCharset, String aFileName ) throws SdiException
+    {
+        File file = new File( aFileName );
+
+        String body;
+        try
+        {
+            myLog.debug( "Loading mail body from template file " + file.getCanonicalPath() );
+
+            InputStream is = new FileInputStream( file );
+
+            try
+            {
+                body = StreamUtils.copyToString( is, aCharset );
+            }
+            finally
+            {
+                is.close();
+            }
+            myLog.debug( "Loaded mail body from template file " + body );
+        }
+        catch ( Throwable t )
+        {
+            throw new SdiException( "Cannot load mail template " + aFileName,
+                                    t,
+                                    SdiException.EXIT_CODE_CONFIG_ERROR );
+        }
+        return body;
+    }
+
     public String getResolvedBody( Person<?> aPerson ) throws SdiException
     {
+        if ( aPerson.containsProperty( KEY_EXTRA_MAIL_BODY_FILE ) )
+        {
+            String key = KEY_EXTRA_MAIL_BODY_TEXT;
+
+            try
+            {
+                String fileName = aPerson.getStringProperty( KEY_EXTRA_MAIL_BODY_FILE );
+                String body = loadFile( Charset.forName( "UTF-8" ), fileName );
+                ConfigUtils.addToEnvironment( myEnv, key, body );
+                return resolveValue( aPerson, key );
+            }
+            finally
+            {
+                ConfigUtils.removeFromEnvironment( myEnv, key );
+            }
+        }
+
         return resolveValue( aPerson, myBodyKey );
 
     }

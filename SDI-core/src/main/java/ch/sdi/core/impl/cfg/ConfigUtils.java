@@ -257,6 +257,8 @@ public class ConfigUtils
     }
 
     /**
+     * Adds the given value to the environment, using the property source "DynamicProperties"
+     * <p>
      * @param aEnv
      * @param aKey
      * @param aValue
@@ -272,6 +274,23 @@ public class ConfigUtils
         myLog.debug( "setting property " + aKey + " = " + aValue + " into the environment" );
         map.remove( aKey );
         map.put( aKey, aValue );
+    }
+
+    /**
+     * Removes the given key from the environment (property source "DynamicProperties")
+     * <p>
+     * @param aEnv
+     * @param aKey
+     * @throws SdiException
+     */
+    public static void removeFromEnvironment( ConfigurableEnvironment aEnv,
+                                              String aKey )
+            throws SdiException
+    {
+        Map<String, Object> map = getOrCreatePropertySource( aEnv, PROP_SOURCE_NAME_DYNAMIC );
+
+        myLog.debug( "removing property " + aKey +  " from the environment" );
+        map.remove( aKey );
     }
 
     /**
