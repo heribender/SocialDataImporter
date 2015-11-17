@@ -10,6 +10,7 @@
         <class>ch.sdi.plugins.oxwall.sql.entity.OxProfileData</class>
         <class>ch.sdi.plugins.oxwall.sql.entity.OxUserGroupMembership</class>
         <class>ch.sdi.plugins.oxwall.sql.entity.OxUserRole</class>
+        <class>ch.sdi.plugins.oxwall.sql.entity.OxUserUnapproved</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>
