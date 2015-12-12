@@ -72,7 +72,7 @@ public class ConverterFactoryTest
         TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".pattern",
                                          "yyyy-MM-dd"  );
         TestUtils.addToEnvironment( myEnv, "sdi.converter." + ConverterDate.CONVERTER_NAME + ".dateField.pattern",
-                                         "yyyy-MM-dd hh:mm:ss"  );
+                                         "yyyy-MM-dd HH:mm:ss"  );
         TestUtils.addToEnvironment( myEnv, "sdi.converter.custom",
                                          "customConverter"  );
     }
@@ -88,7 +88,7 @@ public class ConverterFactoryTest
         String expected;
 
         myLog.debug( "Fetching converter for dateField" );
-        expected = "yyyy-MM-dd hh:mm:ss";
+        expected = "yyyy-MM-dd HH:mm:ss";
         actual = myClassUnderTest.getConverterFor( "dateField" );
         myLog.debug( "Received converter: " + actual );
         Assert.assertNotNull( actual );

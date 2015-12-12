@@ -247,7 +247,7 @@ public class TargetExecutor
         } // if !file.exists()
 
 
-        DateFormat df = new SimpleDateFormat( "yyyyMMdd_hhmmss" );
+        DateFormat df = new SimpleDateFormat( "yyyyMMdd_HHmmss" );
         File result = new File( file.getPath(), df.format( new Date() ) );
 
         String outputDir;

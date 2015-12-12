@@ -80,6 +80,7 @@ public class ReportMsg implements Message
         switch ( myType )
         {
             case COLLECTOR:
+            case COLLECTOR_CFG:
             case COLLECTOR_PROBLEM:
             case PREPARSE_FILTER:
             case POSTPARSE_FILTER:
@@ -88,6 +89,7 @@ public class ReportMsg implements Message
             case MAIL_TARGET:
             case SQL_TARGET:
             case FTP_TARGET:
+            case SKIPPED_NO_EMAIL:
                 return getMessageFormat();
             default:
                 return "Unhandled type: " + myType;
